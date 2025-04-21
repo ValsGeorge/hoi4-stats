@@ -1,0 +1,3158 @@
+production={
+			available_equipments={
+				equipment={ id=5 type=70 }
+				equipment={ id=6 type=70 }
+				equipment={ id=1035 type=70 }
+				equipment={ id=1036 type=70 }
+				equipment={ id=1037 type=70 }
+				equipment={ id=1038 type=70 }
+				equipment={ id=1039 type=70 }
+				equipment={ id=1040 type=70 }
+				equipment={ id=1041 type=70 }
+				equipment={ id=1042 type=70 }
+				equipment={ id=1043 type=70 }
+				equipment={ id=1044 type=70 }
+				equipment={ id=1045 type=70 }
+				equipment={ id=1046 type=70 }
+				equipment={ id=1047 type=70 }
+				equipment={ id=1048 type=70 }
+				equipment={ id=1049 type=70 }
+				equipment={ id=1050 type=70 }
+				equipment={ id=1051 type=70 }
+				equipment={ id=1052 type=70 }
+				equipment={ id=1053 type=70 }
+				equipment={ id=1054 type=70 }
+				equipment={ id=1055 type=70 }
+				equipment={ id=1056 type=70 }
+				equipment={ id=1057 type=70 }
+				equipment={ id=1058 type=70 }
+				equipment={ id=1059 type=70 }
+				equipment={ id=1060 type=70 }
+				equipment={ id=1061 type=70 }
+				equipment={ id=1062 type=70 }
+				equipment={ id=1063 type=70 }
+				equipment={ id=1064 type=70 }
+				equipment={ id=1065 type=70 }
+				equipment={ id=1066 type=70 }
+				equipment={ id=1067 type=70 }
+				equipment={ id=1068 type=70 }
+				equipment={ id=1069 type=70 }
+				equipment={ id=1070 type=70 }
+				equipment={ id=1071 type=70 }
+				equipment={ id=1072 type=70 }
+				equipment={ id=1073 type=70 }
+				equipment={ id=1074 type=70 }
+				equipment={ id=1075 type=70 }
+				equipment={ id=1076 type=70 }
+				equipment={ id=1077 type=70 }
+				equipment={ id=1078 type=70 }
+				equipment={ id=1079 type=70 }
+				equipment={ id=1080 type=70 }
+				equipment={ id=3473 type=70 }
+				equipment={ id=3474 type=70 }
+				equipment={ id=3653 type=70 }
+				equipment={ id=3674 type=70 }
+				equipment={ id=3675 type=70 }
+				equipment={ id=3788 type=70 }
+				equipment={ id=3821 type=70 }
+				equipment={ id=3822 type=70 }
+				equipment={ id=3831 type=70 }
+				equipment={ id=3873 type=70 }
+				equipment={ id=3958 type=70 }
+				equipment={ id=3983 type=70 }
+				equipment={ id=3985 type=70 }
+				equipment={ id=3992 type=70 }
+				equipment={ id=4082 type=70 }
+				equipment={ id=4266 type=70 }
+				equipment={ id=4287 type=70 }
+				equipment={ id=4295 type=70 }
+				equipment={ id=4318 type=70 }
+				equipment={ id=4409 type=70 }
+				equipment={ id=4410 type=70 }
+				equipment={ id=4556 type=70 }
+				equipment={ id=4577 type=70 }
+				equipment={ id=4603 type=70 }
+				equipment={ id=4787 type=70 }
+				equipment={ id=5372 type=70 }
+				equipment={ id=5377 type=70 }
+				equipment={ id=5421 type=70 }
+				equipment={ id=5454 type=70 }
+			}
+			dirty=no
+			foreign_lease_equipments={
+				equipment={ id=1690 type=70 }
+				equipment={ id=3615 type=70 }
+				equipment={ id=3624 type=70 }
+				equipment={ id=1698 type=70 }
+				equipment={ id=1692 type=70 }
+				equipment={ id=1693 type=70 }
+				equipment={ id=1530 type=70 }
+				equipment={ id=3790 type=70 }
+				equipment={ id=8 type=70 }
+				equipment={ id=975 type=70 }
+				equipment={ id=1531 type=70 }
+				equipment={ id=976 type=70 }
+				equipment={ id=3752 type=70 }
+				equipment={ id=1533 type=70 }
+				equipment={ id=977 type=70 }
+				equipment={ id=4347 type=70 }
+				equipment={ id=1536 type=70 }
+				equipment={ id=1085 type=70 }
+				equipment={ id=4372 type=70 }
+				equipment={ id=25 type=70 }
+				equipment={ id=26 type=70 }
+				equipment={ id=1245 type=70 }
+				equipment={ id=1246 type=70 }
+				equipment={ id=1247 type=70 }
+				equipment={ id=1248 type=70 }
+				equipment={ id=1249 type=70 }
+				equipment={ id=1250 type=70 }
+				equipment={ id=1251 type=70 }
+				equipment={ id=3505 type=70 }
+				equipment={ id=3740 type=70 }
+				equipment={ id=3850 type=70 }
+				equipment={ id=3886 type=70 }
+				equipment={ id=3928 type=70 }
+				equipment={ id=4187 type=70 }
+				equipment={ id=4386 type=70 }
+				equipment={ id=4532 type=70 }
+				equipment={ id=4555 type=70 }
+				equipment={ id=27 type=70 }
+				equipment={ id=28 type=70 }
+				equipment={ id=1252 type=70 }
+				equipment={ id=1253 type=70 }
+				equipment={ id=1254 type=70 }
+				equipment={ id=1255 type=70 }
+				equipment={ id=1256 type=70 }
+				equipment={ id=3506 type=70 }
+				equipment={ id=3738 type=70 }
+				equipment={ id=3786 type=70 }
+				equipment={ id=3855 type=70 }
+				equipment={ id=3932 type=70 }
+				equipment={ id=3976 type=70 }
+				equipment={ id=4205 type=70 }
+				equipment={ id=4405 type=70 }
+				equipment={ id=4430 type=70 }
+				equipment={ id=4533 type=70 }
+				equipment={ id=4578 type=70 }
+				equipment={ id=4590 type=70 }
+				equipment={ id=23 type=70 }
+				equipment={ id=24 type=70 }
+				equipment={ id=1241 type=70 }
+				equipment={ id=1242 type=70 }
+				equipment={ id=1243 type=70 }
+				equipment={ id=1244 type=70 }
+				equipment={ id=3504 type=70 }
+				equipment={ id=3736 type=70 }
+				equipment={ id=3783 type=70 }
+				equipment={ id=3853 type=70 }
+				equipment={ id=3934 type=70 }
+				equipment={ id=3975 type=70 }
+				equipment={ id=4252 type=70 }
+				equipment={ id=4421 type=70 }
+				equipment={ id=4552 type=70 }
+				equipment={ id=4553 type=70 }
+			}
+			production_licenses={
+			}
+			cic_bank={
+				value=0.000
+			}
+			military_lines={
+				id={ id=783 type=56 }
+				produced=0.074
+				active_factories=10
+				priority=0
+				amount=-1
+				speed=36.235
+				cost=0.501
+				requested_factories=10
+				equipment_variant_index={ id=4577 type=70 }
+				factory_efficiencies={
+					69.22140 69.22140 69.22140 69.17886 69.17886 48.97964 48.70507 48.19696 48.19696 48.01092 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 
+				}
+				resources={
+					steel={ 10.000 0.000}
+					coal={ 20.000 0.000}
+					none={ 0.000 0.000}
+					none={ 0.000 0.000}
+					none={ 0.000 0.000}
+					none={ 0.000 0.000}
+				}
+				interface_factory_scale=2
+				industrial_manufacturer={ id=58 type=79 }
+			}
+			military_lines={
+				id={ id=133 type=56 }
+				produced=0.121
+				active_factories=25
+				priority=1
+				amount=-1
+				speed=105.839
+				cost=0.324
+				requested_factories=25
+				equipment_variant_index={ id=3788 type=70 }
+				factory_efficiencies={
+					70.40563 70.40563 70.40563 70.40563 70.40563 70.40563 70.40563 70.40563 70.40563 70.40563 70.40563 70.40563 70.40563 70.40563 70.40563 70.40563 70.40563 70.40563 70.40563 70.40563 62.34588 62.34588 62.34588 62.34588 62.34588 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 
+				}
+				resources={
+					steel={ 25.000 0.000}
+					coal={ 50.000 0.000}
+					none={ 0.000 0.000}
+					none={ 0.000 0.000}
+					none={ 0.000 0.000}
+					none={ 0.000 0.000}
+				}
+				interface_factory_scale=2
+				industrial_manufacturer={ id=58 type=79 }
+			}
+			military_lines={
+				id={ id=135 type=56 }
+				produced=0.120
+				active_factories=75
+				priority=2
+				amount=-1
+				speed=269.454
+				cost=1.931
+				requested_factories=75
+				equipment_variant_index={ id=5372 type=70 }
+				factory_efficiencies={
+					66.61343 66.61343 66.61343 66.61343 66.61343 66.61343 66.61343 66.61343 66.61343 66.61343 66.61343 66.61343 66.61343 66.61343 66.61343 63.47943 63.47943 63.47030 63.47030 63.42498 61.31381 61.31381 61.31381 61.31381 61.31381 61.00445 60.87774 60.86355 60.86355 60.79290 60.58038 60.56631 60.42413 60.29580 60.26766 54.45513 54.45513 54.45513 54.45513 54.45513 54.45513 54.45513 54.45513 54.45513 54.45513 54.45513 54.45513 54.45513 54.45513 54.45513 53.78704 53.78704 53.78704 53.78704 53.70812 53.54959 53.44375 53.33776 53.31094 53.20455 53.20455 53.20455 53.12500 53.09826 53.04510 53.04510 53.04510 53.04510 53.04510 53.04510 53.04510 53.04510 53.04510 52.64324 52.26696 
+				}
+				resources={
+					steel={ 75.000 0.000}
+					coal={ 150.000 0.000}
+					none={ 0.000 0.000}
+					none={ 0.000 0.000}
+					none={ 0.000 0.000}
+					none={ 0.000 0.000}
+				}
+				interface_factory_scale=2
+				industrial_manufacturer={ id=58 type=79 }
+			}
+			military_lines={
+				id={ id=136 type=56 }
+				produced=0.002
+				active_factories=55
+				priority=3
+				amount=-1
+				speed=212.186
+				cost=0.873
+				requested_factories=55
+				equipment_variant_index={ id=1040 type=70 }
+				factory_efficiencies={
+					70.40563 70.40563 70.40563 70.40563 70.40563 70.40563 70.40563 70.40563 70.40563 70.40563 70.40563 70.40563 70.40563 70.40563 70.40563 70.40563 70.40563 70.40563 70.40563 70.40563 70.40563 70.40563 70.40563 70.40563 70.40563 69.35620 69.35620 69.35620 69.06857 68.82739 68.80377 68.80377 68.70675 68.56155 68.41625 62.34588 62.34588 62.34588 62.34588 62.34588 62.14700 62.14700 61.92639 61.74942 61.30432 61.21520 61.21520 61.21520 61.21520 61.21520 28.65460 28.47863 28.47863 27.85345 27.76309 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 
+				}
+				resources={
+					aluminium={ 55.000 0.000}
+					steel={ 110.000 0.000}
+					coal={ 110.000 0.000}
+					none={ 0.000 0.000}
+					none={ 0.000 0.000}
+					none={ 0.000 0.000}
+				}
+				interface_factory_scale=2
+				industrial_manufacturer={ id=59 type=79 }
+			}
+			military_lines={
+				id={ id=138 type=56 }
+				produced=6.027
+				active_factories=40
+				priority=4
+				amount=-1
+				speed=121.977
+				cost=8.883
+				requested_factories=40
+				equipment_variant_index={ id=3873 type=70 }
+				factory_efficiencies={
+					70.40563 70.40563 70.40563 70.40563 70.40563 70.40563 70.40563 70.40563 70.40563 70.40563 70.40563 70.40563 70.40563 70.40563 70.40563 68.36795 68.34347 68.07589 68.05102 67.95379 27.67227 27.30664 27.21417 27.12158 27.12158 27.12158 27.12158 27.12158 27.12158 27.12158 27.12158 27.12158 27.12158 27.12158 27.12158 27.12158 27.12158 27.12158 27.12158 27.12158 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 
+				}
+				resources={
+					tungsten={ 40.000 0.000}
+					steel={ 80.000 0.000}
+					coal={ 160.000 0.000}
+					none={ 0.000 0.000}
+					none={ 0.000 0.000}
+					none={ 0.000 0.000}
+				}
+				interface_factory_scale=2
+				industrial_manufacturer={ id=60 type=79 }
+			}
+			military_lines={
+				id={ id=139 type=56 }
+				produced=10.328
+				active_factories=2
+				priority=5
+				amount=-1
+				speed=8.852
+				cost=10.998
+				requested_factories=2
+				equipment_variant_index={ id=1043 type=70 }
+				factory_efficiencies={
+					70.40563 70.40563 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 
+				}
+				resources={
+					tungsten={ 4.000 0.000}
+					steel={ 6.000 0.000}
+					coal={ 8.000 0.000}
+					none={ 0.000 0.000}
+					none={ 0.000 0.000}
+					none={ 0.000 0.000}
+				}
+				industrial_manufacturer={ id=60 type=79 }
+			}
+			military_lines={
+				id={ id=140 type=56 }
+				produced=2.485
+				active_factories=30
+				priority=6
+				amount=-1
+				speed=126.756
+				cost=4.864
+				requested_factories=30
+				equipment_variant_index={ id=3992 type=70 }
+				factory_efficiencies={
+					70.40563 70.40563 70.40563 70.40563 70.40563 70.40563 70.40563 70.40563 70.40563 70.40563 70.40563 70.40563 70.40563 70.40563 70.40563 67.58627 67.58627 67.34030 67.19195 67.01950 66.87002 66.79559 66.77139 66.57223 66.57223 58.41116 58.36068 58.30963 58.25894 58.25894 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 
+				}
+				resources={
+					steel={ 60.000 0.000}
+					tungsten={ 30.000 0.000}
+					coal={ 120.000 0.000}
+					none={ 0.000 0.000}
+					none={ 0.000 0.000}
+					none={ 0.000 0.000}
+				}
+				interface_factory_scale=2
+				industrial_manufacturer={ id=60 type=79 }
+			}
+			military_lines={
+				id={ id=141 type=56 }
+				produced=2.360
+				active_factories=4
+				priority=7
+				amount=-1
+				speed=14.939
+				cost=3.760
+				requested_factories=4
+				equipment_variant_index={ id=4287 type=70 }
+				factory_efficiencies={
+					70.40563 70.40563 48.50094 48.50094 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 
+				}
+				resources={
+					steel={ 8.000 0.000}
+					coal={ 16.000 0.000}
+					none={ 0.000 0.000}
+					none={ 0.000 0.000}
+					none={ 0.000 0.000}
+					none={ 0.000 0.000}
+				}
+				industrial_manufacturer={ id=60 type=79 }
+			}
+			military_lines={
+				id={ id=142 type=56 }
+				produced=4.425
+				active_factories=1
+				priority=8
+				amount=-1
+				speed=4.426
+				cost=6.110
+				requested_factories=1
+				equipment_variant_index={ id=1046 type=70 }
+				factory_efficiencies={
+					70.40563 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 
+				}
+				resources={
+					steel={ 2.000 0.000}
+					tungsten={ 1.000 0.000}
+					coal={ 4.000 0.000}
+					none={ 0.000 0.000}
+					none={ 0.000 0.000}
+					none={ 0.000 0.000}
+				}
+				industrial_manufacturer={ id=60 type=79 }
+			}
+			military_lines={
+				id={ id=147 type=56 }
+				produced=0.207
+				active_factories=27
+				priority=9
+				amount=-1
+				speed=114.596
+				cost=2.820
+				requested_factories=27
+				equipment_variant_index={ id=1047 type=70 }
+				factory_efficiencies={
+					71.44369 71.44369 71.44369 71.44369 71.44369 71.44369 71.44369 71.44369 71.44369 71.44369 71.44369 71.44369 71.44369 71.44369 71.44369 71.44369 71.44369 71.44369 71.44369 71.44369 71.44369 71.44369 71.44369 71.44369 71.44369 57.23867 56.98391 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 
+				}
+				resources={
+					rubber={ 27.000 0.000}
+					steel={ 54.000 0.000}
+					coal={ 108.000 0.000}
+					none={ 0.000 0.000}
+					none={ 0.000 0.000}
+					none={ 0.000 0.000}
+				}
+				interface_factory_scale=2
+				industrial_manufacturer={ id=61 type=79 }
+			}
+			military_lines={
+				id={ id=346 type=56 }
+				produced=1.512
+				active_factories=1
+				priority=10
+				amount=-1
+				speed=3.835
+				cost=2.538
+				requested_factories=1
+				equipment_variant_index={ id=3474 type=70 }
+				factory_efficiencies={
+					61.01043 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 
+				}
+				resources={
+					steel={ 1.000 0.000}
+					rubber={ 2.000 0.000}
+					coal={ 4.000 0.000}
+					chromium={ 1.000 0.000}
+					none={ 0.000 0.000}
+					none={ 0.000 0.000}
+				}
+				industrial_manufacturer={ id=51 type=79 }
+			}
+			military_lines={
+				id={ id=347 type=56 }
+				produced=5.432
+				active_factories=4
+				priority=11
+				amount=-1
+				speed=15.341
+				cost=6.204
+				requested_factories=4
+				equipment_variant_index={ id=3473 type=70 }
+				factory_efficiencies={
+					61.01043 61.01043 61.01043 61.01043 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 
+				}
+				resources={
+					steel={ 4.000 0.000}
+					rubber={ 8.000 0.000}
+					coal={ 16.000 0.000}
+					chromium={ 4.000 0.000}
+					tungsten={ 4.000 0.000}
+					none={ 0.000 0.000}
+				}
+				industrial_manufacturer={ id=51 type=79 }
+			}
+			military_lines={
+				id={ id=143 type=56 }
+				produced=3.151
+				active_factories=2
+				priority=12
+				amount=-1
+				speed=8.035
+				cost=6.345
+				requested_factories=2
+				equipment_variant_index={ id=1049 type=70 }
+				factory_efficiencies={
+					63.96838 63.96838 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 
+				}
+				resources={
+					steel={ 2.000 0.000}
+					coal={ 12.000 0.000}
+					rubber={ 2.000 0.000}
+					tungsten={ 2.000 0.000}
+					none={ 0.000 0.000}
+					none={ 0.000 0.000}
+				}
+				interface_factory_scale=2
+				industrial_manufacturer={ id=48 type=79 }
+			}
+			military_lines={
+				id={ id=144 type=56 }
+				produced=6.313
+				active_factories=2
+				priority=13
+				amount=-1
+				speed=7.365
+				cost=12.610
+				requested_factories=2
+				equipment_variant_index={ id=4266 type=70 }
+				factory_efficiencies={
+					61.01043 61.01043 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 
+				}
+				resources={
+					steel={ 4.000 0.000}
+					coal={ 12.000 0.000}
+					rubber={ 2.000 0.000}
+					tungsten={ 2.000 0.000}
+					none={ 0.000 0.000}
+					none={ 0.000 0.000}
+				}
+				interface_factory_scale=2
+				industrial_manufacturer={ id=47 type=79 }
+			}
+			military_lines={
+				id={ id=145 type=56 }
+				produced=7.831
+				active_factories=5
+				priority=14
+				amount=-1
+				speed=16.221
+				cost=30.360
+				requested_factories=5
+				equipment_variant_index={ id=1051 type=70 }
+				factory_efficiencies={
+					51.61599 51.61599 51.61599 51.61599 51.61599 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 
+				}
+				resources={
+					steel={ 15.000 0.000}
+					coal={ 30.000 0.000}
+					rubber={ 5.000 0.000}
+					chromium={ 10.000 0.000}
+					tungsten={ 5.000 0.000}
+					none={ 0.000 0.000}
+				}
+				interface_factory_scale=2
+				industrial_manufacturer={ id=49 type=79 }
+			}
+			military_lines={
+				id={ id=146 type=56 }
+				produced=28.074
+				active_factories=5
+				priority=15
+				amount=-1
+				speed=13.734
+				cost=38.577
+				requested_factories=5
+				equipment_variant_index={ id=5377 type=70 }
+				factory_efficiencies={
+					45.53723 45.53723 45.53723 45.53723 45.53723 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 
+				}
+				resources={
+					steel={ 20.000 0.000}
+					coal={ 30.000 0.000}
+					rubber={ 5.000 0.000}
+					chromium={ 10.000 0.000}
+					tungsten={ 10.000 0.000}
+					none={ 0.000 0.000}
+				}
+				interface_factory_scale=2
+				industrial_manufacturer={ id=50 type=79 }
+			}
+			military_lines={
+				id={ id=151 type=56 }
+				produced=3.137
+				active_factories=2
+				priority=16
+				amount=-1
+				speed=6.124
+				cost=13.113
+				requested_factories=2
+				equipment_variant_index={ id=1075 type=70 }
+				factory_efficiencies={
+					48.70620 48.70620 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 
+				}
+				resources={
+					coal={ 4.000 0.000}
+					rubber={ 2.000 0.000}
+					aluminium={ 2.000 0.000}
+					none={ 0.000 0.000}
+					none={ 0.000 0.000}
+					none={ 0.000 0.000}
+				}
+				interface_factory_scale=2
+				industrial_manufacturer={ id=56 type=79 }
+			}
+			military_lines={
+				id={ id=152 type=56 }
+				produced=2.599
+				active_factories=5
+				priority=17
+				amount=-1
+				speed=18.370
+				cost=4.734
+				requested_factories=5
+				equipment_variant_index={ id=4603 type=70 }
+				factory_efficiencies={
+					56.23593 56.23593 56.23593 56.23593 56.23593 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 
+				}
+				resources={
+					none={ 0.000 0.000}
+					none={ 0.000 0.000}
+					none={ 0.000 0.000}
+					none={ 0.000 0.000}
+					none={ 0.000 0.000}
+					none={ 0.000 0.000}
+				}
+				is_converting=yes
+				non_conversion_speed=18.370
+				interface_factory_scale=2
+				industrial_manufacturer={ id=57 type=79 }
+			}
+			military_lines={
+				id={ id=150 type=56 }
+				produced=10.511
+				active_factories=50
+				priority=18
+				amount=-1
+				speed=121.156
+				cost=13.183
+				requested_factories=50
+				equipment_variant_index={ id=5454 type=70 }
+				factory_efficiencies={
+					38.19918 38.19918 38.19918 38.19918 38.19918 38.19918 38.19918 38.19918 38.19918 38.19918 38.19918 38.19918 38.19918 38.19918 38.19918 38.19918 38.19918 38.19918 38.19918 38.19918 37.38986 37.38986 37.38986 37.38986 37.38986 36.27514 36.27514 36.22344 36.18612 36.10473 34.95233 34.86819 34.86080 34.77642 34.76119 34.76119 34.67651 34.64599 34.61499 34.59216 31.71304 31.71304 31.71304 31.08105 30.88595 30.71798 30.68991 30.66174 30.60552 30.57730 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 
+				}
+				resources={
+					coal={ 100.000 0.000}
+					rubber={ 50.000 0.000}
+					aluminium={ 50.000 0.000}
+					none={ 0.000 0.000}
+					none={ 0.000 0.000}
+					none={ 0.000 0.000}
+				}
+				interface_factory_scale=2
+				industrial_manufacturer={ id=53 type=79 }
+			}
+			military_lines={
+				id={ id=149 type=56 }
+				produced=6.377
+				active_factories=75
+				priority=19
+				amount=-1
+				speed=168.819
+				cost=15.685
+				requested_factories=75
+				equipment_variant_index={ id=5421 type=70 }
+				factory_efficiencies={
+					41.49212 41.49212 41.49212 41.49212 41.49212 41.49212 41.49212 41.49212 41.49212 41.49212 41.05535 41.05535 41.05535 41.04998 41.04998 40.24176 40.20718 40.20178 40.18148 40.13092 39.58966 39.58453 39.56408 39.52282 39.51223 38.93502 38.93502 38.93502 38.82040 38.80316 37.32510 37.32510 37.25897 37.25897 37.20648 37.15725 37.08892 36.81533 36.73031 36.71218 33.49472 33.46554 33.43621 32.72811 32.49600 32.42648 32.42648 32.42648 32.42648 32.39230 32.18365 32.18365 32.07824 31.86666 31.51068 31.22424 31.15219 30.89779 30.89779 30.89779 30.89779 30.89779 30.82470 30.82470 30.82470 30.82470 30.82470 30.75201 30.71597 30.71597 30.68005 30.53176 30.53176 30.12081 30.06488 
+				}
+				resources={
+					coal={ 150.000 0.000}
+					rubber={ 75.000 0.000}
+					aluminium={ 75.000 0.000}
+					none={ 0.000 0.000}
+					none={ 0.000 0.000}
+					none={ 0.000 0.000}
+				}
+				interface_factory_scale=2
+				industrial_manufacturer={ id=54 type=79 }
+			}
+			military_lines={
+				id={ id=666 type=56 }
+				produced=0.247
+				active_factories=5
+				priority=20
+				amount=-1
+				speed=11.681
+				cost=24.402
+				requested_factories=5
+				equipment_variant_index={ id=3822 type=70 }
+				factory_efficiencies={
+					41.03967 41.03967 41.03967 40.95596 29.89419 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 
+				}
+				resources={
+					coal={ 20.000 0.000}
+					rubber={ 5.000 0.000}
+					aluminium={ 15.000 0.000}
+					none={ 0.000 0.000}
+					none={ 0.000 0.000}
+					none={ 0.000 0.000}
+				}
+				interface_factory_scale=2
+				industrial_manufacturer={ id=55 type=79 }
+			}
+			military_lines={
+				id={ id=1430 type=56 }
+				produced=14.078
+				active_factories=75
+				priority=21
+				amount=-1
+				speed=151.267
+				cost=25.705
+				requested_factories=75
+				equipment_variant_index={ id=4556 type=70 }
+				factory_efficiencies={
+					35.92416 35.92416 35.92416 35.92416 35.92416 35.92416 35.92416 35.92416 35.92416 35.92416 35.92416 35.92416 35.92416 35.92416 35.92416 35.92416 35.69610 35.60449 35.42074 35.32821 34.62783 34.62783 34.62783 34.53329 34.43859 34.43859 34.43859 34.34365 33.47680 33.42791 33.23181 33.23181 33.23181 33.23181 32.93557 32.48620 32.48620 32.13232 31.97933 31.87704 31.15133 31.09899 30.88806 30.83514 30.40820 30.30059 30.30059 29.54922 29.54922 29.54922 29.54922 29.49395 29.38299 29.27160 29.27160 28.65106 28.53689 28.36444 28.01675 28.01675 27.84140 27.66464 27.06784 27.06784 27.06784 27.06784 27.06784 27.06784 27.06784 26.64193 26.51889 26.39553 25.89547 25.76898 25.51403 
+				}
+				resources={
+					steel={ 225.000 0.000}
+					coal={ 450.000 0.000}
+					rubber={ 75.000 0.000}
+					chromium={ 150.000 0.000}
+					tungsten={ 75.000 0.000}
+					none={ 0.000 0.000}
+				}
+				interface_factory_scale=2
+				industrial_manufacturer={ id=45 type=79 }
+			}
+			military_lines={
+				id={ id=1431 type=56 }
+				produced=0.771
+				queued_factories=25
+				active_factories=50
+				priority=22
+				amount=-1
+				speed=81.121
+				cost=25.705
+				requested_factories=75
+				equipment_variant_index={ id=4556 type=70 }
+				factory_efficiencies={
+					35.34747 35.34747 35.34747 35.34747 35.34747 35.34747 35.34747 35.34747 35.34747 35.34747 35.34747 35.34747 35.34747 35.34747 35.34747 35.34747 35.34747 35.34747 35.34747 35.34747 35.34747 35.34747 35.34747 35.34747 35.34747 23.33013 20.91729 20.52413 20.52413 19.47970 19.29623 19.20370 18.82907 18.66812 18.66812 18.28713 16.65216 15.81283 14.40090 14.25195 13.16143 12.49502 11.97048 11.79043 11.42147 11.03973 10.84338 10.74005 10.74005 10.74005 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 9.00000 
+				}
+				resources={
+					steel={ 150.000 0.000}
+					coal={ 300.000 0.000}
+					rubber={ 50.000 0.000}
+					chromium={ 100.000 0.000}
+					tungsten={ 49.516 0.484}
+					none={ 0.000 0.000}
+				}
+				interface_factory_scale=2
+				industrial_manufacturer={ id=45 type=79 }
+			}
+			naval_lines={
+				id={ id=1154 type=57 }
+				produced=679.477
+				active_factories=15
+				priority=23
+				amount=-1
+				speed=90.090
+				cost=700.000
+				requested_factories=15
+				equipment_variant_index={ id=5 type=70 }
+				factory_efficiencies={
+					100.00000 100.00000 100.00000 100.00000 100.00000 100.00000 100.00000 100.00000 100.00000 100.00000 100.00000 100.00000 100.00000 100.00000 100.00000 
+				}
+				resources={
+					steel={ 15.000 0.000}
+					none={ 0.000 0.000}
+					none={ 0.000 0.000}
+					none={ 0.000 0.000}
+					none={ 0.000 0.000}
+					none={ 0.000 0.000}
+				}
+				deployment={
+					base=0
+					initial_carrier_air_wing_deployment={
+						cv_small_fighter_airframe=0.333
+						cv_small_bomber_airframe=0.333
+						cv_small_naval_bomber_airframe=0.333
+					}
+				}
+				names={
+					{
+						type=1
+						equipment={ id=5 type=70 }
+					}
+				}
+			}
+			naval_lines={
+				id={ id=1180 type=57 }
+				produced=676.989
+				active_factories=15
+				priority=24
+				amount=-1
+				speed=90.090
+				cost=700.000
+				requested_factories=15
+				equipment_variant_index={ id=5 type=70 }
+				factory_efficiencies={
+					100.00000 100.00000 100.00000 100.00000 100.00000 100.00000 100.00000 100.00000 100.00000 100.00000 100.00000 100.00000 100.00000 100.00000 100.00000 
+				}
+				resources={
+					steel={ 15.000 0.000}
+					none={ 0.000 0.000}
+					none={ 0.000 0.000}
+					none={ 0.000 0.000}
+					none={ 0.000 0.000}
+					none={ 0.000 0.000}
+				}
+				deployment={
+					base=0
+					initial_carrier_air_wing_deployment={
+						cv_small_fighter_airframe=0.333
+						cv_small_bomber_airframe=0.333
+						cv_small_naval_bomber_airframe=0.333
+					}
+				}
+				names={
+					{
+						type=1
+						equipment={ id=5 type=70 }
+					}
+				}
+			}
+			naval_lines={
+				id={ id=1859 type=57 }
+				produced=634.262
+				queued_factories=2
+				active_factories=13
+				priority=25
+				amount=-1
+				speed=78.078
+				cost=700.000
+				requested_factories=15
+				equipment_variant_index={ id=5 type=70 }
+				factory_efficiencies={
+					100.00000 100.00000 100.00000 100.00000 100.00000 100.00000 100.00000 100.00000 100.00000 100.00000 100.00000 100.00000 100.00000 100.00000 100.00000 
+				}
+				resources={
+					steel={ 13.000 0.000}
+					none={ 0.000 0.000}
+					none={ 0.000 0.000}
+					none={ 0.000 0.000}
+					none={ 0.000 0.000}
+					none={ 0.000 0.000}
+				}
+				deployment={
+					base=0
+					initial_carrier_air_wing_deployment={
+						cv_small_fighter_airframe=0.333
+						cv_small_bomber_airframe=0.333
+						cv_small_naval_bomber_airframe=0.333
+					}
+				}
+				names={
+					{
+						type=1
+						equipment={ id=5 type=70 }
+					}
+				}
+			}
+			general_lines={
+				building={
+					id={ id=5360 type=59 }
+					produced=7352.000
+					active_factories=20
+					priority=0
+					amount=1
+					speed=188.000
+					cost=7500.000
+					created_date="1940.12.15.4"
+					building={
+						template="arms_factory"
+						location=217
+						country="---"
+					}
+					allied_build=no
+				}
+				building={
+					id={ id=5363 type=59 }
+					produced=4192.428
+					active_factories=20
+					priority=1
+					amount=1
+					speed=159.800
+					cost=7500.000
+					created_date="1940.12.15.4"
+					building={
+						template="arms_factory"
+						location=227
+						country="---"
+					}
+					allied_build=no
+				}
+				building={
+					id={ id=5367 type=59 }
+					produced=7391.685
+					active_factories=20
+					priority=2
+					amount=2
+					speed=159.800
+					cost=7500.000
+					created_date="1940.12.15.4"
+					building={
+						template="arms_factory"
+						location=195
+						country="---"
+					}
+					allied_build=no
+				}
+				building={
+					id={ id=5374 type=59 }
+					produced=1282.500
+					active_factories=20
+					priority=3
+					amount=1
+					speed=122.250
+					cost=1400.000
+					created_date="1940.12.16.4"
+					building={
+						template="air_base"
+						location=240
+						country="---"
+					}
+					allied_build=no
+				}
+				building={
+					id={ id=5376 type=59 }
+					produced=358.015
+					active_factories=20
+					priority=4
+					amount=2
+					speed=105.950
+					cost=1100.000
+					created_date="1940.12.16.4"
+					building={
+						template="air_base"
+						location=260
+						country="---"
+					}
+					allied_build=no
+				}
+				building={
+					id={ id=5377 type=59 }
+					produced=343.037
+					active_factories=20
+					priority=5
+					amount=2
+					speed=122.250
+					cost=1100.000
+					created_date="1940.12.16.4"
+					building={
+						template="air_base"
+						location=223
+						country="---"
+					}
+					allied_build=no
+				}
+				building={
+					id={ id=5378 type=59 }
+					produced=471.886
+					active_factories=20
+					priority=6
+					amount=3
+					speed=122.250
+					cost=800.000
+					created_date="1940.12.16.4"
+					building={
+						template="air_base"
+						location=205
+						country="---"
+					}
+					allied_build=no
+				}
+				building={
+					id={ id=5379 type=59 }
+					produced=19.560
+					active_factories=20
+					priority=7
+					amount=3
+					speed=122.250
+					cost=800.000
+					created_date="1940.12.16.4"
+					building={
+						template="air_base"
+						location=246
+						country="---"
+					}
+					allied_build=no
+				}
+				building={
+					id={ id=5380 type=59 }
+					produced=122.250
+					active_factories=20
+					priority=8
+					amount=2
+					speed=122.250
+					cost=1100.000
+					created_date="1940.12.16.4"
+					building={
+						template="air_base"
+						location=263
+						country="---"
+					}
+					allied_build=no
+				}
+				building={
+					id={ id=5381 type=59 }
+					produced=74.165
+					active_factories=14
+					priority=9
+					amount=4
+					speed=79.870
+					cost=500.000
+					created_date="1940.12.16.4"
+					building={
+						template="air_base"
+						location=244
+						country="---"
+					}
+					allied_build=no
+				}
+				building={
+					id={ id=5382 type=59 }
+					priority=10
+					amount=3
+					cost=800.000
+					created_date="1940.12.16.4"
+					building={
+						template="air_base"
+						location=264
+						country="---"
+					}
+					allied_build=no
+				}
+				building={
+					id={ id=5383 type=59 }
+					priority=11
+					amount=2
+					cost=1100.000
+					created_date="1940.12.16.4"
+					building={
+						template="air_base"
+						location=247
+						country="---"
+					}
+					allied_build=no
+				}
+				building={
+					id={ id=5384 type=59 }
+					priority=12
+					amount=1
+					cost=1400.000
+					created_date="1940.12.16.4"
+					building={
+						template="air_base"
+						location=254
+						country="---"
+					}
+					allied_build=no
+				}
+				building={
+					id={ id=5385 type=59 }
+					priority=13
+					amount=3
+					cost=800.000
+					created_date="1940.12.16.4"
+					building={
+						template="air_base"
+						location=248
+						country="---"
+					}
+					allied_build=no
+				}
+				building={
+					id={ id=5386 type=59 }
+					priority=14
+					amount=4
+					cost=500.000
+					created_date="1940.12.16.4"
+					building={
+						template="air_base"
+						location=253
+						country="---"
+					}
+					allied_build=no
+				}
+				building={
+					id={ id=5387 type=59 }
+					priority=15
+					amount=4
+					cost=500.000
+					created_date="1940.12.16.4"
+					building={
+						template="air_base"
+						location=255
+						country="---"
+					}
+					allied_build=no
+				}
+				building={
+					id={ id=5388 type=59 }
+					priority=16
+					amount=4
+					cost=500.000
+					created_date="1940.12.16.4"
+					building={
+						template="air_base"
+						location=257
+						country="---"
+					}
+					allied_build=no
+				}
+				building={
+					id={ id=5389 type=59 }
+					priority=17
+					amount=4
+					cost=500.000
+					created_date="1940.12.16.4"
+					building={
+						template="air_base"
+						location=258
+						country="---"
+					}
+					allied_build=no
+				}
+				building={
+					id={ id=5390 type=59 }
+					priority=18
+					amount=4
+					cost=500.000
+					created_date="1940.12.16.4"
+					building={
+						template="air_base"
+						location=265
+						country="---"
+					}
+					allied_build=no
+				}
+				building={
+					id={ id=5391 type=59 }
+					priority=19
+					amount=4
+					cost=500.000
+					created_date="1940.12.16.4"
+					building={
+						template="air_base"
+						location=245
+						country="---"
+					}
+					allied_build=no
+				}
+				building={
+					id={ id=5392 type=59 }
+					priority=20
+					amount=4
+					cost=500.000
+					created_date="1940.12.16.4"
+					building={
+						template="air_base"
+						location=239
+						country="---"
+					}
+					allied_build=no
+				}
+				building={
+					id={ id=5393 type=59 }
+					priority=21
+					amount=3
+					cost=800.000
+					created_date="1940.12.16.4"
+					building={
+						template="air_base"
+						location=252
+						country="---"
+					}
+					allied_build=no
+				}
+				building={
+					id={ id=5394 type=59 }
+					priority=22
+					amount=4
+					cost=500.000
+					created_date="1940.12.16.4"
+					building={
+						template="air_base"
+						location=234
+						country="---"
+					}
+					allied_build=no
+				}
+				building={
+					id={ id=5395 type=59 }
+					priority=23
+					amount=4
+					cost=500.000
+					created_date="1940.12.16.4"
+					building={
+						template="air_base"
+						location=238
+						country="---"
+					}
+					allied_build=no
+				}
+				building={
+					id={ id=5396 type=59 }
+					priority=24
+					amount=4
+					cost=500.000
+					created_date="1940.12.16.4"
+					building={
+						template="air_base"
+						location=237
+						country="---"
+					}
+					allied_build=no
+				}
+				building={
+					id={ id=5397 type=59 }
+					priority=25
+					amount=3
+					cost=800.000
+					created_date="1940.12.16.4"
+					building={
+						template="air_base"
+						location=236
+						country="---"
+					}
+					allied_build=no
+				}
+				building={
+					id={ id=5400 type=59 }
+					priority=26
+					amount=4
+					cost=500.000
+					created_date="1940.12.16.4"
+					building={
+						template="air_base"
+						location=1013
+						country="---"
+					}
+					allied_build=no
+				}
+				building={
+					id={ id=5401 type=59 }
+					priority=27
+					amount=4
+					cost=500.000
+					created_date="1940.12.16.4"
+					building={
+						template="air_base"
+						location=401
+						country="---"
+					}
+					allied_build=no
+				}
+				building={
+					id={ id=5402 type=59 }
+					priority=28
+					amount=4
+					cost=500.000
+					created_date="1940.12.16.4"
+					building={
+						template="air_base"
+						location=1025
+						country="---"
+					}
+					allied_build=no
+				}
+				building={
+					id={ id=5403 type=59 }
+					priority=29
+					amount=4
+					cost=500.000
+					created_date="1940.12.16.4"
+					building={
+						template="air_base"
+						location=351
+						country="---"
+					}
+					allied_build=no
+				}
+				building={
+					id={ id=5404 type=59 }
+					priority=30
+					amount=4
+					cost=500.000
+					created_date="1940.12.16.4"
+					building={
+						template="air_base"
+						location=249
+						country="---"
+					}
+					allied_build=no
+				}
+				building={
+					id={ id=5405 type=59 }
+					priority=31
+					amount=4
+					cost=500.000
+					created_date="1940.12.16.4"
+					building={
+						template="air_base"
+						location=250
+						country="---"
+					}
+					allied_build=no
+				}
+				building={
+					id={ id=5406 type=59 }
+					priority=32
+					amount=4
+					cost=500.000
+					created_date="1940.12.16.4"
+					building={
+						template="air_base"
+						location=256
+						country="---"
+					}
+					allied_build=no
+				}
+				building={
+					id={ id=5407 type=59 }
+					priority=33
+					amount=3
+					cost=800.000
+					created_date="1940.12.16.4"
+					building={
+						template="air_base"
+						location=251
+						country="---"
+					}
+					allied_build=no
+				}
+				building={
+					id={ id=5408 type=59 }
+					priority=34
+					amount=3
+					cost=800.000
+					created_date="1940.12.16.4"
+					building={
+						template="air_base"
+						location=229
+						country="---"
+					}
+					allied_build=no
+				}
+				building={
+					id={ id=5409 type=59 }
+					priority=35
+					amount=2
+					cost=1100.000
+					created_date="1940.12.16.4"
+					building={
+						template="air_base"
+						location=224
+						country="---"
+					}
+					allied_build=no
+				}
+				building={
+					id={ id=5410 type=59 }
+					priority=36
+					amount=2
+					cost=1100.000
+					created_date="1940.12.16.4"
+					building={
+						template="air_base"
+						location=243
+						country="---"
+					}
+					allied_build=no
+				}
+			}
+			equipments={
+				equipment={
+					id={ id=1035 type=70 }
+					amount=3890.000
+				}
+				equipment={
+					id={ id=1036 type=70 }
+					amount=110.000
+				}
+				equipment={
+					id={ id=1248 type=70 }
+					amount=9.000
+				}
+				equipment={
+					id={ id=1254 type=70 }
+					amount=11.000
+				}
+				equipment={
+					id={ id=1243 type=70 }
+					amount=11.000
+				}
+				equipment={
+					id={ id=1049 type=70 }
+					amount=6558.000
+				}
+				equipment={
+					id={ id=3675 type=70 }
+					amount=1003.000
+				}
+				equipment={
+					id={ id=1052 type=70 }
+					amount=2065.000
+				}
+				equipment={
+					id={ id=3674 type=70 }
+					amount=1.000
+				}
+				equipment={
+					id={ id=1037 type=70 }
+					amount=1696.000
+				}
+				equipment={
+					id={ id=3788 type=70 }
+					amount=50.000
+				}
+				equipment={
+					id={ id=1245 type=70 }
+					amount=11129.000
+				}
+				equipment={
+					id={ id=26 type=70 }
+					amount=318.000
+				}
+				equipment={
+					id={ id=4532 type=70 }
+					amount=30.000
+				}
+				equipment={
+					id={ id=1252 type=70 }
+					amount=3028.000
+				}
+				equipment={
+					id={ id=28 type=70 }
+					amount=583.000
+				}
+				equipment={
+					id={ id=1241 type=70 }
+					amount=196.000
+				}
+				equipment={
+					id={ id=24 type=70 }
+					amount=410.000
+				}
+				equipment={
+					id={ id=4410 type=70 }
+					amount=70.000
+				}
+				equipment={
+					id={ id=5372 type=70 }
+					amount=10.000
+				}
+				equipment={
+					id={ id=1040 type=70 }
+					amount=11346.000
+				}
+				equipment={
+					id={ id=3873 type=70 }
+					amount=36.000
+				}
+				equipment={
+					id={ id=1045 type=70 }
+					amount=1945.000
+				}
+				equipment={
+					id={ id=4287 type=70 }
+					amount=1399.000
+				}
+				equipment={
+					id={ id=1044 type=70 }
+					amount=540.000
+				}
+				equipment={
+					id={ id=3992 type=70 }
+					amount=36.000
+				}
+				equipment={
+					id={ id=3473 type=70 }
+					amount=3856.000
+				}
+				equipment={
+					id={ id=3474 type=70 }
+					amount=2725.000
+				}
+				equipment={
+					id={ id=1043 type=70 }
+					amount=491.000
+				}
+				equipment={
+					id={ id=1072 type=70 }
+					amount=329.000
+				}
+				equipment={
+					id={ id=3985 type=70 }
+					amount=8.000
+				}
+				equipment={
+					id={ id=4082 type=70 }
+					amount=1.000
+				}
+				equipment={
+					id={ id=4318 type=70 }
+					amount=19.000
+				}
+				equipment={
+					id={ id=1046 type=70 }
+					amount=687.000
+				}
+				equipment={
+					id={ id=3653 type=70 }
+					amount=73.000
+				}
+				equipment={
+					id={ id=1073 type=70 }
+					amount=399.000
+				}
+				equipment={
+					id={ id=4295 type=70 }
+					amount=7.000
+				}
+				equipment={
+					id={ id=1075 type=70 }
+					amount=172.000
+				}
+				equipment={
+					id={ id=1051 type=70 }
+					amount=322.000
+				}
+				equipment={
+					id={ id=1053 type=70 }
+					amount=320.000
+				}
+				equipment={
+					id={ id=4787 type=70 }
+					amount=67.000
+				}
+				equipment={
+					id={ id=5377 type=70 }
+					amount=14.000
+				}
+				equipment={
+					id={ id=4556 type=70 }
+					amount=179.000
+				}
+				allow_zero_entries=no
+			}
+			industrial_organisations={
+				SOV_morozov_design_bureau_organization={
+					id={ id=45 type=79 }
+					name=""
+					icon="GFX_idea_morozov_design_bureau"
+					research_bonus=0.040
+					task_capacity=0
+					funds=3689.344
+					size=11
+					points=3
+					unlocked={
+						trait="mio_simplified_parts_and_systems"
+					}
+					unlocked={
+						trait="mio_segregated_assembly_lines"
+					}
+					unlocked={
+						trait="mio_streamlined_inbound_processes"
+					}
+					unlocked={
+						trait="mio_expanded_outbound_stream"
+					}
+					unlocked={
+						trait="mio_quality_improvements"
+					}
+					unlocked={
+						trait="mio_mass_tank_production"
+					}
+					unlocked={
+						trait="mio_improved_tooling_methods"
+					}
+					unlocked={
+						trait="mio_standardized_components"
+					}
+					queued_trait={
+						trait="mio_new_picking_putaway_strategies"
+					}
+					queued_trait={
+						trait="mio_expert_practices"
+					}
+					queued_trait={
+						trait="mio_standardize_turrets_and_hulls"
+					}
+					queued_trait={
+						trait="mio_advanced_forges_and_tools"
+					}
+					allowed_policies={
+						mio_policy_general_ruthless_contracts
+						mio_policy_general_mechanical_genius
+						mio_policy_general_vertical_integration
+						mio_policy_general_experimental_development_teams
+						mio_policy_general_conscripted_workforce
+						mio_policy_land_cutting_corners
+					}
+					policy=mio_policy_land_cutting_corners
+					cooldown="1940.8.30.1"
+					variables={
+					}
+					flags={
+					}
+					history={
+						equipment={ id=3674 type=70 }
+						data={
+							units=1632
+						}
+					}
+					history={
+						equipment={ id=4556 type=70 }
+						data={
+							date="1940.3.1.1"
+							units=1679
+						}
+					}
+					history={
+						equipment={ id=1052 type=70 }
+						data={
+							units=543
+						}
+					}
+					research_assign_cost=0.040
+					production_assign_cost=0.000
+					design_team_change_cost=2
+					add_mio_funds_gain_factor=1.000
+				}
+				SOV_uralvagonzavod_organization={
+					id={ id=46 type=79 }
+					name=""
+					icon="GFX_idea_uralvagonzavod"
+					research_bonus=0.040
+					task_capacity=0
+					funds=0.000
+					size=0
+					points=0
+					queued_trait={
+						trait="mio_streamlined_inbound_processes"
+					}
+					queued_trait={
+						trait="mio_expanded_outbound_stream"
+					}
+					queued_trait={
+						trait="mio_quality_improvements"
+					}
+					queued_trait={
+						trait="mio_new_picking_putaway_strategies"
+					}
+					queued_trait={
+						trait="mio_expert_practices"
+					}
+					queued_trait={
+						trait="mio_standardized_components"
+					}
+					queued_trait={
+						trait="mio_simplified_parts_and_systems"
+					}
+					queued_trait={
+						trait="mio_steel_manufacturing"
+					}
+					queued_trait={
+						trait="mio_improved_tooling_methods"
+					}
+					queued_trait={
+						trait="mio_mass_tank_production"
+					}
+					queued_trait={
+						trait="mio_standardize_turrets_and_hulls"
+					}
+					queued_trait={
+						trait="mio_advanced_forges_and_tools"
+					}
+					allowed_policies={
+						mio_policy_general_ruthless_contracts
+						mio_policy_general_mechanical_genius
+						mio_policy_general_vertical_integration
+						mio_policy_general_experimental_development_teams
+						mio_policy_general_conscripted_workforce
+						mio_policy_land_armor_welding_specialists
+						mio_policy_land_factory_applied_camouflage
+						mio_policy_land_cutting_corners
+					}
+					variables={
+					}
+					flags={
+					}
+					research_assign_cost=0.040
+					production_assign_cost=0.000
+					design_team_change_cost=2
+					add_mio_funds_gain_factor=1.000
+				}
+				SOV_astrov_design_bureau_organization={
+					id={ id=47 type=79 }
+					name=""
+					icon="GFX_idea_astrov_design_bureau"
+					research_bonus=0.040
+					task_capacity=0
+					funds=604.670
+					size=7
+					points=2
+					unlocked={
+						trait="mio_simplified_parts_and_systems"
+					}
+					unlocked={
+						trait="mio_streamlined_inbound_processes"
+					}
+					unlocked={
+						trait="mio_expanded_outbound_stream"
+					}
+					unlocked={
+						trait="mio_quality_improvements"
+					}
+					unlocked={
+						trait="mio_standardized_components"
+					}
+					queued_trait={
+						trait="mio_new_picking_putaway_strategies"
+					}
+					queued_trait={
+						trait="mio_expert_practices"
+					}
+					allowed_policies={
+						mio_policy_general_ruthless_contracts
+						mio_policy_general_mechanical_genius
+						mio_policy_general_vertical_integration
+						mio_policy_general_experimental_development_teams
+						mio_policy_general_conscripted_workforce
+						mio_policy_land_armor_welding_specialists
+						mio_policy_land_factory_applied_camouflage
+						mio_policy_land_cutting_corners
+					}
+					variables={
+					}
+					flags={
+					}
+					history={
+						equipment={ id=3674 type=70 }
+						data={
+							units=121
+						}
+					}
+					history={
+						equipment={ id=3831 type=70 }
+						data={
+							units=350
+						}
+					}
+					history={
+						equipment={ id=3675 type=70 }
+						data={
+							units=3441
+						}
+					}
+					history={
+						equipment={ id=4266 type=70 }
+						data={
+							units=588
+						}
+					}
+					research_assign_cost=0.040
+					production_assign_cost=0.000
+					design_team_change_cost=2
+					add_mio_funds_gain_factor=1.000
+				}
+				SOV_okmo_organization={
+					id={ id=48 type=79 }
+					name=""
+					icon="GFX_idea_okmo"
+					research_bonus=0.040
+					task_capacity=0
+					funds=1640.276
+					size=6
+					points=0
+					unlocked={
+						trait="mio_simplified_parts_and_systems"
+					}
+					unlocked={
+						trait="mio_streamlined_inbound_processes"
+					}
+					unlocked={
+						trait="mio_expanded_outbound_stream"
+					}
+					unlocked={
+						trait="mio_quality_improvements"
+					}
+					unlocked={
+						trait="mio_mass_tank_production"
+					}
+					unlocked={
+						trait="mio_standardized_components"
+					}
+					queued_trait={
+						trait="mio_new_picking_putaway_strategies"
+					}
+					queued_trait={
+						trait="mio_expert_practices"
+					}
+					allowed_policies={
+						mio_policy_general_ruthless_contracts
+						mio_policy_general_mechanical_genius
+						mio_policy_general_vertical_integration
+						mio_policy_general_experimental_development_teams
+						mio_policy_general_conscripted_workforce
+					}
+					variables={
+					}
+					flags={
+					}
+					history={
+						equipment={ id=3675 type=70 }
+						data={
+							units=1842
+						}
+					}
+					history={
+						equipment={ id=1049 type=70 }
+						data={
+							units=877
+						}
+					}
+					research_assign_cost=0.040
+					production_assign_cost=0.000
+					design_team_change_cost=2
+					add_mio_funds_gain_factor=1.000
+				}
+				SOV_mytishchy_machine_building_plant_organization={
+					id={ id=49 type=79 }
+					name=""
+					icon="GFX_idea_SOV_mytishchy_machine_building_plant"
+					research_bonus=0.040
+					task_capacity=0
+					funds=2020.629
+					size=6
+					points=0
+					unlocked={
+						trait="mio_streamlined_inbound_processes"
+					}
+					unlocked={
+						trait="mio_expanded_outbound_stream"
+					}
+					unlocked={
+						trait="mio_quality_improvements"
+					}
+					unlocked={
+						trait="mio_scrap_metal_plants"
+					}
+					unlocked={
+						trait="mio_heavy_crane_factories"
+					}
+					unlocked={
+						trait="mio_refurbishment_plants"
+					}
+					queued_trait={
+						trait="mio_new_picking_putaway_strategies"
+					}
+					queued_trait={
+						trait="mio_expert_practices"
+					}
+					queued_trait={
+						trait="mio_standardize_turrets_and_hulls"
+					}
+					queued_trait={
+						trait="mio_advanced_forges_and_tools"
+					}
+					allowed_policies={
+						mio_policy_general_ruthless_contracts
+						mio_policy_general_mechanical_genius
+						mio_policy_general_vertical_integration
+						mio_policy_general_experimental_development_teams
+						mio_policy_general_conscripted_workforce
+					}
+					variables={
+					}
+					flags={
+					}
+					history={
+						equipment={ id=1051 type=70 }
+						data={
+							units=691
+						}
+					}
+					research_assign_cost=0.040
+					production_assign_cost=0.000
+					design_team_change_cost=2
+					add_mio_funds_gain_factor=1.000
+				}
+				SOV_kirov_organization={
+					id={ id=50 type=79 }
+					name=""
+					icon="GFX_idea_SOV_kirov"
+					research_bonus=0.040
+					task_capacity=0
+					funds=1516.073
+					size=7
+					points=1
+					unlocked={
+						trait="mio_streamlined_inbound_processes"
+					}
+					unlocked={
+						trait="mio_expanded_outbound_stream"
+					}
+					unlocked={
+						trait="mio_quality_improvements"
+					}
+					unlocked={
+						trait="mio_standardized_components"
+					}
+					unlocked={
+						trait="mio_heavy_parts_manufaturing"
+					}
+					unlocked={
+						trait="mio_heavy_steel_manufacturing"
+					}
+					queued_trait={
+						trait="mio_new_picking_putaway_strategies"
+					}
+					queued_trait={
+						trait="mio_expert_practices"
+					}
+					allowed_policies={
+						mio_policy_general_ruthless_contracts
+						mio_policy_general_mechanical_genius
+						mio_policy_general_vertical_integration
+						mio_policy_general_experimental_development_teams
+						mio_policy_general_conscripted_workforce
+						mio_policy_land_armor_welding_specialists
+						mio_policy_land_heavy_gantry_cranes
+						mio_policy_land_factory_applied_camouflage
+						mio_policy_land_cutting_corners
+					}
+					variables={
+					}
+					flags={
+					}
+					history={
+						equipment={ id=1053 type=70 }
+						data={
+							units=320
+						}
+					}
+					history={
+						equipment={ id=1051 type=70 }
+						data={
+							units=0
+						}
+					}
+					history={
+						equipment={ id=4787 type=70 }
+						data={
+							date="1940.6.26.1"
+							units=67
+						}
+					}
+					history={
+						equipment={ id=5377 type=70 }
+						data={
+							units=14
+						}
+					}
+					research_assign_cost=0.040
+					production_assign_cost=0.000
+					design_team_change_cost=2
+					add_mio_funds_gain_factor=1.000
+				}
+				SOV_izhorskiye_zavody_organization={
+					id={ id=51 type=79 }
+					name=""
+					icon="GFX_idea_izhorskiye_zavody"
+					research_bonus=0.040
+					task_capacity=0
+					funds=54.397
+					size=7
+					points=1
+					unlocked={
+						trait="mio_simplified_parts_and_systems"
+					}
+					unlocked={
+						trait="mio_streamlined_inbound_processes"
+					}
+					unlocked={
+						trait="mio_expanded_outbound_stream"
+					}
+					unlocked={
+						trait="mio_quality_improvements"
+					}
+					unlocked={
+						trait="mio_mass_tank_production"
+					}
+					unlocked={
+						trait="mio_standardized_components"
+					}
+					queued_trait={
+						trait="mio_new_picking_putaway_strategies"
+					}
+					queued_trait={
+						trait="mio_expert_practices"
+					}
+					queued_trait={
+						trait="mio_standardize_turrets_and_hulls"
+					}
+					queued_trait={
+						trait="mio_advanced_forges_and_tools"
+					}
+					allowed_policies={
+						mio_policy_general_ruthless_contracts
+						mio_policy_general_mechanical_genius
+						mio_policy_general_vertical_integration
+						mio_policy_general_experimental_development_teams
+						mio_policy_general_conscripted_workforce
+					}
+					variables={
+					}
+					flags={
+					}
+					history={
+						equipment={ id=3474 type=70 }
+						data={
+							units=1655
+						}
+					}
+					history={
+						equipment={ id=3473 type=70 }
+						data={
+							units=2709
+						}
+					}
+					research_assign_cost=0.040
+					production_assign_cost=0.000
+					design_team_change_cost=2
+					add_mio_funds_gain_factor=1.000
+				}
+				SOV_mig_design_bureau_organization={
+					id={ id=52 type=79 }
+					name=""
+					icon="GFX_idea_mig_design_bureau"
+					research_bonus=0.040
+					task_capacity=0
+					funds=353.000
+					size=5
+					points=0
+					unlocked={
+						trait="mio_simplified_parts_and_systems"
+					}
+					unlocked={
+						trait="mio_streamlined_inbound_processes"
+					}
+					unlocked={
+						trait="mio_expanded_outbound_stream"
+					}
+					unlocked={
+						trait="mio_quality_improvements"
+					}
+					unlocked={
+						trait="mio_standardized_components"
+					}
+					queued_trait={
+						trait="mio_new_picking_putaway_strategies"
+					}
+					queued_trait={
+						trait="mio_expert_practices"
+					}
+					queued_trait={
+						trait="mio_mass_plane_production"
+					}
+					queued_trait={
+						trait="mio_modular_construction"
+					}
+					queued_trait={
+						trait="mio_advanced_smelting_and_tools"
+					}
+					allowed_policies={
+						mio_policy_general_ruthless_contracts
+						mio_policy_general_mechanical_genius
+						mio_policy_general_vertical_integration
+						mio_policy_general_experimental_development_teams
+						mio_policy_general_conscripted_workforce
+					}
+					variables={
+					}
+					flags={
+					}
+					research_assign_cost=0.040
+					production_assign_cost=0.000
+					design_team_change_cost=2
+					add_mio_funds_gain_factor=1.000
+				}
+				SOV_yakovlev_design_bureau_organization={
+					id={ id=53 type=79 }
+					name=""
+					icon="GFX_idea_yakovlev_design_bureau"
+					research_bonus=0.040
+					task_capacity=0
+					funds=238.568
+					size=12
+					points=6
+					unlocked={
+						trait="mio_simplified_parts_and_systems"
+					}
+					unlocked={
+						trait="mio_streamlined_inbound_processes"
+					}
+					unlocked={
+						trait="mio_expanded_outbound_stream"
+					}
+					unlocked={
+						trait="mio_quality_improvements"
+					}
+					unlocked={
+						trait="mio_mass_plane_production"
+					}
+					unlocked={
+						trait="mio_standardized_components"
+					}
+					queued_trait={
+						trait="mio_new_picking_putaway_strategies"
+					}
+					queued_trait={
+						trait="mio_expert_practices"
+					}
+					queued_trait={
+						trait="mio_modular_construction"
+					}
+					queued_trait={
+						trait="mio_advanced_smelting_and_tools"
+					}
+					allowed_policies={
+						mio_policy_air_perfect_finish
+						mio_policy_air_modular_assembly
+						mio_policy_air_wind_tunnel_pioneers
+						mio_policy_air_propulsion_experimenters
+						mio_policy_general_ruthless_contracts
+						mio_policy_general_mechanical_genius
+						mio_policy_general_assembly_line_optimisers
+						mio_policy_general_vertical_integration
+						mio_policy_general_experimental_development_teams
+						mio_policy_general_conscripted_workforce
+					}
+					policy=mio_policy_air_modular_assembly
+					cooldown="1940.4.19.6"
+					variables={
+					}
+					flags={
+					}
+					history={
+						equipment={ id=1080 type=70 }
+						data={
+							units=0
+						}
+					}
+					history={
+						equipment={ id=1073 type=70 }
+						data={
+							units=1754
+						}
+					}
+					history={
+						equipment={ id=4295 type=70 }
+						data={
+							date="1939.5.30.1"
+							units=6440
+						}
+					}
+					history={
+						equipment={ id=5454 type=70 }
+						data={
+							date="1941.2.26.1"
+							units=45
+						}
+					}
+					research_assign_cost=0.040
+					production_assign_cost=0.000
+					design_team_change_cost=2
+					add_mio_funds_gain_factor=1.000
+				}
+				SOV_lavochkin_design_bureau_organization={
+					id={ id=54 type=79 }
+					name=""
+					icon="GFX_idea_lavochkin"
+					research_bonus=0.040
+					task_capacity=0
+					funds=5881.340
+					size=12
+					points=4
+					unlocked={
+						trait="mio_simplified_parts_and_systems"
+					}
+					unlocked={
+						trait="mio_streamlined_inbound_processes"
+					}
+					unlocked={
+						trait="mio_expanded_outbound_stream"
+					}
+					unlocked={
+						trait="mio_quality_improvements"
+					}
+					unlocked={
+						trait="mio_mass_plane_production"
+					}
+					unlocked={
+						trait="mio_dedicated_rd_division"
+					}
+					unlocked={
+						trait="mio_standardized_components"
+					}
+					unlocked={
+						trait="mio_gun_pioneers"
+					}
+					queued_trait={
+						trait="mio_new_picking_putaway_strategies"
+					}
+					queued_trait={
+						trait="mio_expert_practices"
+					}
+					queued_trait={
+						trait="mio_modular_construction"
+					}
+					queued_trait={
+						trait="mio_advanced_smelting_and_tools"
+					}
+					allowed_policies={
+						mio_policy_general_ruthless_contracts
+						mio_policy_general_mechanical_genius
+						mio_policy_general_vertical_integration
+						mio_policy_general_experimental_development_teams
+						mio_policy_general_conscripted_workforce
+					}
+					policy=mio_policy_general_experimental_development_teams
+					cooldown="1940.8.4.11"
+					variables={
+					}
+					flags={
+					}
+					history={
+						equipment={ id=1072 type=70 }
+						data={
+							units=591
+						}
+					}
+					history={
+						equipment={ id=3985 type=70 }
+						data={
+							units=310
+						}
+					}
+					history={
+						equipment={ id=5421 type=70 }
+						data={
+							date="1941.1.24.1"
+							units=397
+						}
+					}
+					history={
+						equipment={ id=4082 type=70 }
+						data={
+							date="1938.10.24.1"
+							units=754
+						}
+					}
+					history={
+						equipment={ id=4318 type=70 }
+						data={
+							date="1939.7.2.7"
+							units=5826
+						}
+					}
+					research_assign_cost=0.040
+					production_assign_cost=0.000
+					design_team_change_cost=2
+					add_mio_funds_gain_factor=1.000
+				}
+				SOV_ilyushin_design_bureau_organization={
+					id={ id=55 type=79 }
+					name=""
+					icon="GFX_idea_ilyushin_design_bureau"
+					research_bonus=0.040
+					task_capacity=0
+					funds=1018.490
+					size=5
+					points=0
+					unlocked={
+						trait="mio_simplified_parts_and_systems"
+					}
+					unlocked={
+						trait="mio_streamlined_inbound_processes"
+					}
+					unlocked={
+						trait="mio_expanded_outbound_stream"
+					}
+					unlocked={
+						trait="mio_quality_improvements"
+					}
+					unlocked={
+						trait="mio_standardized_components"
+					}
+					queued_trait={
+						trait="mio_new_picking_putaway_strategies"
+					}
+					queued_trait={
+						trait="mio_expert_practices"
+					}
+					queued_trait={
+						trait="mio_common_parts_usage"
+					}
+					queued_trait={
+						trait="mio_mass_plane_production"
+					}
+					queued_trait={
+						trait="mio_modular_construction"
+					}
+					queued_trait={
+						trait="mio_advanced_smelting_and_tools"
+					}
+					allowed_policies={
+						mio_policy_air_perfect_finish
+						mio_policy_air_modular_assembly
+						mio_policy_air_wind_tunnel_pioneers
+						mio_policy_air_propulsion_experimenters
+						mio_policy_general_ruthless_contracts
+						mio_policy_general_mechanical_genius
+						mio_policy_general_assembly_line_optimisers
+						mio_policy_general_vertical_integration
+						mio_policy_general_experimental_development_teams
+						mio_policy_general_conscripted_workforce
+					}
+					variables={
+					}
+					flags={
+					}
+					history={
+						equipment={ id=3822 type=70 }
+						data={
+							date="1937.10.4.9"
+							units=312
+						}
+					}
+					history={
+						equipment={ id=3821 type=70 }
+						data={
+							date="1937.10.2.1"
+							units=0
+						}
+					}
+					research_assign_cost=0.040
+					production_assign_cost=0.000
+					design_team_change_cost=2
+					add_mio_funds_gain_factor=1.000
+				}
+				SOV_okb_organization={
+					id={ id=56 type=79 }
+					name=""
+					icon="GFX_idea_okb"
+					research_bonus=0.040
+					task_capacity=0
+					funds=423.671
+					size=6
+					points=0
+					unlocked={
+						trait="mio_simplified_parts_and_systems"
+					}
+					unlocked={
+						trait="mio_streamlined_inbound_processes"
+					}
+					unlocked={
+						trait="mio_expanded_outbound_stream"
+					}
+					unlocked={
+						trait="mio_quality_improvements"
+					}
+					unlocked={
+						trait="mio_mass_plane_production"
+					}
+					unlocked={
+						trait="mio_standardized_components"
+					}
+					queued_trait={
+						trait="mio_new_picking_putaway_strategies"
+					}
+					queued_trait={
+						trait="mio_expert_practices"
+					}
+					allowed_policies={
+						mio_policy_air_perfect_finish
+						mio_policy_air_modular_assembly
+						mio_policy_air_wind_tunnel_pioneers
+						mio_policy_air_propulsion_experimenters
+						mio_policy_general_ruthless_contracts
+						mio_policy_general_mechanical_genius
+						mio_policy_general_assembly_line_optimisers
+						mio_policy_general_vertical_integration
+						mio_policy_general_experimental_development_teams
+						mio_policy_general_conscripted_workforce
+					}
+					variables={
+					}
+					flags={
+					}
+					history={
+						equipment={ id=1075 type=70 }
+						data={
+							units=777
+						}
+					}
+					research_assign_cost=0.040
+					production_assign_cost=0.000
+					design_team_change_cost=2
+					add_mio_funds_gain_factor=1.000
+				}
+				SOV_tupolev_design_bureau_organization={
+					id={ id=57 type=79 }
+					name=""
+					icon="GFX_idea_tupolev_design_bureau"
+					research_bonus=0.040
+					task_capacity=0
+					funds=583.320
+					size=10
+					points=1
+					unlocked={
+						trait="mio_simplified_parts_and_systems"
+					}
+					unlocked={
+						trait="mio_streamlined_inbound_processes"
+					}
+					unlocked={
+						trait="mio_expanded_outbound_stream"
+					}
+					unlocked={
+						trait="mio_quality_improvements"
+					}
+					unlocked={
+						trait="mio_mass_plane_production"
+					}
+					unlocked={
+						trait="mio_standardized_components"
+					}
+					unlocked={
+						trait="mio_heavy_aircraft_factories"
+					}
+					unlocked={
+						trait="mio_heavy_aluminium_manufacturing"
+					}
+					unlocked={
+						trait="mio_drop_hammer_alloy_straining"
+					}
+					queued_trait={
+						trait="mio_new_picking_putaway_strategies"
+					}
+					queued_trait={
+						trait="mio_expert_practices"
+					}
+					queued_trait={
+						trait="mio_modular_construction"
+					}
+					queued_trait={
+						trait="mio_advanced_smelting_and_tools"
+					}
+					allowed_policies={
+						mio_policy_air_perfect_finish
+						mio_policy_air_modular_assembly
+						mio_policy_air_wind_tunnel_pioneers
+						mio_policy_air_heavy_gantry_cranes
+						mio_policy_air_propulsion_experimenters
+						mio_policy_general_ruthless_contracts
+						mio_policy_general_mechanical_genius
+						mio_policy_general_assembly_line_optimisers
+						mio_policy_general_vertical_integration
+						mio_policy_general_experimental_development_teams
+						mio_policy_general_conscripted_workforce
+					}
+					variables={
+					}
+					flags={
+					}
+					history={
+						equipment={ id=4603 type=70 }
+						data={
+							units=340
+						}
+					}
+					history={
+						equipment={ id=1077 type=70 }
+						data={
+							units=0
+						}
+					}
+					history={
+						equipment={ id=3653 type=70 }
+						data={
+							units=2245
+						}
+					}
+					history={
+						equipment={ id=1078 type=70 }
+						data={
+							units=45
+						}
+					}
+					research_assign_cost=0.040
+					production_assign_cost=0.000
+					design_team_change_cost=2
+					add_mio_funds_gain_factor=1.000
+				}
+				SOV_tula_arms_plant_organization={
+					id={ id=58 type=79 }
+					name=""
+					icon="GFX_idea_tula_arms_plant"
+					research_bonus=0.050
+					task_capacity=0
+					funds=7580.379
+					size=14
+					points=4
+					unlocked={
+						trait="mio_common_parts_usage"
+					}
+					unlocked={
+						trait="mio_streamlined_inbound_processes"
+					}
+					unlocked={
+						trait="mio_expanded_outbound_stream"
+					}
+					unlocked={
+						trait="mio_quality_improvements"
+					}
+					unlocked={
+						trait="mio_dedicated_rd_division"
+					}
+					unlocked={
+						trait="mio_improved_ergonomics"
+					}
+					unlocked={
+						trait="mio_simplified_assembly_lines"
+					}
+					unlocked={
+						trait="mio_bolt_action_specialization"
+					}
+					unlocked={
+						trait="mio_diverse_ammunition_production"
+					}
+					unlocked={
+						trait="mio_strengthend_straps_and_triggers"
+					}
+					queued_trait={
+						trait="mio_new_picking_putaway_strategies"
+					}
+					queued_trait={
+						trait="mio_expert_practices"
+					}
+					queued_trait={
+						trait="mio_segregated_assembly_lines"
+					}
+					queued_trait={
+						trait="mio_advanced_barrel_forging"
+					}
+					allowed_policies={
+						mio_policy_general_ruthless_contracts
+						mio_policy_general_mechanical_genius
+						mio_policy_general_vertical_integration
+						mio_policy_general_experimental_development_teams
+						mio_policy_general_conscripted_workforce
+					}
+					variables={
+					}
+					flags={
+					}
+					history={
+						equipment={ id=1038 type=70 }
+						data={
+							units=1
+						}
+					}
+					history={
+						equipment={ id=3958 type=70 }
+						data={
+							date="1938.3.20.1"
+							units=14427
+						}
+					}
+					history={
+						equipment={ id=1037 type=70 }
+						data={
+							units=27430
+						}
+					}
+					history={
+						equipment={ id=3788 type=70 }
+						data={
+							date="1937.9.16.12"
+							units=253580
+						}
+					}
+					history={
+						equipment={ id=4577 type=70 }
+						data={
+							date="1940.3.21.1"
+							units=20696
+						}
+					}
+					history={
+						equipment={ id=1039 type=70 }
+						data={
+							units=50604
+						}
+					}
+					history={
+						equipment={ id=4410 type=70 }
+						data={
+							date="1939.11.7.1"
+							units=60543
+						}
+					}
+					history={
+						equipment={ id=5372 type=70 }
+						data={
+							date="1941.1.18.1"
+							units=5786
+						}
+					}
+					research_assign_cost=0.040
+					production_assign_cost=0.000
+					design_team_change_cost=2
+					add_mio_funds_gain_factor=1.000
+				}
+				SOV_kolomna_organization={
+					id={ id=59 type=79 }
+					name=""
+					icon="GFX_idea_kolomna"
+					research_bonus=0.050
+					task_capacity=0
+					funds=2295.617
+					size=11
+					points=5
+					unlocked={
+						trait="mio_streamlined_inbound_processes"
+					}
+					unlocked={
+						trait="mio_expanded_outbound_stream"
+					}
+					unlocked={
+						trait="mio_quality_improvements"
+					}
+					unlocked={
+						trait="mio_dedicated_rd_division"
+					}
+					unlocked={
+						trait="mio_pattern_web_equipment"
+					}
+					unlocked={
+						trait="mio_simplier_designs"
+					}
+					queued_trait={
+						trait="mio_new_picking_putaway_strategies"
+					}
+					queued_trait={
+						trait="mio_expert_practices"
+					}
+					queued_trait={
+						trait="mio_material_recycling"
+					}
+					queued_trait={
+						trait="mio_mass_assembly_lines"
+					}
+					allowed_policies={
+						mio_policy_general_ruthless_contracts
+						mio_policy_general_mechanical_genius
+						mio_policy_general_vertical_integration
+						mio_policy_general_experimental_development_teams
+						mio_policy_general_conscripted_workforce
+						mio_policy_land_heavy_gantry_cranes
+					}
+					policy=mio_policy_general_experimental_development_teams
+					cooldown="1940.9.19.4"
+					variables={
+					}
+					flags={
+					}
+					history={
+						equipment={ id=1040 type=70 }
+						data={
+							units=169014
+						}
+					}
+					history={
+						equipment={ id=3983 type=70 }
+						data={
+							units=1
+						}
+					}
+					history={
+						equipment={ id=1035 type=70 }
+						data={
+							units=0
+						}
+					}
+					research_assign_cost=0.040
+					production_assign_cost=0.000
+					design_team_change_cost=2
+					add_mio_funds_gain_factor=1.000
+				}
+				SOV_grabin_design_bureau_organization={
+					id={ id=60 type=79 }
+					name=""
+					icon="GFX_idea_gau"
+					research_bonus=0.050
+					task_capacity=0
+					funds=4646.195
+					size=12
+					points=6
+					unlocked={
+						trait="mio_common_parts_usage"
+					}
+					unlocked={
+						trait="mio_streamlined_inbound_processes"
+					}
+					unlocked={
+						trait="mio_expanded_outbound_stream"
+					}
+					unlocked={
+						trait="mio_quality_improvements"
+					}
+					unlocked={
+						trait="mio_simplified_assembly_lines"
+					}
+					unlocked={
+						trait="mio_mass_production_lines"
+					}
+					queued_trait={
+						trait="mio_new_picking_putaway_strategies"
+					}
+					queued_trait={
+						trait="mio_expert_practices"
+					}
+					queued_trait={
+						trait="mio_advanced_breach_forging"
+					}
+					queued_trait={
+						trait="mio_advanced_barrel_forging"
+					}
+					allowed_policies={
+						mio_policy_general_ruthless_contracts
+						mio_policy_general_mechanical_genius
+						mio_policy_general_vertical_integration
+						mio_policy_general_experimental_development_teams
+						mio_policy_general_conscripted_workforce
+					}
+					variables={
+					}
+					flags={
+					}
+					history={
+						equipment={ id=1045 type=70 }
+						data={
+							units=1917
+						}
+					}
+					history={
+						equipment={ id=3873 type=70 }
+						data={
+							units=8360
+						}
+					}
+					history={
+						equipment={ id=4287 type=70 }
+						data={
+							units=1768
+						}
+					}
+					history={
+						equipment={ id=1042 type=70 }
+						data={
+							units=1546
+						}
+					}
+					history={
+						equipment={ id=1043 type=70 }
+						data={
+							units=979
+						}
+					}
+					history={
+						equipment={ id=1046 type=70 }
+						data={
+							units=879
+						}
+					}
+					history={
+						equipment={ id=1041 type=70 }
+						data={
+							units=0
+						}
+					}
+					history={
+						equipment={ id=1044 type=70 }
+						data={
+							units=2035
+						}
+					}
+					history={
+						equipment={ id=3992 type=70 }
+						data={
+							units=16276
+						}
+					}
+					research_assign_cost=0.040
+					production_assign_cost=0.000
+					design_team_change_cost=2
+					add_mio_funds_gain_factor=1.000
+				}
+				SOV_gaz_organization={
+					id={ id=61 type=79 }
+					name=""
+					icon="GFX_idea_gaz"
+					research_bonus=0.050
+					task_capacity=0
+					funds=4251.997
+					size=9
+					points=3
+					unlocked={
+						trait="mio_simplified_parts_and_systems"
+					}
+					unlocked={
+						trait="mio_streamlined_inbound_processes"
+					}
+					unlocked={
+						trait="mio_expanded_outbound_stream"
+					}
+					unlocked={
+						trait="mio_quality_improvements"
+					}
+					unlocked={
+						trait="mio_truck_assembly_lines"
+					}
+					unlocked={
+						trait="mio_wood_gas_generator_production"
+					}
+					queued_trait={
+						trait="mio_new_picking_putaway_strategies"
+					}
+					queued_trait={
+						trait="mio_expert_practices"
+					}
+					queued_trait={
+						trait="mio_mass_automobile_production"
+					}
+					queued_trait={
+						trait="mio_advanced_suspension_construction"
+					}
+					allowed_policies={
+						mio_policy_general_ruthless_contracts
+						mio_policy_general_mechanical_genius
+						mio_policy_general_assembly_line_optimisers
+						mio_policy_general_vertical_integration
+						mio_policy_general_experimental_development_teams
+						mio_policy_general_conscripted_workforce
+						mio_policy_land_armor_welding_specialists
+						mio_policy_land_factory_applied_camouflage
+						mio_policy_land_cutting_corners
+					}
+					policy=mio_policy_general_assembly_line_optimisers
+					cooldown="1941.6.24.15"
+					variables={
+					}
+					flags={
+					}
+					history={
+						equipment={ id=1047 type=70 }
+						data={
+							units=36977
+						}
+					}
+					research_assign_cost=0.040
+					production_assign_cost=0.000
+					design_team_change_cost=2
+					add_mio_funds_gain_factor=1.000
+				}
+				SOV_nevskoye_design_bureau_organization={
+					id={ id=62 type=79 }
+					name=""
+					icon="GFX_idea_nevskoye_design_bureau"
+					research_bonus=0.040
+					task_capacity=0
+					funds=902.985
+					size=3
+					points=0
+					unlocked={
+						trait="mio_standardized_components"
+					}
+					unlocked={
+						trait="mio_internal_armour_belts"
+					}
+					unlocked={
+						trait="mio_modernized_heavy_ship_construction"
+					}
+					allowed_policies={
+						mio_policy_general_ruthless_contracts
+						mio_policy_general_mechanical_genius
+						mio_policy_general_vertical_integration
+						mio_policy_general_experimental_development_teams
+						mio_policy_general_conscripted_workforce
+						mio_policy_navy_welding_specialists
+						mio_policy_navy_space_efficient_design
+						mio_policy_navy_stable_platforms
+						mio_policy_navy_great_sea_keeping
+					}
+					variables={
+					}
+					flags={
+					}
+					history={
+						equipment={ id=1062 type=70 }
+						data={
+							units=2
+						}
+					}
+					research_assign_cost=0.040
+					production_assign_cost=0.000
+					design_team_change_cost=2
+					add_mio_funds_gain_factor=1.000
+				}
+				SOV_black_sea_shipyard_organization={
+					id={ id=63 type=79 }
+					name=""
+					icon="GFX_idea_SOV_black_sea_shipyard"
+					research_bonus=0.040
+					task_capacity=0
+					funds=108.907
+					size=3
+					points=0
+					unlocked={
+						trait="mio_standardized_components"
+					}
+					unlocked={
+						trait="mio_internal_armour_belts"
+					}
+					unlocked={
+						trait="mio_modernized_heavy_ship_construction"
+					}
+					allowed_policies={
+						mio_policy_general_ruthless_contracts
+						mio_policy_general_mechanical_genius
+						mio_policy_general_vertical_integration
+						mio_policy_general_experimental_development_teams
+						mio_policy_general_conscripted_workforce
+						mio_policy_navy_welding_specialists
+						mio_policy_navy_space_efficient_design
+						mio_policy_navy_stable_platforms
+						mio_policy_navy_great_sea_keeping
+					}
+					variables={
+					}
+					flags={
+					}
+					history={
+						equipment={ id=1063 type=70 }
+						data={
+							units=1
+						}
+					}
+					research_assign_cost=0.040
+					production_assign_cost=0.000
+					design_team_change_cost=2
+					add_mio_funds_gain_factor=1.000
+				}
+				SOV_sevastopol_marine_plant_organization={
+					id={ id=64 type=79 }
+					name=""
+					icon="GFX_idea_SOV_sevastopol_marine_plant"
+					research_bonus=0.040
+					task_capacity=0
+					funds=315.639
+					size=3
+					points=0
+					unlocked={
+						trait="mio_standardized_components"
+					}
+					unlocked={
+						trait="mio_internal_armour_belts"
+					}
+					unlocked={
+						trait="mio_streamlined_ship_construction"
+					}
+					allowed_policies={
+						mio_policy_general_ruthless_contracts
+						mio_policy_general_mechanical_genius
+						mio_policy_general_vertical_integration
+						mio_policy_general_experimental_development_teams
+						mio_policy_general_conscripted_workforce
+						mio_policy_navy_welding_specialists
+						mio_policy_navy_space_efficient_design
+						mio_policy_navy_stable_platforms
+						mio_policy_navy_great_sea_keeping
+					}
+					variables={
+					}
+					flags={
+					}
+					history={
+						equipment={ id=1062 type=70 }
+						data={
+							units=3
+						}
+					}
+					research_assign_cost=0.040
+					production_assign_cost=0.000
+					design_team_change_cost=2
+					add_mio_funds_gain_factor=1.000
+				}
+				SOV_baltic_sea_shipyard_organization={
+					id={ id=65 type=79 }
+					name=""
+					icon="GFX_idea_SOV_baltic_sea_shipyard"
+					research_bonus=0.040
+					task_capacity=0
+					funds=10.576
+					size=3
+					points=0
+					unlocked={
+						trait="mio_standardized_components"
+					}
+					unlocked={
+						trait="mio_prioritised_armour_layout"
+					}
+					unlocked={
+						trait="mio_mass_ship_construction"
+					}
+					allowed_policies={
+						mio_policy_general_ruthless_contracts
+						mio_policy_general_mechanical_genius
+						mio_policy_general_vertical_integration
+						mio_policy_general_experimental_development_teams
+						mio_policy_general_conscripted_workforce
+						mio_policy_navy_welding_specialists
+						mio_policy_navy_space_efficient_design
+						mio_policy_navy_stable_platforms
+						mio_policy_navy_great_sea_keeping
+					}
+					variables={
+					}
+					flags={
+					}
+					history={
+						equipment={ id=1057 type=70 }
+						data={
+							units=4
+						}
+					}
+					history={
+						equipment={ id=1054 type=70 }
+						data={
+							units=2
+						}
+					}
+					history={
+						equipment={ id=1058 type=70 }
+						data={
+							units=3
+						}
+					}
+					research_assign_cost=0.040
+					production_assign_cost=0.000
+					design_team_change_cost=2
+					add_mio_funds_gain_factor=1.000
+				}
+				SOV_rubin_design_bureau_organization={
+					id={ id=66 type=79 }
+					name=""
+					icon="GFX_idea_SOV_rubin_design_bureau"
+					research_bonus=0.040
+					task_capacity=0
+					funds=408.143
+					size=3
+					points=0
+					unlocked={
+						trait="mio_seperate_supply_chains"
+					}
+					unlocked={
+						trait="mio_submarine_pens"
+					}
+					unlocked={
+						trait="mio_mass_submarine_construction"
+					}
+					allowed_policies={
+						mio_policy_general_ruthless_contracts
+						mio_policy_general_mechanical_genius
+						mio_policy_general_vertical_integration
+						mio_policy_general_experimental_development_teams
+						mio_policy_general_conscripted_workforce
+					}
+					variables={
+					}
+					flags={
+					}
+					history={
+						equipment={ id=1069 type=70 }
+						data={
+							units=3
+						}
+					}
+					history={
+						equipment={ id=1071 type=70 }
+						data={
+							units=2
+						}
+					}
+					history={
+						equipment={ id=1070 type=70 }
+						data={
+							units=1
+						}
+					}
+					research_assign_cost=0.040
+					production_assign_cost=0.000
+					design_team_change_cost=2
+					add_mio_funds_gain_factor=1.000
+				}
+			}
+			policies={
+				mio_policy_air_perfect_finish={
+					cost=50
+					cooldown=182
+				}
+				mio_policy_air_modular_assembly={
+					cost=50
+					cooldown=182
+				}
+				mio_policy_air_wind_tunnel_pioneers={
+					cost=50
+					cooldown=182
+				}
+				mio_policy_air_heavy_gantry_cranes={
+					cost=50
+					cooldown=182
+				}
+				mio_policy_air_propulsion_experimenters={
+					cost=50
+					cooldown=182
+				}
+				mio_policy_general_ruthless_contracts={
+					cost=50
+					cooldown=182
+				}
+				mio_policy_general_mechanical_genius={
+					cost=50
+					cooldown=182
+				}
+				mio_policy_general_assembly_line_optimisers={
+					cost=50
+					cooldown=182
+				}
+				mio_policy_general_vertical_integration={
+					cost=50
+					cooldown=182
+				}
+				mio_policy_general_experimental_development_teams={
+					cost=50
+					cooldown=182
+				}
+				mio_policy_general_conscripted_workforce={
+					cost=50
+					cooldown=182
+				}
+				mio_policy_land_armor_welding_specialists={
+					cost=50
+					cooldown=182
+				}
+				mio_policy_land_heavy_gantry_cranes={
+					cost=50
+					cooldown=182
+				}
+				mio_policy_land_factory_applied_camouflage={
+					cost=50
+					cooldown=182
+				}
+				mio_policy_land_cutting_corners={
+					cost=50
+					cooldown=182
+				}
+				mio_policy_navy_welding_specialists={
+					cost=50
+					cooldown=182
+				}
+				mio_policy_navy_space_efficient_design={
+					cost=50
+					cooldown=182
+				}
+				mio_policy_navy_stable_platforms={
+					cost=50
+					cooldown=182
+				}
+				mio_policy_navy_great_sea_keeping={
+					cost=50
+					cooldown=182
+				}
+			}
+			max_factories_for_repair=0
+		}
