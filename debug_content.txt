@@ -1,0 +1,584 @@
+HOI4txt
+player="SOV"
+ideology=communism
+date=1940.11.1.1
+difficulty="normal"
+version="Countenance v1.16.4.3b29 (2c8a)"
+tutorial=no
+player_countries={
+	SOV={
+		user="LockouT199"
+		country_leader=yes
+		id=1
+	}
+}
+save_version=25
+dlcs=26623
+mods={
+	"Toolpack+" "WW's Quam's Map (FIXED)" "World Ablaze (9.1)" "World Ablaze CCP compatability"
+}
+session=16011
+next_trade_route_update_country_idx=4
+cached_active_trade_route_count=34871
+speed=4
+game_unique_seed=470042019
+game_unique_id="7aa58874-581d-41ff-974d-6435765b7e6e"
+multiplayer_random_seed=-1536371689
+multiplayer_random_count=383519651
+debug_current_ref_id=82265
+unit=6949
+order_index=8652
+front_index=8509
+theatre_index=131
+theater_group_index=1451
+military_deployment_line_index=4680
+military_deployment_conveyor_index=255
+equipment_variant_index=5264
+country_leader_index=1
+navy_id=45805
+land_combat_id=2875
+railway_gun_index={
+	id=5
+}
+industry_organisation_index={
+	id=3563
+}
+special_project_index={
+	id=0
+}
+program={
+	id=0
+}
+program_supply_consumer={
+	id=0
+}
+id_counter_store={
+	id_counter={
+		{
+			type=84
+			id=450
+		}
+		{
+			type=82
+			id=96
+		}
+		{
+			type=81
+			id=86
+		}
+	}
+}
+saved_event_target={
+	country="CHI"
+	name="WTT_current_china_leader"
+}
+saved_event_target={
+	country="PRC"
+	name="WTT_communist_china"
+}
+saved_event_target={
+	country="YUG"
+	name="yugoslavia_wedding_partner"
+}
+saved_event_target={
+	state=343
+	name="TUR_fundamentalist_state"
+}
+saved_event_target={
+	country="FRA"
+	name="free_france"
+}
+flags={
+	tpt_cw_fascist={
+		value=1
+		date=1936.1.1.12
+	}
+	MTG_naval_treaty_signatories={
+		value=3
+		date=1936.2.6.7
+	}
+	CHI_xian_fired={
+		value=1
+		date=1936.10.21.8
+	}
+	mtg_61_fired={
+		value=1
+		date=1936.5.1.1
+	}
+	tech_tree_startup_flag={
+		value=1
+		date=1936.1.1.12
+	}
+	world_ablaze={
+		value=1
+		date=1936.1.1.12
+	}
+	EAI_lend_lease={
+		value=1
+		date=1936.1.1.12
+	}
+	buy_gud={
+		value=1
+		date=1936.6.9.1
+	}
+	spanish_civil_war={
+		value=1
+		date=1936.7.17.16
+	}
+	olympics_1936={
+		value=1
+		date=1936.8.16.1
+	}
+	trotsky_exile_mexico={
+		value=1
+		date=1936.8.29.1
+	}
+	AAT_trotsky_in_mexico={
+		value=1
+		date=1936.11.12.1
+	}
+	TUR_saadabad_pact={
+		value=1
+		date=1937.2.24.1
+	}
+	hindenburg_destroyed={
+		value=1
+		date=1937.5.7.1
+	}
+	SPR_gold_reserves_flag={
+		value=1
+		date=1937.6.11.1
+	}
+	earhart_disappeared={
+		value=1
+		date=1937.7.2.1
+	}
+	japanese_china_showdown={
+		value=1
+		date=1937.7.8.1
+	}
+	second_sino_japanese_war_has_started={
+		value=1
+		date=1937.7.8.3
+	}
+	fall_of_beijing={
+		value=1
+		date=1937.7.14.1
+	}
+	fall_of_shanghai={
+		value=1
+		date=1937.8.24.1
+	}
+	CHI_yellow_river_flooded={
+		value=1
+		date=1937.9.15.15
+	}
+	SPR_anarchist_uprising_flag={
+		value=1
+		date=1937.9.24.1
+	}
+	fall_of_nanjing={
+		value=1
+		date=1937.11.13.1
+	}
+	joined_chi_SIC={
+		value=1
+		date=1938.1.6.2
+	}
+	SOV_fourth_international_fired={
+		value=1
+		date=1938.9.2.1
+	}
+	NOR_the_norwegian_queen_is_dead={
+		value=1
+		date=1938.11.21.1
+	}
+	CHI_unite_PRC={
+		value=1
+		date=1939.1.29.15
+	}
+	nationalist_victory={
+		value=1
+		date=1939.1.30.1
+	}
+	scw_over={
+		value=1
+		date=1939.1.30.1
+	}
+	SPR_franco_won={
+		value=1
+		date=1939.1.30.1
+	}
+	end_of_czechoslovakia={
+		value=1
+		date=1939.3.8.1
+	}
+	JAP_khalkhin_gol={
+		value=1
+		date=1939.3.15.14
+	}
+	trotsky_dead={
+		value=1
+		date=1940.8.2.1
+	}
+	sov_yes_pact={
+		value=1
+		date=1939.7.27.11
+	}
+	GER_has_started_war={
+		value=1
+		date=1939.9.1.6
+	}
+	invade_poland_question={
+		value=1
+		date=1939.9.1.6
+	}
+	ww2_western_europe_flag={
+		value=1
+		date=1940.10.29.6
+	}
+	LoN_disbanded_flag={
+		value=1
+		date=1939.9.15.18
+	}
+	fall_of_warsaw_ger={
+		value=1
+		date=1939.10.3.1
+	}
+	mr_honored={
+		value=1
+		date=1939.10.16.1
+	}
+	SOV_winter_war_flag={
+		value=1
+		date=1939.12.3.9
+	}
+	flag_mexico_embargo_has_incited_cedillo={
+		value=1
+		date=1939.12.8.1
+	}
+	SOV_ww_over={
+		value=1
+		date=1939.12.19.4
+	}
+	fall_of_paris_ger={
+		value=1
+		date=1940.6.12.1
+	}
+	achievement_france_surrender={
+		value=1
+		date=1940.6.23.1
+	}
+	fall_of_france={
+		value=1
+		date=1940.6.23.1
+	}
+	the_fall_of_france_global_flag={
+		value=1
+		date=1940.6.23.2
+	}
+	FRA_already_surrendered={
+		value=1
+		date=1940.6.24.1
+	}
+	HUN_transylvania_arbitration={
+		value=1
+		date=1940.7.11.7
+	}
+	tripartite_pact_signed={
+		value=1
+		date=1940.9.27.13
+	}
+}
+gameplaysettings={
+	difficulty="normal"
+	historical=1
+}
+start_date=1936.1.1.12
+difficulty_settings={ }
+game_rules={ }
+id={
+	id=82265
+	type=4713
+}
+fired_event_names={
+	id="eng_armor.905"
+	id="chi_armor.819"
+	id="jap_armor.905"
+	id="eng_armor.620"
+	id="afo_news_trigger.4"
+	id="eng_armor.909"
+	id="BBA_switzerland.95"
+	id="ita_armor.910"
+	id="den_armor.6"
+	id="ger_armor.945"
+	id="ita_armor.914"
+	id="pol_armor.903"
+	id="fra_armor.901"
+	id="BBA_italy_missiolinis.22"
+	id="spa_armor.903"
+	id="france.21"
+	id="jap_armor.003"
+	id="usa_armor.942"
+	id="EAI_C.21"
+	id="news.54"
+	id="ita_armor.905"
+	id="pol_armor.904"
+	id="irq_armor.001"
+	id="jap_armor.930"
+	id="jap_armor.940"
+	id="ita_armor.916"
+	id="ast_armor.815"
+	id="ger_armor.902"
+	id="ita_armor.601"
+	id="chi_armor.4"
+	id="lar_portugal_navy_mutiny.1"
+	id="jap_armor.935"
+	id="ger_armor.929"
+	id="bel_armor.801"
+	id="eng_armor.013"
+	id="ast_armor.1"
+	id="spa_armor.901"
+	id="gre_focus.001"
+	id="man_armor.602"
+	id="fra_armor.006"
+	id="ger_armor.999"
+	id="ast_armor.2"
+	id="fin_armor.902"
+	id="jap_armor.924"
+	id="spa_armor.801"
+	id="ger_armor.820"
+	id="chi_armor.910"
+	id="nzl_armor.01"
+	id="ger_armor.907"
+	id="fra_armor.819"
+	id="hun_armor.10"
+	id="usa_armor.902"
+	id="britain.24"
+	id="ita_armor.001"
+	id="sov_armor.603"
+	id="political.7"
+	id="tfv_new_zealand.7"
+	id="fra_armor.804"
+	id="ger_armor.004"
+	id="panay_incident.1"
+	id="usa_armor.803"
+	id="fra_armor.001"
+	id="eng_armor.834"
+	id="EAI_C.61"
+	id="eng_armor.836"
+	id="fin_armor.906"
+	id="sia_armor.901"
+	id="jap_armor.001"
+	id="rom_armor.3"
+	id="jap_armor.601"
+	id="ger_armor.911"
+	id="eng_armor.944"
+	id="fra_armor.910"
+	id="gre_armor.602"
+	id="chi_armor.909"
+	id="eng_armor.908"
+	id="pol_armor.905"
+	id="chi_armor.3"
+	id="chi_armor.813"
+	id="poland.25"
+	id="ven_armor.05"
+	id="saf_armor.805"
+	id="usa_armor.602"
+	id="bul_armor.1"
+	id="sov_armor.819"
+	id="EAI_C.60"
+	id="can_armor.904"
+	id="nzl_armor.803"
+	id="jap_armor.920"
+	id="eng_armor.901"
+	id="saf_armor.101"
+	id="mexico.16"
+	id="fra_armor.004"
+	id="ger_armor.857"
+	id="fin_armor.905"
+	id="swe_armor.900"
+	id="eng_armor.924"
+	id="pol_armor.902"
+	id="ger_armor.905"
+	id="mexico.27"
+	id="eng_armor.011"
+	id="EAI_C.62"
+	id="chi_armor.2"
+	id="ger_armor.602"
+	id="rom_armor.1"
+	id="nep_armor.601"
+	id="ger_armor.901"
+	id="irq_armor.901"
+	id="jap_armor.604"
+	id="gre_armor.001"
+	id="EAI_C.75"
+	id="jap_armor.942"
+	id="AAT_norway.1"
+	id="irq_armor.810"
+	id="can_armor.101"
+	id="fra_armor.823"
+	id="eng_armor.623"
+	id="spa_armor.805"
+	id="irq_armor.601"
+	id="jap_armor.934"
+	id="fra_armor.606"
+	id="ita_armor.908"
+	id="eng_armor.621"
+	id="prc_armor.001"
+	id="eng_armor.864"
+	id="chi_armor.905"
+	id="raj_armor.101"
+	id="ger_armor.906"
+	id="ger_armor.603"
+	id="ita_armor.904"
+	id="usa_armor.814"
+	id="EAI_C.71"
+	id="aus_armor.100"
+	id="eng_armor.922"
+	id="jap_armor.904"
+	id="gre_focus.002"
+	id="BBA_switzerland.3"
+	id="man_armor.601"
+	id="usa_armor.901"
+	id="eng_armor.833"
+	id="lar_spain.9"
+	id="rom_armor.818"
+	id="chi_armor.902"
+	id="fra_armor.809"
+	id="ita_armor.909"
+	id="spa_armor.1"
+	id="bul_armor.2"
+	id="AAT_finland_political.04"
+	id="fra_armor.602"
+	id="eng_armor.910"
+	id="chi_armor.904"
+	id="jap_armor.602"
+	id="fra_armor.900"
+	id="jap_armor.921"
+	id="jap_armor.936"
+	id="sov_armor.999"
+	id="news.51"
+	id="prc_armor.906"
+	id="usa_armor.1000"
+	id="bel_armor.802"
+	id="fra_armor.604"
+	id="afo_event.901"
+	id="can_armor.901"
+	id="germany.14"
+	id="jap_armor.832"
+	id="eng_armor.906"
+	id="eng_armor.003"
+	id="usa_armor.944"
+	id="ita_armor.901"
+	id="fin_armor.909"
+	id="chi_armor.903"
+	id="EAI_C.82"
+	id="man_armor.605"
+	id="eng_armor.001"
+	id="chi_armor.812"
+	id="jap_armor.006"
+	id="ita_armor.603"
+	id="fin_armor.910"
+	id="usa_armor.015"
+	id="ita_armor.604"
+	id="swe_armor.001"
+	id="nzl_armor.02"
+	id="jap_armor.937"
+	id="jap_armor.929"
+	id="france.10"
+	id="ger_armor.851"
+	id="por_armor.901"
+	id="bul_armor.901"
+	id="NSB_soviet_paranoia_system_events.01"
+	id="fra_armor.008"
+	id="bftb_bulgaria_factions.31"
+	id="afo_event.13"
+	id="france.101"
+	id="MTG_naval_treaty.10"
+	id="usa_armor.815"
+	id="jap_armor.816"
+	id="fin_armor.908"
+	id="bul_armor.902"
+	id="news.50"
+	id="fra_armor.914"
+	id="bel_armor.001"
+	id="hun_armor.802"
+	id="ita_armor.002"
+	id="ger_armor.003"
+	id="lar_spain.1"
+	id="ita_armor.902"
+	id="eng_armor.903"
+	id="eng_armor.622"
+	id="ita_armor.602"
+	id="cze_armor.10"
+	id="EAI_C.80"
+	id="EAI_C.19"
+	id="irq_armor.809"
+	id="sia_armor.001"
+	id="fra_armor.909"
+	id="fra_armor.002"
+	id="chi_armor.1"
+	id="hun_armor.902"
+	id="ast_armor.4"
+	id="lar_spain.90"
+	id="ger_armor.001"
+	id="BBA_italy_missiolinis.21"
+	id="fra_armor.817"
+	id="AAT_Sweden_flashpoints.30"
+	id="BBA_italy_missiolinis.20"
+	id="nzl_armor.801"
+	id="afo_event.903"
+	id="bul_armor.801"
+	id="ita_armor.903"
+	id="france.38"
+	id="prc_armor.901"
+	id="iceland_events.5"
+	id="BBA_italy_missiolinis.03_north"
+	id="france.16"
+	id="fra_armor.911"
+	id="BBA_switzerland.96"
+	id="nep_armor.001"
+	id="jap_armor.903"
+	id="cze_armor.001"
+	id="ger_armor.898"
+	id="rom_armor.2"
+	id="britain.16"
+	id="tur_armor.001"
+	id="bel_armor.601"
+	id="DOD_yugoslavia.34"
+	id="tur_armor.601"
+	id="afo_event.902"
+	id="AAT_MIO_events.1"
+	id="usa_armor.802"
+	id="eng_armor.831"
+	id="usa_armor.962"
+	id="eng_armor.610"
+	id="pol_armor.10"
+	id="jap_armor.906"
+	id="ita_armor.906"
+	id="eng_armor.801"
+	id="afo_event.1"
+	id="ger_armor.909"
+	id="fin_armor.901"
+	id="ger_armor.903"
+	id="usa_armor.800"
+	id="lar_spain.53"
+	id="ger_armor.002"
+	id="chi_armor.842"
+	id="swi_armor.1"
+	id="eng_armor.626"
+	id="sov_armor.859"
+	id="den_armor.1"
+	id="gre_armor.601"
+	id="pol_armor.901"
+	id="britain.22"
+	id="chi_armor.906"
+	id="man_armor.604"
+	id="spa_armor.910"
+	id="eng_armor.923"
+	id="mexico.17"
+	id="eng_armor.900"
+	id="usa_armor.935"
+	id="ita_armor.911"
+	id="

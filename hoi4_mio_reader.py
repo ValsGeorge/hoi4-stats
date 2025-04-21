@@ -703,16 +703,37 @@ class HOI4MIOReader:
                     with open(readable_path, 'r', encoding=encoding, errors='ignore') as file:
                         # Read first few lines (where date is typically located)
                         header = file.read(1000)
-                        date_match = re.search(r'date\s*=\s*"([^"]+)"', header)
-                        if date_match:
-                            return date_match.group(1)
-                except:
+                        
+                        # Try different date patterns that might be in the save file
+                        date_patterns = [
+                            r'date\s*=\s*"([^"]+)"',  # Standard date format
+                            r'date\s*=\s*(\d{4}\.\d{1,2}\.\d{1,2})',  # Date without quotes
+                            r'date\s*=\s*(\d{4})',  # Just the year
+                            r'date\s*=\s*(\d{4}\.\d{1,2})',  # Year and month
+                        ]
+                        
+                        for pattern in date_patterns:
+                            date_match = re.search(pattern, header)
+                            if date_match:
+                                return date_match.group(1)
+                        
+                        # If no date found in the first 1000 characters, try reading more
+                        file.seek(0)
+                        header = file.read(5000)
+                        for pattern in date_patterns:
+                            date_match = re.search(pattern, header)
+                            if date_match:
+                                return date_match.group(1)
+                except Exception as e:
+                    logger.debug(f"Error reading file with {encoding} encoding: {str(e)}")
                     continue
             
-            # If we couldn't find a date, use filename as fallback
-            return os.path.basename(file_path)
-        except:
-            return os.path.basename(file_path)
+            # If we couldn't find a date, use a generic placeholder
+            logger.warning(f"Could not extract date from {file_path}")
+            return "Unknown Date"
+        except Exception as e:
+            logger.error(f"Error extracting save date: {str(e)}")
+            return "Unknown Date"
     
     def extract_balanced_block(self, content, start_pos):
         """Extract a block enclosed in balanced curly braces"""
