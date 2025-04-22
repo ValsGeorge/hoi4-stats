@@ -882,28 +882,22 @@ class HOI4MIOReader:
                     
                     # Get equipment mappings from the file
                     readable_path = self.melt_hoi4_save(file_path) if self.use_melt_var.get() else file_path
+                    print("DEBUG: About to get equipment mappings")
                     new_mappings = find_equipment_mappings(readable_path)
-                    print(f"Found {len(new_mappings)} equipment mappings in {os.path.basename(file_path)}")
+                    print(f"DEBUG: Got {len(new_mappings)} new mappings")
                     
                     # Print all mappings for debugging
-                    print("ALL EQUIPMENT MAPPINGS:")
-                    for name, (id_val, type_val) in new_mappings.items():
-                        print(f"  {name} -> (ID:{id_val}, Type:{type_val})")
+                    # print("DEBUG: NEW MAPPINGS:")
+                    # for name, (id_val, type_val) in new_mappings.items():
+                    #     print(f"DEBUG: {name} -> (ID:{id_val}, Type:{type_val})")
                     
                     # Update the mappings
+                    print(f"DEBUG: Current mappings count before update: {len(self.equipment_mappings)}")
                     self.equipment_mappings.update(new_mappings)
-                    print(f"Total mappings after update: {len(self.equipment_mappings)}")
-                    if new_mappings:
-                        # Log a few sample mappings
-                        sample_items = list(new_mappings.items())[:5]
-                        logger.info(f"Sample mappings: {sample_items}")
-                        
-                        # Log Soviet equipment mappings
-                        sov_mappings = {k: v for k, v in new_mappings.items() if 'sov' in k.lower()}
-                        if sov_mappings:
-                            logger.info(f"Soviet mappings found: {sov_mappings}")
-                    else:
-                        logger.warning("No equipment mappings found in file!")
+                    print(f"DEBUG: Total mappings after update: {len(self.equipment_mappings)}")
+                    print("DEBUG: ALL MAPPINGS AFTER UPDATE:")
+                    for name, (id_val, type_val) in self.equipment_mappings.items():
+                        print(f"DEBUG: {name} -> (ID:{id_val}, Type:{type_val})")
                     
                     # Create a placeholder for this save's data in the comparison structure
                     if save_date not in self.all_save_data:
@@ -927,10 +921,11 @@ class HOI4MIOReader:
                                     total_orgs += 1
                                     
                                 # Add to regular tree view with save date
+                                display_text = f"{entry.get('equipment_name', 'Unknown')} (ID:{entry['equipment_id']}, Type:{entry['equipment_type']})"
                                 self.tree.insert("", tk.END, values=(
                                     save_date,
                                     entry["org_name"],
-                                    f"ID:{entry['equipment_id']} (Type:{entry['equipment_type']})",
+                                    display_text,
                                     entry["date"],
                                     entry["units"]
                                 ))
@@ -947,12 +942,16 @@ class HOI4MIOReader:
                             self.status_var.set(f"Cache error: {str(e)}. Re-processing file.")
                     
                     # Direct scan for Soviet MIOs
+                    print("DEBUG: Starting MIO scan")
                     mios_found = self.direct_scan_for_mios(file_path)
+                    print(f"DEBUG: Found {len(mios_found)} MIOs")
                     
                     if mios_found:
+                        print("DEBUG: Processing found MIOs")
                         all_entries = []
                         
                         for org_name, history_entries in mios_found.items():
+                            print(f"DEBUG: Processing org: {org_name}")
                             # Get a display name for the organization
                             display_name = org_name.replace("SOV_", "").replace("_organization", "").replace("_", " ").title()
                             
@@ -965,42 +964,43 @@ class HOI4MIOReader:
                             
                             # Add history entries to the tree
                             if history_entries:
+                                print(f"DEBUG: Processing {len(history_entries)} history entries")
                                 for entry in history_entries:
                                     # Get equipment name if available
                                     equip_id = entry.get("equipment_id", "N/A")
                                     equip_type = entry.get("equipment_type", "N/A")
                                     
-                                    # Print the equipment ID and type we're looking for
-                                    print(f"Looking for equipment: ID={equip_id}, Type={equip_type}")
+                                    print(f"DEBUG: Processing equipment ID={equip_id}, Type={equip_type}")
                                     
                                     # Convert to integers for comparison
                                     try:
                                         equip_id_int = int(equip_id)
                                         equip_type_int = int(equip_type)
+                                        print(f"DEBUG: Converted to integers: ID={equip_id_int}, Type={equip_type_int}")
                                         
-                                        # Look up equipment name by ID and type
                                         equip_name = "Unknown"
                                         
-                                        # Print all mappings for this ID
-                                        print(f"All mappings with ID {equip_id_int}:")
+                                        # Look up equipment name by ID and type
                                         for name, (id_val, type_val) in self.equipment_mappings.items():
-                                            if id_val == equip_id_int:
-                                                print(f"  {name} -> (ID:{id_val}, Type:{type_val})")
-                                                if type_val == equip_type_int:
-                                                    equip_name = name
-                                                    print(f"  FOUND MATCH: {name}")
+                                            if id_val == equip_id_int and type_val == equip_type_int:
+                                                equip_name = name
+                                                print(f"DEBUG: Found exact match: {name}")
+                                                break
                                         
                                         # If not found, try to find by ID only
                                         if equip_name == "Unknown":
+                                            print("DEBUG: No exact match, trying ID only")
                                             for name, (id_val, type_val) in self.equipment_mappings.items():
                                                 if id_val == equip_id_int:
                                                     equip_name = name
-                                                    print(f"  FOUND MATCH BY ID ONLY: {name}")
+                                                    print(f"DEBUG: Found ID-only match: {name}")
                                                     break
-                                    except ValueError:
-                                        print(f"Could not convert ID or type to integer: ID={equip_id}, Type={equip_type}")
-                                    
-                                    print(f"Final equipment name: {equip_name}")
+                                        
+                                        print(f"DEBUG: Final equipment name: {equip_name}")
+                                        
+                                    except ValueError as e:
+                                        print(f"DEBUG: Error converting to integers: {str(e)}")
+                                        equip_name = "Unknown"
                                     
                                     # Create an entry for our data structure
                                     entry_data = {
@@ -1024,9 +1024,10 @@ class HOI4MIOReader:
                                     
                                     # Add to tree view with save date and equipment name
                                     display_text = f"{equip_name} (ID:{equip_id}, Type:{equip_type})" if equip_name != "Unknown" else f"ID:{equip_id}, Type:{equip_type}"
-                                    print(f"Displaying in tree: {display_text}")
+                                    print(f"DEBUG: Display text: {display_text}")
                                     
                                     # Insert into tree view
+                                    print("DEBUG: Inserting into tree")
                                     item = self.tree.insert("", tk.END, values=(
                                         save_date,
                                         display_name,
@@ -1034,10 +1035,6 @@ class HOI4MIOReader:
                                         entry.get("date", "Initial"),
                                         entry.get("units", "0")
                                     ))
-                                    
-                                    # Verify the item was inserted correctly
-                                    item_values = self.tree.item(item)['values']
-                                    print(f"Inserted item values: {item_values}")
                                     
                                     # Also store for comparison view
                                     self.all_save_data[save_date][display_name].append(entry_data)
@@ -1184,19 +1181,13 @@ class HOI4MIOReader:
                         
                         display_text = f"{equip_name} (ID:{equipment_id}, Type:{equipment_type})" if equip_name != "Unknown" else f"ID:{equipment_id}, Type:{equipment_type}"
                         print(f"Displaying in comparison tree: {display_text}")
-                        
-                        # Insert into comparison tree
-                        item = self.comparison_tree.insert(save_node, tk.END, text="", values=(
+                        self.comparison_tree.insert(save_node, tk.END, text="", values=(
                             save_date,
                             display_text,
                             prod_date,
                             units,
                             change
                         ))
-                        
-                        # Verify the item was inserted correctly
-                        item_values = self.comparison_tree.item(item)['values']
-                        print(f"Inserted comparison item values: {item_values}")
                 else:
                     # Organization doesn't exist in this save
                     self.comparison_tree.insert(org_node, tk.END, text=save_date, values=(
