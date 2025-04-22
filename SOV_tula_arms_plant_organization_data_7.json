@@ -1,0 +1,36 @@
+{
+  "id": {
+    "id": "58",
+    "type": "79"
+  },
+  "name": "",
+  "icon": "GFX_idea_tula_arms_plant",
+  "research_bonus": "0.05",
+  "task_capacity": "0",
+  "funds": "7711.91",
+  "size": "13",
+  "points": "3",
+  "unlocked": {
+    "trait": "mio_strengthend_straps_and_triggers"
+  },
+  "queued_trait": {
+    "trait": "mio_advanced_barrel_forging"
+  },
+  "allowed_policies": "mio_policy_general_conscripted_workforce",
+  "variables": {},
+  "flags": {},
+  "history": {
+    "equipment": {
+      "id": "4410",
+      "type": "70"
+    },
+    "data": {
+      "date": "1939.11.7.1",
+      "units": "47227"
+    }
+  },
+  "research_assign_cost": "0.04",
+  "production_assign_cost": "0",
+  "design_team_change_cost": "2",
+  "add_mio_funds_gain_factor": "1"
+}
