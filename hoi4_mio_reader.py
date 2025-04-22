@@ -14,6 +14,7 @@ import datetime
 import sys
 import uuid
 from equipment_name_finder import find_equipment_mappings
+from src.utils.melter import melt_save_file, is_binary_file, ensure_melted_saves_dir
 
 # Create logs directory if it doesn't exist
 logs_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), "logs")
@@ -191,17 +192,13 @@ class HOI4MIOReader:
     def melt_hoi4_save(self, file_path, save_permanently=False):
         """Use melt.exe to convert binary HOI4 saves to readable format"""
         try:
-            # Skip if not using melt or if file appears to be text already
+            # Skip if not using melt
             if not self.use_melt_var.get():
                 logger.info(f"Melt disabled by user preference for {file_path}")
                 return file_path
             
-            # Check if file is likely binary (peek at first few bytes)
-            with open(file_path, 'rb') as f:
-                header = f.read(10)
-                is_text = all(b >= 32 and b <= 126 or b in (9, 10, 13) for b in header)
-            
-            if is_text:
+            # Check if file is binary
+            if not is_binary_file(file_path):
                 logger.info(f"File appears to be text already: {file_path}")
                 return file_path  # Already readable text
             
@@ -220,130 +217,19 @@ class HOI4MIOReader:
                 output_file = os.path.join(self.temp_dir, os.path.basename(file_path) + ".melted")
                 logger.info(f"Will save melted file temporarily to: {output_file}")
             
-            # Check if melt.exe exists in the current directory
-            melt_path = os.path.abspath("melt.exe")  # Get absolute path to melt.exe in current directory
-            if not os.path.exists(melt_path):
-                logger.debug(f"melt.exe not found in current directory: {melt_path}")
-                melt_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "melt.exe")  # Script directory
-                if not os.path.exists(melt_path):
-                    logger.debug(f"melt.exe not found in script directory: {melt_path}")
-                    # Try one more location - user's PATH
-                    self.status_var.set("Checking system PATH for melt.exe...")
-                    self.root.update_idletasks()
-                    
-                    # Check if it's accessible via PATH
-                    from shutil import which
-                    melt_in_path = which("melt.exe") or which("melt")
-                    if melt_in_path:
-                        melt_path = melt_in_path
-                        logger.info(f"Found melt.exe in PATH: {melt_path}")
-                    else:
-                        error_msg = "Error: melt.exe not found in application directory or PATH"
-                        logger.error(error_msg)
-                        self.status_var.set(error_msg)
-                        return file_path  # Return original path if melt.exe not found
+            # Melt the file using the melter module
+            success, melted_path = melt_save_file(file_path, output_file)
             
-            logger.info(f"Using melt.exe at: {melt_path}")
-            self.status_var.set(f"Found melt.exe at: {melt_path}")
-            self.root.update_idletasks()
-            
-            # Run melt.exe - using proper subcommand and flags based on Java implementation
-            try:
-                # Create temporary file path with no spaces
-                # Copy source file to a temp location without spaces in the path
-                temp_input_file = os.path.join(tempfile.gettempdir(), f"hoi4_melt_input_{uuid.uuid4().hex}.hoi4")
-                temp_output_file = os.path.join(tempfile.gettempdir(), f"hoi4_melt_output_{uuid.uuid4().hex}.txt")
-                
-                # Copy original file to temp location
-                logger.info(f"Copying file to temp location: {temp_input_file}")
-                shutil.copy2(file_path, temp_input_file)
-                
-                # Fix file paths - convert forward slashes to backslashes for Windows
-                win_melt_path = os.path.normpath(melt_path).replace('/', '\\')
-                win_temp_input = os.path.normpath(temp_input_file).replace('/', '\\')
-                win_temp_output = os.path.normpath(temp_output_file).replace('/', '\\')
-                
-                # Create a temporary batch file to run the command
-                batch_file = os.path.join(tempfile.gettempdir(), f"run_melt_{uuid.uuid4().hex}.bat")
-                with open(batch_file, 'w') as f:
-                    # The command in batch format
-                    f.write(f'@echo off\n')
-                    f.write(f'"{win_melt_path}" melt --unknown-key stringify --to-stdout "{win_temp_input}" > "{win_temp_output}"\n')
-                    f.write(f'exit %ERRORLEVEL%\n')
-                
-                # Log the batch file contents
-                logger.info(f"Created batch file: {batch_file}")
-                with open(batch_file, 'r') as f:
-                    logger.info(f"Batch file contents:\n{f.read()}")
-                
-                # Run the batch file
-                logger.info(f"Running batch file: {batch_file}")
-                self.status_var.set(f"Running batch file to melt save...")
-                self.root.update_idletasks()
-                
-                result = subprocess.run(batch_file, shell=True, capture_output=True, text=True)
-                
-                # Log detailed subprocess results
-                logger.debug(f"Return code: {result.returncode}")
-                logger.debug(f"STDOUT: {result.stdout}")
-                logger.debug(f"STDERR: {result.stderr}")
-                
-                # Check if there was an error code (accept both 0 and 1 as success based on Java code)
-                if result.returncode != 0 and result.returncode != 1:
-                    error_msg = f"Melt.exe returned error code {result.returncode}. Error: {result.stderr}"
-                    logger.error(error_msg)
-                    self.status_var.set(error_msg)
-                    self.root.update_idletasks()
-                    
-                    # Clean up temp files
-                    try:
-                        os.remove(temp_input_file)
-                        os.remove(batch_file)
-                        if os.path.exists(temp_output_file):
-                            os.remove(temp_output_file)
-                    except Exception as e:
-                        logger.warning(f"Error cleaning up temp files: {str(e)}")
-                        
-                    return file_path
-                
-                # If the temp output file exists, copy it to the final destination
-                if os.path.exists(temp_output_file) and os.path.getsize(temp_output_file) > 0:
-                    logger.info(f"Melting successful. Copying from temp file to final destination: {output_file}")
-                    shutil.copy2(temp_output_file, output_file)
-                    
-                    # Clean up temp files
-                    try:
-                        os.remove(temp_input_file)
-                        os.remove(temp_output_file)
-                        os.remove(batch_file)
-                    except Exception as e:
-                        logger.warning(f"Error cleaning up temp files: {str(e)}")
-                    
-                    if not save_permanently:
-                        self.melted_files.append(output_file)  # Add to cleanup list only if temporary
-                    success_msg = f"Successfully melted: {os.path.basename(file_path)}"
-                    logger.info(success_msg)
-                    self.status_var.set(success_msg)
-                    return output_file
-                else:
-                    error_msg = f"Melt didn't produce output. Stderr: {result.stderr}"
-                    logger.error(error_msg)
-                    logger.error(f"Expected output file {temp_output_file} not found or empty")
-                    self.status_var.set(error_msg)
-                    
-                    # Clean up temp files
-                    try:
-                        os.remove(temp_input_file)
-                        os.remove(batch_file)
-                        if os.path.exists(temp_output_file):
-                            os.remove(temp_output_file)
-                    except Exception as e:
-                        logger.warning(f"Error cleaning up temp files: {str(e)}")
-                        
-                    return file_path
-            except Exception as e:
-                error_msg = f"Error executing melt.exe: {str(e)}"
-                logger.exception(error_msg)
+            if success:
+                if not save_permanently:
+                    self.melted_files.append(melted_path)  # Add to cleanup list only if temporary
+                success_msg = f"Successfully melted: {os.path.basename(file_path)}"
+                logger.info(success_msg)
+                self.status_var.set(success_msg)
+                return melted_path
+            else:
+                error_msg = f"Failed to melt file: {os.path.basename(file_path)}"
+                logger.error(error_msg)
                 self.status_var.set(error_msg)
                 return file_path
                 
@@ -372,55 +258,48 @@ class HOI4MIOReader:
         default_save_path = os.path.join(self.melted_saves_dir, base_name + ".txt")
         
         # Check if file is binary
-        try:
-            with open(file_path, 'rb') as f:
-                header = f.read(10)
-                is_text = all(b >= 32 and b <= 126 or b in (9, 10, 13) for b in header)
+        if not is_binary_file(file_path):
+            msg = f"File is already in text format, no need to melt: {os.path.basename(file_path)}"
+            logger.info(msg)
+            self.status_var.set(msg)
+            return
                 
-            if is_text:
-                msg = f"File is already in text format, no need to melt: {os.path.basename(file_path)}"
-                logger.info(msg)
-                self.status_var.set(msg)
-                return
-                
-            logger.info("File appears to be binary, prompting for save location")
+        logger.info("File appears to be binary, prompting for save location")
+        
+        # Ask where to save the melted file
+        save_path = filedialog.asksaveasfilename(
+            title="Save Melted File As",
+            defaultextension=".txt",
+            initialfile=os.path.basename(file_path) + ".txt",
+            initialdir=self.melted_saves_dir,
+            filetypes=[("Text Files", "*.txt"), ("All Files", "*.*")]
+        )
+        
+        if not save_path:
+            logger.info("User cancelled save location selection")
+            return
             
-            # Ask where to save the melted file
-            save_path = filedialog.asksaveasfilename(
-                title="Save Melted File As",
-                defaultextension=".txt",
-                initialfile=os.path.basename(file_path) + ".txt",
-                initialdir=self.melted_saves_dir,
-                filetypes=[("Text Files", "*.txt"), ("All Files", "*.*")]
-            )
-            
-            if not save_path:
-                logger.info("User cancelled save location selection")
-                return
-                
-            logger.info(f"User selected save location: {save_path}")
-            
-            # Melt the file
-            self.status_var.set(f"Melting binary save file: {os.path.basename(file_path)}")
-            self.progress.start()
-            self.root.update_idletasks()
-            
-            success = self._melt_file(file_path, save_path)
-            self.progress.stop()
-            
-            if success:
-                success_msg = f"Successfully melted and saved to: {save_path}"
-                logger.info(success_msg)
-                self.status_var.set(success_msg)
-                messagebox.showinfo("Success", success_msg)
-                
-        except Exception as e:
-            error_msg = f"Error: {str(e)}"
-            logger.exception(error_msg)
+        logger.info(f"User selected save location: {save_path}")
+        
+        # Melt the file
+        self.status_var.set(f"Melting binary save file: {os.path.basename(file_path)}")
+        self.progress.start()
+        self.root.update_idletasks()
+        
+        success, melted_path = melt_save_file(file_path, save_path)
+        self.progress.stop()
+        
+        if success:
+            success_msg = f"Successfully melted and saved to: {save_path}"
+            logger.info(success_msg)
+            self.status_var.set(success_msg)
+            messagebox.showinfo("Success", success_msg)
+        else:
+            error_msg = f"Failed to melt file: {file_path}"
+            logger.error(error_msg)
             self.status_var.set(error_msg)
-            messagebox.showerror("Error", f"An error occurred: {str(e)}")
-            self.progress.stop()
-    
+            messagebox.showerror("Error", f"Failed to melt file. See log for details.")
+            
     def melt_multiple_files(self):
         """Melt multiple HOI4 save files at once, saving to melted_saves folder"""
         logger.info("User requested to melt multiple files")
@@ -481,7 +360,7 @@ class HOI4MIOReader:
         skip_count = 0
         fail_count = 0
         
-        # Create melted_saves dir if it doesn't exist
+        # Ensure the melted_saves directory exists
         if not os.path.exists(self.melted_saves_dir):
             os.makedirs(self.melted_saves_dir)
             
@@ -496,11 +375,7 @@ class HOI4MIOReader:
                     progress_window.update()
                     
                     # Check if file is binary
-                    with open(file_path, 'rb') as f:
-                        header = f.read(10)
-                        is_text = all(b >= 32 and b <= 126 or b in (9, 10, 13) for b in header)
-                    
-                    if is_text:
+                    if not is_binary_file(file_path):
                         add_status(f"Skipped {base_name}: already in text format")
                         skip_count += 1
                         continue
@@ -509,7 +384,7 @@ class HOI4MIOReader:
                     output_path = os.path.join(self.melted_saves_dir, base_name + ".txt")
                     
                     # Melt the file
-                    success = self._melt_file(file_path, output_path)
+                    success, melted_path = melt_save_file(file_path, output_path)
                     
                     if success:
                         add_status(f"Successfully melted: {base_name}")
@@ -540,137 +415,6 @@ class HOI4MIOReader:
             logger.exception("Error in batch processing")
             add_status(f"Error in batch processing: {str(e)}")
             file_progress.stop()
-    
-    def _melt_file(self, file_path, save_path):
-        """Internal method to melt a file and save to the given path
-        Returns True if successful, False otherwise"""
-        try:
-            # Check if melt.exe exists
-            melt_path = os.path.abspath("melt.exe")  # Get absolute path to melt.exe in current directory
-            if not os.path.exists(melt_path):
-                logger.debug(f"melt.exe not found in current directory: {melt_path}")
-                melt_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "melt.exe")  # Script directory
-                if not os.path.exists(melt_path):
-                    logger.debug(f"melt.exe not found in script directory: {melt_path}")
-                    # Try one more location - user's PATH
-                    self.status_var.set("Checking system PATH for melt.exe...")
-                    self.root.update_idletasks()
-                    
-                    # Check if it's accessible via PATH
-                    from shutil import which
-                    melt_in_path = which("melt.exe") or which("melt")
-                    if melt_in_path:
-                        melt_path = melt_in_path
-                        logger.info(f"Found melt.exe in PATH: {melt_path}")
-                    else:
-                        error_msg = "Error: melt.exe not found. Please place melt.exe in the same folder as this application."
-                        logger.error(error_msg)
-                        self.status_var.set(error_msg)
-                        messagebox.showerror("Error", error_msg)
-                        return False
-            
-            logger.info(f"Using melt.exe at: {melt_path}")
-            self.status_var.set(f"Found melt.exe at: {melt_path}")
-            self.root.update_idletasks()
-            
-            # Create temporary file path with no spaces
-            # Copy source file to a temp location without spaces in the path
-            temp_input_file = os.path.join(tempfile.gettempdir(), f"hoi4_melt_input_{uuid.uuid4().hex}.hoi4")
-            temp_output_file = os.path.join(tempfile.gettempdir(), f"hoi4_melt_output_{uuid.uuid4().hex}.txt")
-            
-            # Copy original file to temp location
-            logger.info(f"Copying file to temp location: {temp_input_file}")
-            shutil.copy2(file_path, temp_input_file)
-            
-            # Fix file paths - convert forward slashes to backslashes for Windows
-            win_melt_path = os.path.normpath(melt_path).replace('/', '\\')
-            win_temp_input = os.path.normpath(temp_input_file).replace('/', '\\')
-            win_temp_output = os.path.normpath(temp_output_file).replace('/', '\\')
-            
-            # Create a temporary batch file to run the command
-            batch_file = os.path.join(tempfile.gettempdir(), f"run_melt_{uuid.uuid4().hex}.bat")
-            with open(batch_file, 'w') as f:
-                # The command in batch format
-                f.write(f'@echo off\n')
-                f.write(f'"{win_melt_path}" melt --unknown-key stringify --to-stdout "{win_temp_input}" > "{win_temp_output}"\n')
-                f.write(f'exit %ERRORLEVEL%\n')
-            
-            # Log the batch file contents
-            logger.info(f"Created batch file: {batch_file}")
-            with open(batch_file, 'r') as f:
-                logger.info(f"Batch file contents:\n{f.read()}")
-            
-            # Run the batch file
-            logger.info(f"Running batch file: {batch_file}")
-            self.status_var.set(f"Running batch file to melt save...")
-            self.root.update_idletasks()
-            
-            result = subprocess.run(batch_file, shell=True, capture_output=True, text=True)
-            
-            # Log detailed subprocess results
-            logger.debug(f"Return code: {result.returncode}")
-            logger.debug(f"STDOUT: {result.stdout}")
-            logger.debug(f"STDERR: {result.stderr}")
-            
-            # Check if there was an error code (accept both 0 and 1 as success based on Java code)
-            if result.returncode != 0 and result.returncode != 1:
-                error_msg = f"Melt.exe returned error code {result.returncode}. Error: {result.stderr}"
-                logger.error(error_msg)
-                self.status_var.set(error_msg)
-                
-                # Clean up temp files
-                try:
-                    os.remove(temp_input_file)
-                    os.remove(batch_file)
-                    if os.path.exists(temp_output_file):
-                        os.remove(temp_output_file)
-                except Exception as e:
-                    logger.warning(f"Error cleaning up temp files: {str(e)}")
-                    
-                return False
-            
-            # If the temp output file exists, copy it to the final destination
-            if os.path.exists(temp_output_file) and os.path.getsize(temp_output_file) > 0:
-                logger.info(f"Melting successful. Copying from temp file to final destination: {save_path}")
-                
-                # Create the directory for the output file if it doesn't exist
-                save_dir = os.path.dirname(save_path)
-                if save_dir and not os.path.exists(save_dir):
-                    os.makedirs(save_dir)
-                
-                shutil.copy2(temp_output_file, save_path)
-                
-                # Clean up temp files
-                try:
-                    os.remove(temp_input_file)
-                    os.remove(temp_output_file)
-                    os.remove(batch_file)
-                except Exception as e:
-                    logger.warning(f"Error cleaning up temp files: {str(e)}")
-                
-                return True
-            else:
-                error_msg = f"Melt didn't produce output. Stderr: {result.stderr}"
-                logger.error(error_msg)
-                logger.error(f"Expected output file {temp_output_file} not found or empty")
-                self.status_var.set(error_msg)
-                
-                # Clean up temp files
-                try:
-                    os.remove(temp_input_file)
-                    os.remove(batch_file)
-                    if os.path.exists(temp_output_file):
-                        os.remove(temp_output_file)
-                except Exception as e:
-                    logger.warning(f"Error cleaning up temp files: {str(e)}")
-                    
-                return False
-                
-        except Exception as e:
-            error_msg = f"Error executing melt.exe: {str(e)}"
-            logger.exception(error_msg)
-            self.status_var.set(error_msg)
-            return False
     
     def select_files(self):
         files = filedialog.askopenfilenames(
