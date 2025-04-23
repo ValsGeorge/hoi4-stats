@@ -97,7 +97,7 @@ class HOI4StatsGUI:
                     self.save_data[key] = value
             
             # Debug: Print all top-level keys
-            print("Top-level keys in save data:", list(self.save_data.keys()))
+            # print("Top-level keys in save data:", list(self.save_data.keys()))  
             
             # Save to JSON
             json_path = os.path.splitext(file_path)[0] + ".json"
@@ -116,21 +116,21 @@ class HOI4StatsGUI:
             
     def get_equipment_name(self, equipment_id, equipment_type):
         """Convert equipment ID and type to its name"""
-        print(f"\nLooking up equipment: ID={equipment_id}, Type={equipment_type}")
+        # print(f"\nLooking up equipment: ID={equipment_id}, Type={equipment_type}")
         if not hasattr(self, 'equipment_name_map'):
-            print("Building equipment name map...")
+            # print("Building equipment name map...")
             self.equipment_name_map = {}
             if self.equipment_data:
-                print(f"Equipment data keys: {list(self.equipment_data.keys())}")
+                #print(f"Equipment data keys: {list(self.equipment_data.keys())}")
                 for name, items in self.equipment_data.items():
-                    print(f"Processing equipment type: {name}")
+                    # print(f"Processing equipment type: {name}")
                     if isinstance(items, dict):
                         # Handle direct equipment entries
                         if "id" in items and isinstance(items["id"], dict):
                             item_id = items["id"].get("id")
                             item_type = items["id"].get("type")
                             if item_id is not None and item_type is not None:
-                                print(f"Mapping: ({item_id}, {item_type}) -> {name}")
+                                # print(f"Mapping: ({item_id}, {item_type}) -> {name}")
                                 self.equipment_name_map[(item_id, item_type)] = name
                     elif isinstance(items, list):
                         # Handle list of equipment entries
@@ -139,7 +139,7 @@ class HOI4StatsGUI:
                                 item_id = item.get("id", {}).get("id")
                                 item_type = item.get("id", {}).get("type")
                                 if item_id is not None and item_type is not None:
-                                    print(f"Mapping: ({item_id}, {item_type}) -> {name}")
+                                    # print(f"Mapping: ({item_id}, {item_type}) -> {name}")
                                     self.equipment_name_map[(item_id, item_type)] = name
             else:
                 print("No equipment data available")
@@ -147,22 +147,24 @@ class HOI4StatsGUI:
         # Try to find the name in the map
         name = self.equipment_name_map.get((equipment_id, equipment_type))
         if name:
-            print(f"Found name: {name}")
+            # print(f"Found name: {name}")
+            pass
         else:
-            print(f"No name found for ID={equipment_id}, Type={equipment_type}")
+            # print(f"No name found for ID={equipment_id}, Type={equipment_type}")
+            pass
             # Try to find the equipment directly in the equipment_data
             for key, value in self.equipment_data.items():
                 if isinstance(value, dict) and "id" in value:
                     if value["id"].get("id") == equipment_id and value["id"].get("type") == equipment_type:
                         name = key
-                        print(f"Found direct match: {name}")
+                        # print(f"Found direct match: {name}")
                         break
                 elif isinstance(value, list):
                     for item in value:
                         if isinstance(item, dict) and "id" in item:
                             if item["id"].get("id") == equipment_id and item["id"].get("type") == equipment_type:
                                 name = key
-                                print(f"Found direct match: {name}")
+                                # print(f"Found direct match: {name}")
                                 break
                         if name:
                             break
@@ -182,14 +184,14 @@ class HOI4StatsGUI:
             
         # Get countries data
         countries = self.save_data.get("countries", {})
-        print("Countries found:", list(countries.keys()))
+        # print("Countries found:", list(countries.keys()))
         if not countries:
             print("No countries found in save data")
             return
             
         # Add organization items
         for country_code, country_data in countries.items():
-            print(f"\nProcessing country: {country_code}")
+            # print(f"\nProcessing country: {country_code}")
             if not isinstance(country_data, dict):
                 print(f"Invalid country_data type: {type(country_data)}")
                 continue
@@ -197,21 +199,21 @@ class HOI4StatsGUI:
             # Get industrial organizations from production
             production = country_data.get("production", {})
             organizations = production.get("industrial_organisations", {})
-            print(f"Organizations found for {country_code}:", list(organizations.keys()))
+            # print(f"Organizations found for {country_code}:", list(organizations.keys()))
             if not organizations:
                 print(f"No organizations found for {country_code}")
                 continue
                 
             for org_name, org_data in organizations.items():
-                print(f"\nProcessing organization: {org_name}")
+                # print(f"\nProcessing organization: {org_name}")
                 if not isinstance(org_data, dict):
                     print(f"Invalid org_data type: {type(org_data)}")
                     continue
                     
                 history = org_data.get("history", [])
-                print(f"History entries: {len(history)}")
+                # print(f"History entries: {len(history)}")
                 if not isinstance(history, list):
-                    print(f"Invalid history type: {type(history)}")
+                    #print(f"Invalid history type: {type(history)}")
                     continue
                     
                 for entry in history:
@@ -224,14 +226,14 @@ class HOI4StatsGUI:
                     
                     equipment_id = equipment.get("id")
                     equipment_type = equipment.get("type")
-                    print(f"Equipment ID: {equipment_id}, Type: {equipment_type}")
+                    # print(f"Equipment ID: {equipment_id}, Type: {equipment_type}")
                     
                     equipment_name = self.get_equipment_name(equipment_id, equipment_type)
-                    print(f"Mapped equipment name: {equipment_name}")
+                    # print(f"Mapped equipment name: {equipment_name}")
                     
                     date = data.get("date", "---")
                     units = data.get("units", "---")
-                    print(f"Date: {date}, Units: {units}")
+                    # print(f"Date: {date}, Units: {units}")
                     
                     # Skip if units is 0
                     if units == 0:
@@ -321,7 +323,7 @@ class HOI4StatsGUI:
                 self.save_data = json.load(f)
                 
             # Debug: Print all top-level keys
-            print("Top-level keys in JSON data:", list(self.save_data.keys()))
+            # print("Top-level keys in JSON data:", list(self.save_data.keys()))
                 
             # Extract equipment data for name mapping
             self.equipment_data = self.save_data.get("equipments", {})

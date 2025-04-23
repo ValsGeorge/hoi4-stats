@@ -41,7 +41,7 @@ def make_token_string(value):
         return str(value)
     
 token_patterns = [
-    ('time', r'\d+\.\d+\.\d+(\.\d+)?\b'),
+    ('time', r'-?\d+\.\d+\.\d+(\.\d+)?\b'),
     ('float', r'-?(\d+\.\d*|\d*\.\d+)\b'),
     ('int', r'-?\d+\b'),
     ('bool', r'(yes|no)\b'),

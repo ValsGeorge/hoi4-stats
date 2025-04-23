@@ -32,8 +32,41 @@ class Time():
             data = [int(x) for x in year.split('.')]
             if len(data) not in VALID_TIME_COMPONENT_COUNTS:
                 raise ValueError('Time string "%s" has invalid number of components.' % year)
+            
+            # Handle negative dates by converting to 1.1.1
+            if any(x < 0 for x in data):
+                data = [1, 1, 1]
+                if len(data) == 4:
+                    data.append(1)
+            
+            # Ensure month and day are within valid ranges
+            if len(data) > 1:
+                data[1] = max(1, min(12, data[1]))  # Month between 1-12
+            if len(data) > 2:
+                data[2] = max(1, min(DAYS_PER_MONTH_0[data[1]-1], data[2]))  # Day between 1-31
+            if len(data) > 3:
+                data[3] = max(1, min(24, data[3]))  # Hour between 1-24
+                
             self.data = data
         else:
+            # Handle negative dates in numeric arguments
+            if year is not None and year < 0:
+                year = 1
+            if month is not None and month < 0:
+                month = 1
+            if day is not None and day < 0:
+                day = 1
+            if hour is not None and hour < 0:
+                hour = 1
+                
+            # Ensure month and day are within valid ranges
+            if month is not None:
+                month = max(1, min(12, month))
+            if day is not None:
+                day = max(1, min(DAYS_PER_MONTH_0[month-1] if month is not None else 31, day))
+            if hour is not None:
+                hour = max(1, min(24, hour))
+                
             self.data = [x for x in [year, month, day, hour] if x is not None]
         self.validate()
             
