@@ -1,6 +1,7 @@
 import sys
 sys.path.append('pyradox/src')
 import pyradox
+import pyradox.datatype.time
 import json
 from pathlib import Path
 import os
@@ -49,21 +50,44 @@ def load_save_file(save_path):
 def save_to_json(data, output_path):
     """Save the parsed data to a JSON file."""
     try:
+        # Custom JSON encoder to handle pyradox types
+        def pyradox_encoder(obj):
+            # Handle Time objects
+            if isinstance(obj, pyradox.datatype.time.Time):
+                return {
+                    "year": obj.year,
+                    "month": obj.month,
+                    "day": obj.day,
+                    "hour": obj.hour if obj.has_hour() else None
+                }
+            # Handle other pyradox types by converting to Python types
+            elif hasattr(obj, "to_python"):
+                return obj.to_python()
+            # Default string conversion for any other non-serializable types
+            else:
+                return str(obj)
+        
         # Convert to a serializable format
         serializable_data = {}
         for key, value in data.items():
-            # Convert each top-level key to a string
-            try:
-                serializable_data[str(key)] = value
-            except (TypeError, ValueError) as e:
-                print(f"Warning: Could not serialize key {key}: {str(e)}")
-                continue
+            # Convert keys to appropriate Python types
+            if isinstance(key, pyradox.datatype.time.Time):
+                # Format date keys in a sortable way
+                py_key = f"{key.year}.{key.month:02d}.{key.day:02d}"
+                if key.has_hour():
+                    py_key += f".{key.hour:02d}"
+            else:
+                # Use string representation for other keys
+                py_key = str(key)
+            
+            # Use the key and value
+            serializable_data[py_key] = value
         
         # Ensure the output directory exists
         os.makedirs(os.path.dirname(os.path.abspath(output_path)), exist_ok=True)
         
         with open(output_path, 'w', encoding='utf-8') as f:
-            json.dump(serializable_data, f, indent=2, default=str)
+            json.dump(serializable_data, f, indent=2, default=pyradox_encoder)
         print(f"Successfully saved parsed data to {output_path}")
         return True
     except Exception as e:
@@ -77,8 +101,10 @@ def main():
     parser.add_argument('save_path', nargs='?', 
                         default="C:/Users/Vals_/Desktop/Projects/hoi4-stats/melted_saves/autosave_4.txt",
                         help='Path to the HOI4 save file to parse')
-    parser.add_argument('--output', '-o', help='Path to save the output JSON file')
+    parser.add_argument('--output', '-o', 
+                        help='Path to save the output JSON file (default: input_filename.json)')
     parser.add_argument('--melt-only', action='store_true', help='Only melt the file, do not parse it')
+    parser.add_argument('--no-json', action='store_true', help='Do not save JSON output')
     args = parser.parse_args()
     
     save_path = args.save_path
@@ -117,9 +143,19 @@ def main():
         if len(top_keys) > 20:
             print(f"... and {len(top_keys) - 20} more keys")
         
-        # Save to JSON if requested
-        if args.output:
-            save_to_json(savegame, args.output)
+        # Save to JSON unless explicitly disabled
+        if not args.no_json:
+            # Create default output path if not specified
+            output_path = args.output
+            if not output_path:
+                base_name = os.path.splitext(os.path.basename(save_path))[0]
+                output_path = f"{base_name}.json"
+                
+            # Save the data
+            if save_to_json(savegame, output_path):
+                print(f"JSON data saved to: {output_path}")
+            else:
+                print("Failed to save JSON data")
         
         return savegame
     except Exception as e:
