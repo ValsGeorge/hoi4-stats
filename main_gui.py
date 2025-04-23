@@ -28,26 +28,25 @@ class HOI4StatsGUI:
         ttk.Button(file_frame, text="Load", command=self.load_file).pack(side="left", padx=5)
         ttk.Button(file_frame, text="Load JSON", command=self.load_json).pack(side="left", padx=5)
         
-        # Equipment Analysis Frame
-        analysis_frame = ttk.LabelFrame(self.root, text="Equipment Analysis", padding="10")
+        # Analysis Frame
+        analysis_frame = ttk.LabelFrame(self.root, text="Industrial Organizations History", padding="10")
         analysis_frame.pack(fill="both", expand=True, padx=10, pady=5)
         
         # Search and Filter
         filter_frame = ttk.Frame(analysis_frame)
         filter_frame.pack(fill="x", pady=5)
         
-        ttk.Label(filter_frame, text="Creator:").pack(side="left", padx=5)
-        self.creator_var = tk.StringVar()
-        ttk.Entry(filter_frame, textvariable=self.creator_var, width=10).pack(side="left", padx=5)
-        ttk.Button(filter_frame, text="Search", command=self.filter_equipment).pack(side="left", padx=5)
+        ttk.Label(filter_frame, text="Country:").pack(side="left", padx=5)
+        self.country_var = tk.StringVar()
+        ttk.Entry(filter_frame, textvariable=self.country_var, width=10).pack(side="left", padx=5)
+        ttk.Button(filter_frame, text="Search", command=self.filter_organizations).pack(side="left", padx=5)
         
-        # Equipment Treeview
-        self.tree = ttk.Treeview(analysis_frame, columns=("Name", "ID", "Type", "Creator", "Origin"), show="headings")
-        self.tree.heading("Name", text="Name")
-        self.tree.heading("ID", text="ID")
-        self.tree.heading("Type", text="Type")
-        self.tree.heading("Creator", text="Creator")
-        self.tree.heading("Origin", text="Origin")
+        # Organizations Treeview
+        self.tree = ttk.Treeview(analysis_frame, columns=("Date", "Country", "Equipment", "Amount"), show="headings")
+        self.tree.heading("Date", text="Date")
+        self.tree.heading("Country", text="Country")
+        self.tree.heading("Equipment", text="Equipment")
+        self.tree.heading("Amount", text="Amount")
         self.tree.pack(fill="both", expand=True, pady=5)
         
         # Status Bar
@@ -96,6 +95,9 @@ class HOI4StatsGUI:
                 else:
                     self.save_data[key] = value
             
+            # Debug: Print all top-level keys
+            print("Top-level keys in save data:", list(self.save_data.keys()))
+            
             # Save to JSON
             json_path = os.path.splitext(file_path)[0] + ".json"
             if save_to_json(self.save_data, json_path):
@@ -103,58 +105,159 @@ class HOI4StatsGUI:
             else:
                 self.status_var.set("Failed to save JSON file")
                 
-            # Extract equipment data
+            # Extract equipment data for name mapping
             self.equipment_data = self.save_data.get("equipments", {})
-            print("Equipment data structure:", self.equipment_data)  # Debug print
-            self.update_equipment_list()
+            self.update_organizations_list()
             
         except Exception as e:
             messagebox.showerror("Error", f"Failed to process file: {str(e)}")
             self.status_var.set("Error processing file")
             
-    def update_equipment_list(self):
-        if not self.equipment_data:
+    def get_equipment_name(self, equipment_id, equipment_type):
+        """Convert equipment ID and type to its name"""
+        print(f"\nLooking up equipment: ID={equipment_id}, Type={equipment_type}")
+        if not hasattr(self, 'equipment_name_map'):
+            print("Building equipment name map...")
+            self.equipment_name_map = {}
+            if self.equipment_data:
+                print(f"Equipment data keys: {list(self.equipment_data.keys())}")
+                for name, items in self.equipment_data.items():
+                    print(f"Processing equipment type: {name}")
+                    if isinstance(items, list):
+                        for item in items:
+                            if isinstance(item, dict):
+                                item_id = item.get("id", {}).get("id")
+                                item_type = item.get("id", {}).get("type")
+                                if item_id is not None and item_type is not None:
+                                    print(f"Mapping: ({item_id}, {item_type}) -> {name}")
+                                    self.equipment_name_map[(item_id, item_type)] = name
+            else:
+                print("No equipment data available")
+        return self.equipment_name_map.get((equipment_id, equipment_type), f"Unknown ({equipment_id}, {equipment_type})")
+        
+    def update_organizations_list(self):
+        if not self.save_data:
+            print("No save data available")
             return
             
         # Clear existing items
         for item in self.tree.get_children():
             self.tree.delete(item)
             
-        # Add equipment items
-        for equipment_name, items in self.equipment_data.items():
-            if isinstance(items, list):  # Check if items is a list
-                for item in items:
-                    if isinstance(item, dict):  # Check if item is a dictionary
-                        self.tree.insert("", "end", values=(
-                            equipment_name,
-                            item.get("id", {}).get("id", "---"),
-                            item.get("id", {}).get("type", "---"),
-                            item.get("creator", "---"),
-                            item.get("origin", "---")
-                        ))
+        # Get countries data
+        countries = self.save_data.get("countries", {})
+        print("Countries found:", list(countries.keys()))
+        if not countries:
+            print("No countries found in save data")
+            return
+            
+        # Add organization items
+        for country_code, country_data in countries.items():
+            print(f"\nProcessing country: {country_code}")
+            if not isinstance(country_data, dict):
+                print(f"Invalid country_data type: {type(country_data)}")
+                continue
                 
-    def filter_equipment(self):
-        creator = self.creator_var.get().upper()
-        if not creator:
-            self.update_equipment_list()
+            # Get industrial organizations from production
+            production = country_data.get("production", {})
+            organizations = production.get("industrial_organisations", {})
+            print(f"Organizations found for {country_code}:", list(organizations.keys()))
+            if not organizations:
+                print(f"No organizations found for {country_code}")
+                continue
+                
+            for org_name, org_data in organizations.items():
+                print(f"\nProcessing organization: {org_name}")
+                if not isinstance(org_data, dict):
+                    print(f"Invalid org_data type: {type(org_data)}")
+                    continue
+                    
+                history = org_data.get("history", [])
+                print(f"History entries: {len(history)}")
+                if not isinstance(history, list):
+                    print(f"Invalid history type: {type(history)}")
+                    continue
+                    
+                for entry in history:
+                    if not isinstance(entry, dict):
+                        print(f"Invalid entry type: {type(entry)}")
+                        continue
+                        
+                    equipment = entry.get("equipment", {})
+                    data = entry.get("data", {})
+                    
+                    equipment_id = equipment.get("id")
+                    equipment_type = equipment.get("type")
+                    print(f"Equipment ID: {equipment_id}, Type: {equipment_type}")
+                    
+                    equipment_name = self.get_equipment_name(equipment_id, equipment_type)
+                    print(f"Mapped equipment name: {equipment_name}")
+                    
+                    date = data.get("date", "---")
+                    units = data.get("units", "---")
+                    print(f"Date: {date}, Units: {units}")
+                    
+                    self.tree.insert("", "end", values=(
+                        date,
+                        country_code,
+                        equipment_name,
+                        units
+                    ))
+                
+    def filter_organizations(self):
+        country = self.country_var.get().upper()
+        if not country:
+            self.update_organizations_list()
             return
             
         # Clear existing items
         for item in self.tree.get_children():
             self.tree.delete(item)
+            
+        # Get countries data
+        countries = self.save_data.get("countries", {})
+        if not countries:
+            return
             
         # Add filtered items
-        for equipment_name, items in self.equipment_data.items():
-            if isinstance(items, list):  # Check if items is a list
-                for item in items:
-                    if isinstance(item, dict) and item.get("creator", "").upper() == creator:
-                        self.tree.insert("", "end", values=(
-                            equipment_name,
-                            item.get("id", {}).get("id", "---"),
-                            item.get("id", {}).get("type", "---"),
-                            item.get("creator", "---"),
-                            item.get("origin", "---")
-                        ))
+        for country_code, country_data in countries.items():
+            if country_code.upper() != country:
+                continue
+                
+            if not isinstance(country_data, dict):
+                continue
+                
+            # Get industrial organizations from production
+            production = country_data.get("production", {})
+            organizations = production.get("industrial_organisations", {})
+            if not organizations:
+                continue
+                
+            for org_name, org_data in organizations.items():
+                if not isinstance(org_data, dict):
+                    continue
+                    
+                history = org_data.get("history", [])
+                if not isinstance(history, list):
+                    continue
+                    
+                for entry in history:
+                    if not isinstance(entry, dict):
+                        continue
+                        
+                    equipment = entry.get("equipment", {})
+                    data = entry.get("data", {})
+                    
+                    equipment_id = equipment.get("id")
+                    equipment_type = equipment.get("type")
+                    equipment_name = self.get_equipment_name(equipment_id, equipment_type)
+                    
+                    self.tree.insert("", "end", values=(
+                        data.get("date", "---"),
+                        country_code,
+                        equipment_name,
+                        data.get("units", "---")
+                    ))
 
     def load_json(self):
         file_path = filedialog.askopenfilename(
@@ -171,10 +274,12 @@ class HOI4StatsGUI:
             with open(file_path, 'r', encoding='utf-8') as f:
                 self.save_data = json.load(f)
                 
-            # Extract equipment data
-            self.equipment_data = self.save_data.get("equipments", {}),
-            print("Equipment data structure:", self.equipment_data)  # Debug print
-            self.update_equipment_list()
+            # Debug: Print all top-level keys
+            print("Top-level keys in JSON data:", list(self.save_data.keys()))
+                
+            # Extract equipment data for name mapping
+            self.equipment_data = self.save_data.get("equipments", {})
+            self.update_organizations_list()
             self.status_var.set(f"Successfully loaded {file_path}")
             
         except Exception as e:
