@@ -23,6 +23,19 @@ class Time():
     Presence or absence of hour is immutable after construction.
     """
     
+    @classmethod
+    def from_string(cls, date_str):
+        """Create a Time object from a string date like '1936.1.1.12'"""
+        if not date_str:
+            return None
+        try:
+            parts = [int(x) for x in date_str.split('.')]
+            if len(parts) not in VALID_TIME_COMPONENT_COUNTS:
+                return None
+            return cls(*parts)
+        except (ValueError, TypeError):
+            return None
+    
     def __init__(self, year = None, month = None, day = None, hour = None):
         if isinstance(year, Time):
             # copy constructor

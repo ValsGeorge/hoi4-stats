@@ -10,6 +10,7 @@ import traceback
 import sys
 import argparse
 from src.utils.melter import melt_save_file, is_binary_file, ensure_melted_saves_dir
+import re
 
 # Set recursion limit higher for deeply nested files
 sys.setrecursionlimit(10000)
@@ -51,21 +52,17 @@ def save_to_json(data, output_path):
     """Save the parsed data to a JSON file."""
     try:
         # Custom JSON encoder to handle pyradox types
-        def pyradox_encoder(obj):
-            # Handle Time objects
-            if isinstance(obj, pyradox.datatype.time.Time):
-                return {
-                    "year": obj.year,
-                    "month": obj.month,
-                    "day": obj.day,
-                    "hour": obj.hour if obj.has_hour() else None
-                }
-            # Handle other pyradox types by converting to Python types
-            elif hasattr(obj, "to_python"):
-                return obj.to_python()
-            # Default string conversion for any other non-serializable types
-            else:
-                return str(obj)
+        class PyradoxJSONEncoder(json.JSONEncoder):
+            def default(self, obj):
+                # Handle Time objects
+                if isinstance(obj, pyradox.datatype.time.Time):
+                    return str(obj)  # Convert to string format like "1936.1.1.12"
+                # Handle other pyradox types by converting to Python types
+                elif hasattr(obj, "to_python"):
+                    return obj.to_python()
+                # Default string conversion for any other non-serializable types
+                else:
+                    return str(obj)
         
         # Convert to a serializable format
         serializable_data = {}
@@ -73,9 +70,7 @@ def save_to_json(data, output_path):
             # Convert keys to appropriate Python types
             if isinstance(key, pyradox.datatype.time.Time):
                 # Format date keys in a sortable way
-                py_key = f"{key.year}.{key.month:02d}.{key.day:02d}"
-                if key.has_hour():
-                    py_key += f".{key.hour:02d}"
+                py_key = str(key)
             else:
                 # Use string representation for other keys
                 py_key = str(key)
@@ -87,13 +82,41 @@ def save_to_json(data, output_path):
         os.makedirs(os.path.dirname(os.path.abspath(output_path)), exist_ok=True)
         
         with open(output_path, 'w', encoding='utf-8') as f:
-            json.dump(serializable_data, f, indent=2, default=pyradox_encoder)
+            json.dump(serializable_data, f, indent=2, cls=PyradoxJSONEncoder)
         print(f"Successfully saved parsed data to {output_path}")
         return True
     except Exception as e:
         print(f"Error saving to JSON: {str(e)}")
         traceback.print_exc()
         return False
+
+def load_json_file(file_path):
+    """Load a JSON file and convert date strings back to Time objects."""
+    try:
+        with open(file_path, 'r', encoding='utf-8') as f:
+            data = json.load(f)
+            
+        # Convert date strings back to Time objects
+        def convert_dates(obj):
+            if isinstance(obj, dict):
+                for key, value in obj.items():
+                    if isinstance(value, str) and re.match(r'^-?\d+\.\d+\.\d+(\.\d+)?$', value):
+                        obj[key] = pyradox.datatype.time.Time.from_string(value)
+                    elif isinstance(value, dict):
+                        convert_dates(value)
+                    elif isinstance(value, list):
+                        for i, item in enumerate(value):
+                            if isinstance(item, str) and re.match(r'^-?\d+\.\d+\.\d+(\.\d+)?$', item):
+                                value[i] = pyradox.datatype.time.Time.from_string(item)
+                            elif isinstance(item, dict):
+                                convert_dates(item)
+            return obj
+            
+        return convert_dates(data)
+    except Exception as e:
+        print(f"Error loading JSON file: {str(e)}")
+        traceback.print_exc()
+        return None
 
 def main():
     # Parse command line arguments
