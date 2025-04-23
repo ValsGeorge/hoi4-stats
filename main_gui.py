@@ -233,6 +233,10 @@ class HOI4StatsGUI:
                     units = data.get("units", "---")
                     print(f"Date: {date}, Units: {units}")
                     
+                    # Skip if units is 0
+                    if units == 0:
+                        continue
+                        
                     self.tree.insert("", "end", values=(
                         org_name,
                         country_code,
@@ -289,6 +293,10 @@ class HOI4StatsGUI:
                     equipment_type = equipment.get("type")
                     equipment_name = self.get_equipment_name(equipment_id, equipment_type)
                     
+                    # Skip if units is 0
+                    if data.get("units", 0) == 0:
+                        continue
+                        
                     self.tree.insert("", "end", values=(
                         org_name,
                         country_code,
