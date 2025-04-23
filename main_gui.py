@@ -42,9 +42,10 @@ class HOI4StatsGUI:
         ttk.Button(filter_frame, text="Search", command=self.filter_organizations).pack(side="left", padx=5)
         
         # Organizations Treeview
-        self.tree = ttk.Treeview(analysis_frame, columns=("Date", "Country", "Equipment", "Amount"), show="headings")
-        self.tree.heading("Date", text="Date")
+        self.tree = ttk.Treeview(analysis_frame, columns=("Organization", "Country", "Date", "Equipment", "Amount"), show="headings")
+        self.tree.heading("Organization", text="Organization")
         self.tree.heading("Country", text="Country")
+        self.tree.heading("Date", text="Date")
         self.tree.heading("Equipment", text="Equipment")
         self.tree.heading("Amount", text="Amount")
         self.tree.pack(fill="both", expand=True, pady=5)
@@ -123,7 +124,16 @@ class HOI4StatsGUI:
                 print(f"Equipment data keys: {list(self.equipment_data.keys())}")
                 for name, items in self.equipment_data.items():
                     print(f"Processing equipment type: {name}")
-                    if isinstance(items, list):
+                    if isinstance(items, dict):
+                        # Handle direct equipment entries
+                        if "id" in items and isinstance(items["id"], dict):
+                            item_id = items["id"].get("id")
+                            item_type = items["id"].get("type")
+                            if item_id is not None and item_type is not None:
+                                print(f"Mapping: ({item_id}, {item_type}) -> {name}")
+                                self.equipment_name_map[(item_id, item_type)] = name
+                    elif isinstance(items, list):
+                        # Handle list of equipment entries
                         for item in items:
                             if isinstance(item, dict):
                                 item_id = item.get("id", {}).get("id")
@@ -133,7 +143,33 @@ class HOI4StatsGUI:
                                     self.equipment_name_map[(item_id, item_type)] = name
             else:
                 print("No equipment data available")
-        return self.equipment_name_map.get((equipment_id, equipment_type), f"Unknown ({equipment_id}, {equipment_type})")
+        
+        # Try to find the name in the map
+        name = self.equipment_name_map.get((equipment_id, equipment_type))
+        if name:
+            print(f"Found name: {name}")
+        else:
+            print(f"No name found for ID={equipment_id}, Type={equipment_type}")
+            # Try to find the equipment directly in the equipment_data
+            for key, value in self.equipment_data.items():
+                if isinstance(value, dict) and "id" in value:
+                    if value["id"].get("id") == equipment_id and value["id"].get("type") == equipment_type:
+                        name = key
+                        print(f"Found direct match: {name}")
+                        break
+                elif isinstance(value, list):
+                    for item in value:
+                        if isinstance(item, dict) and "id" in item:
+                            if item["id"].get("id") == equipment_id and item["id"].get("type") == equipment_type:
+                                name = key
+                                print(f"Found direct match: {name}")
+                                break
+                        if name:
+                            break
+                if name:
+                    break
+        
+        return name or f"Unknown ({equipment_id}, {equipment_type})"
         
     def update_organizations_list(self):
         if not self.save_data:
@@ -198,8 +234,9 @@ class HOI4StatsGUI:
                     print(f"Date: {date}, Units: {units}")
                     
                     self.tree.insert("", "end", values=(
-                        date,
+                        org_name,
                         country_code,
+                        date,
                         equipment_name,
                         units
                     ))
@@ -253,8 +290,9 @@ class HOI4StatsGUI:
                     equipment_name = self.get_equipment_name(equipment_id, equipment_type)
                     
                     self.tree.insert("", "end", values=(
-                        data.get("date", "---"),
+                        org_name,
                         country_code,
+                        data.get("date", "---"),
                         equipment_name,
                         data.get("units", "---")
                     ))
