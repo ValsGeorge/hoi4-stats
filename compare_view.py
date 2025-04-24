@@ -4,6 +4,9 @@ import os
 import json
 from src.utils.melter import melt_save_file, is_binary_file, ensure_melted_saves_dir
 from read_with_pyradox import load_save_file, save_to_json
+import threading
+import time
+import hashlib
 
 class CompareView:
     def __init__(self, parent, notebook):
@@ -11,6 +14,11 @@ class CompareView:
         self.notebook = notebook
         self.loaded_files = {}  # {file_id: {'path': path, 'data': data, 'name': display_name}}
         self.file_counter = 0
+        self.cache_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'cache')
+        
+        # Ensure cache directory exists
+        if not os.path.exists(self.cache_dir):
+            os.makedirs(self.cache_dir)
         
         # Create the comparison tab
         self.compare_frame = ttk.Frame(notebook)
@@ -30,6 +38,17 @@ class CompareView:
         ttk.Button(btn_frame, text="Add File", command=self.add_file).pack(side="left", padx=5)
         ttk.Button(btn_frame, text="Remove Selected", command=self.remove_selected_file).pack(side="left", padx=5)
         ttk.Button(btn_frame, text="Compare", command=self.compare_files).pack(side="left", padx=5)
+        
+        # Progress bar for loading files
+        self.progress_frame = ttk.Frame(self.file_frame)
+        self.progress_frame.pack(fill="x", pady=5)
+        
+        self.progress_var = tk.DoubleVar()
+        self.progress_var.set(0)
+        self.progress_label = ttk.Label(self.progress_frame, text="Ready")
+        self.progress_label.pack(side="top", fill="x")
+        self.progress_bar = ttk.Progressbar(self.progress_frame, variable=self.progress_var, maximum=100)
+        self.progress_bar.pack(side="top", fill="x")
         
         # Listbox to display loaded files
         self.files_listbox_frame = ttk.Frame(self.file_frame)
@@ -59,43 +78,98 @@ class CompareView:
                  justify="center").pack(expand=True, pady=20)
     
     def add_file(self):
-        """Add a new file for comparison"""
-        file_path = filedialog.askopenfilename(
-            title="Select HOI4 Save File",
+        """Add new files for comparison"""
+        file_paths = filedialog.askopenfilenames(
+            title="Select HOI4 Save Files",
             filetypes=[("HOI4 Save Files", "*.hoi4"), ("JSON Files", "*.json"), ("All Files", "*.*")]
         )
-        if not file_path:
+        if not file_paths:
             return
-            
-        # Check if the file is already loaded
-        for file_info in self.loaded_files.values():
-            if file_info['path'] == file_path:
-                messagebox.showinfo("Info", "This file is already loaded")
-                return
         
-        # Check if JSON or needs to be parsed
-        if file_path.lower().endswith('.json'):
-            self.load_json_file(file_path)
-        else:
-            self.load_hoi4_save(file_path)
+        # Start a thread to process all files
+        threading.Thread(target=self._process_multiple_files, args=(file_paths,), daemon=True).start()
     
-    def load_hoi4_save(self, file_path):
-        """Load and process a HOI4 save file"""
+    def _process_multiple_files(self, file_paths):
+        """Process multiple files in the background"""
+        total_files = len(file_paths)
+        for i, file_path in enumerate(file_paths):
+            # Check if the file is already loaded
+            skip_file = False
+            for file_info in self.loaded_files.values():
+                if file_info['path'] == file_path:
+                    self.update_progress(
+                        (i / total_files) * 100, 
+                        f"Skipping already loaded file ({i+1}/{total_files}): {os.path.basename(file_path)}"
+                    )
+                    skip_file = True
+                    break
+            
+            if skip_file:
+                time.sleep(0.5)  # Brief pause to show skipped message
+                continue
+            
+            # Update progress
+            self.update_progress(
+                (i / total_files) * 100, 
+                f"Processing file {i+1}/{total_files}: {os.path.basename(file_path)}"
+            )
+            
+            # Check if JSON or needs to be parsed
+            if file_path.lower().endswith('.json'):
+                self._load_json_file(file_path, i+1, total_files)
+            else:
+                self._load_hoi4_save(file_path, i+1, total_files)
+        
+        # Final update
+        self.update_progress(100, f"Completed loading {total_files} files")
+        time.sleep(1)  # Show completion message briefly
+        self.update_progress(0, "Ready")
+    
+    def _load_hoi4_save(self, file_path, current_file=1, total_files=1):
+        """Load and process a HOI4 save file with progress reporting"""
         try:
+            file_name = os.path.basename(file_path)
+            # Update UI
+            self.update_progress(0, f"Processing {file_name} ({current_file}/{total_files})...")
+            
+            # Check if we already have a cached version of this file
+            cache_path = self.check_cache(file_path)
+            if cache_path:
+                self.update_progress(30, f"Loading {file_name} from cache...")
+                with open(cache_path, 'r', encoding='utf-8') as f:
+                    data = json.load(f)
+                
+                self.update_progress(100, f"Loaded {file_name} from cache")
+                time.sleep(0.5)  # Brief pause to show completion
+                self.finalize_file_load(file_path, data)
+                return
+                
+            # No cache, process the file
+            self.update_progress(10, f"Checking file type for {file_name}...")
+            
             # Check if file is binary and melt if necessary
             if is_binary_file(file_path):
+                self.update_progress(20, f"Melting binary file {file_name}...")
                 melted_saves_dir = ensure_melted_saves_dir()
                 output_path = os.path.join(melted_saves_dir, os.path.basename(file_path) + ".txt")
                 success, melted_path = melt_save_file(file_path, output_path)
                 if not success:
-                    messagebox.showerror("Error", "Failed to melt the binary file")
+                    self.show_error(f"Failed to melt the binary file: {file_name}")
                     return
                 file_path = melted_path
                 
+            # Define a progress callback
+            def progress_callback(percent, message):
+                # Scale the progress to fit within the overall progress (30% to 80%)
+                overall = 30 + (percent * 0.5)
+                self.update_progress(overall, f"{message} - {file_name} ({current_file}/{total_files})")
+            
             # Parse the save file
-            save_data = load_save_file(file_path)
+            self.update_progress(30, f"Parsing {file_name}...")
+            save_data = load_save_file(file_path, callback=progress_callback)
             
             # Convert pyradox Tree to dictionary
+            self.update_progress(80, f"Converting data for {file_name}...")
             data = {}
             for key, value in save_data.items():
                 if hasattr(value, 'to_python'):
@@ -103,45 +177,97 @@ class CompareView:
                 else:
                     data[key] = value
             
-            # Add to loaded files
-            file_id = self.file_counter
-            self.file_counter += 1
-            display_name = os.path.basename(file_path)
-            self.loaded_files[file_id] = {
-                'path': file_path,
-                'data': data,
-                'name': display_name
-            }
+            # Save to cache
+            self.update_progress(90, f"Saving {file_name} to cache...")
+            cache_path = self.get_cache_path(file_path)
+            with open(cache_path, 'w', encoding='utf-8') as f:
+                json.dump(data, f)
             
-            # Add to listbox
-            self.files_listbox.insert(tk.END, display_name)
-            messagebox.showinfo("Success", f"File loaded: {display_name}")
+            self.update_progress(100, f"Completed processing {file_name}")
+            time.sleep(0.5)  # Brief pause to show completion
+            
+            # Finalize loading
+            self.finalize_file_load(file_path, data)
             
         except Exception as e:
-            messagebox.showerror("Error", f"Failed to load file: {str(e)}")
+            self.show_error(f"Failed to load file {os.path.basename(file_path)}: {str(e)}")
     
-    def load_json_file(self, file_path):
+    def _load_json_file(self, file_path, current_file=1, total_files=1):
         """Load a JSON file for comparison"""
         try:
+            file_name = os.path.basename(file_path)
+            self.update_progress(0, f"Loading {file_name} ({current_file}/{total_files})...")
+            
             with open(file_path, 'r', encoding='utf-8') as f:
+                self.update_progress(50, f"Parsing JSON for {file_name}...")
                 data = json.load(f)
             
-            # Add to loaded files
-            file_id = self.file_counter
-            self.file_counter += 1
-            display_name = os.path.basename(file_path)
-            self.loaded_files[file_id] = {
-                'path': file_path,
-                'data': data,
-                'name': display_name
-            }
+            self.update_progress(100, f"Completed loading {file_name}")
+            time.sleep(0.5)  # Brief pause to show completion
             
-            # Add to listbox
-            self.files_listbox.insert(tk.END, display_name)
-            messagebox.showinfo("Success", f"File loaded: {display_name}")
+            # Finalize loading
+            self.finalize_file_load(file_path, data)
             
         except Exception as e:
-            messagebox.showerror("Error", f"Failed to load JSON file: {str(e)}")
+            self.show_error(f"Failed to load JSON file {os.path.basename(file_path)}: {str(e)}")
+            self.update_progress(0, "Ready")
+    
+    def get_cache_path(self, file_path):
+        """Generate a cache file path based on the input file's path and modification time"""
+        file_stat = os.stat(file_path)
+        file_hash = hashlib.md5((file_path + str(file_stat.st_mtime)).encode()).hexdigest()
+        return os.path.join(self.cache_dir, file_hash + '.json')
+    
+    def check_cache(self, file_path):
+        """Check if a valid cached version exists for the file"""
+        cache_path = self.get_cache_path(file_path)
+        if os.path.exists(cache_path):
+            return cache_path
+        return None
+    
+    def update_progress(self, value, text):
+        """Update the progress bar and label (thread-safe)"""
+        self.parent.root.after(0, lambda: self._update_progress_ui(value, text))
+    
+    def _update_progress_ui(self, value, text):
+        """Update UI elements directly (called from main thread)"""
+        self.progress_var.set(value)
+        self.progress_label.config(text=text)
+        self.parent.root.update_idletasks()
+    
+    def show_error(self, message):
+        """Show error message (thread-safe)"""
+        self.parent.root.after(0, lambda: messagebox.showerror("Error", message))
+    
+    def show_info(self, message):
+        """Show info message (thread-safe)"""
+        self.parent.root.after(0, lambda: messagebox.showinfo("Info", message))
+    
+    def finalize_file_load(self, file_path, data):
+        """Add loaded file data to the UI (thread-safe)"""
+        self.parent.root.after(0, lambda: self._finalize_file_load_ui(file_path, data))
+    
+    def _finalize_file_load_ui(self, file_path, data):
+        """Finalize file loading in the UI thread"""
+        # Add to loaded files
+        file_id = self.file_counter
+        self.file_counter += 1
+        display_name = os.path.basename(file_path)
+        self.loaded_files[file_id] = {
+            'path': file_path,
+            'data': data,
+            'name': display_name
+        }
+        
+        # Add to listbox
+        self.files_listbox.insert(tk.END, display_name)
+        
+        # Reset progress
+        self.progress_var.set(0)
+        self.progress_label.config(text=f"Successfully loaded {display_name}")
+        
+        # Notify user
+        self.show_info(f"File loaded: {display_name}")
     
     def remove_selected_file(self):
         """Remove selected files from the comparison"""

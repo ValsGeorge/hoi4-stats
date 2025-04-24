@@ -11,37 +11,80 @@ import sys
 import argparse
 from src.utils.melter import melt_save_file, is_binary_file, ensure_melted_saves_dir
 import re
+import time
 
 # Set recursion limit higher for deeply nested files
 sys.setrecursionlimit(10000)
 
-def load_save_file(save_path):
-    """Load a HOI4 save file and return the parsed data."""
+# Global cache for parsed files
+_file_cache = {}
+
+def load_save_file(save_path, callback=None):
+    """
+    Load a HOI4 save file and return the parsed data.
+    
+    Args:
+        save_path: Path to the save file
+        callback: Optional callback function to report progress (takes percentage and status message)
+    
+    Returns:
+        Parsed save file data
+    """
     # Check if the file exists
     if not os.path.exists(save_path):
         raise FileNotFoundError(f"Save file not found: {save_path}")
+    
+    # Get file modification time to use as cache key
+    file_stat = os.stat(save_path)
+    cache_key = f"{save_path}:{file_stat.st_mtime}"
+    
+    # Check if we've already parsed this file
+    if cache_key in _file_cache:
+        if callback:
+            callback(100, "Loaded from memory cache")
+        return _file_cache[cache_key]
     
     # Get the HOI4 game directory
     game_dir = pyradox.get_game_directory('HoI4')
     if game_dir is None:
         print("Warning: Could not find HOI4 game directory. Some references may not resolve correctly.")
     
-    # Check if the file is binary and needs to be melted
-    if is_binary_file(save_path):
-        print(f"\nFile appears to be binary: {save_path}")
-        print("Attempting to melt the file...")
-        success, melted_path = melt_save_file(save_path)
-        if success:
-            print(f"Successfully melted file to: {melted_path}")
-            save_path = melted_path
-        else:
-            print("Failed to melt the file. Attempting to parse it anyway...")
-    
     # Parse the file
     try:
+        if callback:
+            callback(10, "Preparing to parse file")
+            
         print(f"Parsing file: {save_path}")
-        result = pyradox.parse_file(save_path, game='HoI4', path_relative_to_game=False, verbose=True)
-        print(f"\nSuccessfully parsed {save_path}")
+        start_time = time.time()
+        
+        # Manual progress updates for better UI feedback
+        if callback:
+            callback(20, "Starting parse operation")
+        
+        # Parse the file (without token_callback which isn't supported)
+        result = pyradox.parse_file(
+            save_path, 
+            game='HoI4', 
+            path_relative_to_game=False, 
+            verbose=True
+        )
+        
+        # Simulate progress updates since we can't get real-time feedback
+        if callback:
+            callback(80, "Parse completed, finalizing")
+        
+        parse_time = time.time() - start_time
+        print(f"\nSuccessfully parsed {save_path} in {parse_time:.2f} seconds")
+        
+        if callback:
+            callback(95, "Finalizing")
+            
+        # Cache the result
+        _file_cache[cache_key] = result
+        
+        if callback:
+            callback(100, "Complete")
+            
         return result
     except Exception as e:
         print(f"\nError parsing {save_path}: {str(e)}")
@@ -118,6 +161,11 @@ def load_json_file(file_path):
         traceback.print_exc()
         return None
 
+def clear_cache():
+    """Clear the file cache to free memory"""
+    global _file_cache
+    _file_cache.clear()
+
 def main():
     # Parse command line arguments
     parser = argparse.ArgumentParser(description='Parse HOI4 save files using pyradox')
@@ -152,10 +200,16 @@ def main():
     
     # Parse the save file
     try:
-        savegame = load_save_file(save_path)
+        # Define a progress reporting function
+        def report_progress(percent, message):
+            print(f"\rProgress: [{percent:3d}%] {message}", end="")
+        
+        start_time = time.time()
+        savegame = load_save_file(save_path, callback=report_progress)
+        total_time = time.time() - start_time
         
         # If we get here, parsing is successful
-        print("Successfully processed the save file!")
+        print(f"\nSuccessfully processed the save file in {total_time:.2f} seconds!")
         
         # Now try to extract some top-level keys to show the structure
         print("\nTop level keys in savegame:")
