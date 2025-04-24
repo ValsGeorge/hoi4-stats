@@ -5,21 +5,33 @@ from pathlib import Path
 import json
 from src.utils.melter import melt_save_file, is_binary_file, ensure_melted_saves_dir
 from read_with_pyradox import load_save_file, save_to_json
+from compare_view import CompareView
 
 class HOI4StatsGUI:
     def __init__(self, root):
         self.root = root
         self.root.title("HOI4 Stats Analyzer")
-        self.root.geometry("800x600")
+        self.root.geometry("900x700")
         
         self.save_data = None
         self.equipment_data = None
+        
+        # Create a notebook for tabs
+        self.notebook = ttk.Notebook(self.root)
+        self.notebook.pack(fill="both", expand=True)
+        
+        # Create main tab
+        self.main_tab = ttk.Frame(self.notebook)
+        self.notebook.add(self.main_tab, text="Single File Analysis")
+        
+        # Initialize the compare view
+        self.compare_view = CompareView(self, self.notebook)
         
         self.create_widgets()
         
     def create_widgets(self):
         # File Selection Frame
-        file_frame = ttk.LabelFrame(self.root, text="Save File", padding="10")
+        file_frame = ttk.LabelFrame(self.main_tab, text="Save File", padding="10")
         file_frame.pack(fill="x", padx=10, pady=5)
         
         self.file_path_var = tk.StringVar()
@@ -29,7 +41,7 @@ class HOI4StatsGUI:
         ttk.Button(file_frame, text="Load JSON", command=self.load_json).pack(side="left", padx=5)
         
         # Analysis Frame
-        analysis_frame = ttk.LabelFrame(self.root, text="Industrial Organizations History", padding="10")
+        analysis_frame = ttk.LabelFrame(self.main_tab, text="Industrial Organizations History", padding="10")
         analysis_frame.pack(fill="both", expand=True, padx=10, pady=5)
         
         # Search and Filter
