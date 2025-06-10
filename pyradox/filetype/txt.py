@@ -12,16 +12,16 @@ IGNORED_PATHS = [
     # Add patterns for paths to ignore
     ['fired_event_names'],
     ['pending_events'],
-    # ['front', 'provinces'],
-    # ['flags'],
-    # ['id_counter_store'],
-    # ['industry_organisation_index'],
-    # ['special_project_index'],
-    # ['program'],
-    # ['program_supply_consumer'],
-    # ['id_counter_store'],
-    # ['saved_event_target'],
-    # ['flags'],
+    ['fleet'],
+    ['%light_cruiser%'],
+    # ['%heavy_cruiser%'],
+    # ['%battleship%'],
+    # ['%destroyer%'],
+    # ['%submarine%'],
+    # ['%carrier%'],
+    ['corps_commander'],
+    ['variables'],
+    ['delivery_routes']
 
 ]
 
@@ -221,9 +221,21 @@ class TreeParseState():
         # Check if this path ends with any ignore pattern
         for ignore_pattern in IGNORED_PATHS:
             if len(test_path) >= len(ignore_pattern):
+
                 # Check if the end of the path matches the pattern
                 if test_path[-len(ignore_pattern):] == ignore_pattern:
                     return True
+
+                if ignore_pattern[0].startswith('%') and ignore_pattern[0].endswith('%'):
+                    search_term = ignore_pattern[0][1:-1]
+                    # print('########### SEARCHING FOR TERM ##############')
+                    # Check if the search term is in the last part of the path
+
+                    #! IT DOES NOT WORK CORRECTLY (FOR NESTED PATHS?)
+                    if any(search_term in part for part in test_path[-len(ignore_pattern):]):
+                        # print('########### SEARCHING FOR TERM MATCHED ##############')
+                        # print('Found "%s" in %s' % (search_term, test_path[-len(ignore_pattern):]))
+                        return True
         return False
 
     def process_key(self):
@@ -270,7 +282,7 @@ class TreeParseState():
         elif token_type == 'end':
             if self.is_top_level:
                 # top level cannot be ended, warn
-                warnings.warn_explicit('Unmatched closing bracket at outer level of file. Skipping token.', ParseWarning, self.filename, token_line_number + 1)
+                #warnings.warn_explicit('Unmatched closing bracket at outer level of file. Skipping token.', ParseWarning, self.filename, token_line_number + 1)
                 self.next = self.process_key
             else:
                 self.next = None
