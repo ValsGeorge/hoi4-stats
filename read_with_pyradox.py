@@ -170,7 +170,7 @@ def main():
     # Parse command line arguments
     parser = argparse.ArgumentParser(description='Parse HOI4 save files using pyradox')
     parser.add_argument('save_path', nargs='?', 
-                        default="C:/Users/Vals_/Desktop/Projects/hoi4-stats/melted_saves/autosave_4.txt",
+                        default="C:\\Users\\Lockout\\Desktop\\Projects\\hoi4-stats\\melted_saves\\autosave_1.hoi4.txt",
                         help='Path to the HOI4 save file to parse')
     parser.add_argument('--output', '-o', 
                         help='Path to save the output JSON file (default: input_filename.json)')

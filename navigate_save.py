@@ -109,7 +109,7 @@ def get_value_at_path(data, path):
     return current
 
 def main():
-    file_path = r"C:\Users\Vals_\Desktop\Projects\hoi4-stats\melted_saves\autosave_4.json"
+    file_path = r"C:\Users\Lockout\Desktop\Projects\hoi4-stats\melted_saves\autosave_1.hoi4.txt"
     print(f"Loading file: {file_path}")
     
     try:
@@ -123,7 +123,7 @@ def main():
             data = load_save_file(file_path)
             # Convert pyradox Tree to dictionary
             save_data = {}
-            for key, value in data.items():
+            for key, value in data.items(): # type: ignore
                 if hasattr(value, 'to_python'):
                     save_data[key] = value.to_python()
                 else:
