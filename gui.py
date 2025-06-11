@@ -150,10 +150,17 @@ class AnalyzerGUI:
         """Process JSON file and return analysis data."""
         import equipment
         import buildings
+        from excel_generator import create_excel_report
+        
+        base_name = os.path.splitext(os.path.basename(file))[0]
         
         # Run both analyses
         equipment_data = equipment.analyze_save_file(file)
         buildings_data = buildings.analyze_save_file(file)
+        
+        # Generate Excel report if we have data
+        if equipment_data and buildings_data:
+            create_excel_report(equipment_data, buildings_data, base_name)
         
         # Return equipment data for Excel generation
         return equipment_data

@@ -4,6 +4,7 @@ import equipment
 import buildings
 import tkinter as tk
 from gui import AnalyzerGUI
+from excel_generator import create_excel_report  # Fix the import name
 
 def process_save_file(save_path):
     # Generate output JSON path in project directory
@@ -19,6 +20,10 @@ def process_save_file(save_path):
     # Analyze both equipment and buildings
     equipment_data = equipment.analyze_save_file(json_path)
     buildings_data = buildings.analyze_save_file(json_path)
+    
+    # Generate Excel report with correct function name
+    if equipment_data and buildings_data:
+        create_excel_report(equipment_data, buildings_data, base_name)
     
     return True
 

@@ -11,7 +11,8 @@ def format_game_date(date_str):
         # Parse the game date string (e.g., "1936.1.1")
         year, month, day = map(int, date_str.split('.')[:3])
         date_obj = datetime(year, month, day)
-        return date_obj.strftime("%d/%m/%Y")  # Always use DD/MM/YYYY
+        # Always use DD/MM/YYYY format
+        return date_obj.strftime("%d/%m/%Y")
     except:
         return date_str
 
@@ -31,6 +32,10 @@ def analyze_state_buildings(data):
     if 'states' in data:
         for state_id, state_data in data['states'].items():
             if isinstance(state_data, dict):
+                # Get state owner
+                owner = state_data.get('owner', 'NON')
+                state_buildings[state_id]['owner'] = owner
+                
                 # Get infrastructure level
                 infra = state_data.get('building_levels', {}).get('infrastructure', 0)
                 state_buildings[state_id]['infrastructure'] = calculate_building_count(infra)
@@ -43,9 +48,13 @@ def analyze_state_buildings(data):
                         building_type = 'civs'
                     elif building_type == 'arms_factory':
                         building_type = 'mils'
+                    elif building_type == 'steel_refinery':
+                        building_type = 'steel_mills'
+                    elif building_type == 'aluminium_refinery':
+                        building_type = 'aluminium_mills'
                     
                     state_buildings[state_id][building_type] = calculate_building_count(amount)
-                    
+    
     return state_buildings
 
 def analyze_construction_queue(data):
@@ -108,9 +117,10 @@ def save_building_analysis(buildings_data, output_path):
         f.write("=====================\n\n")
         for state_id, buildings in sorted(buildings_data.items()):
             state_name = STATES.get(state_id, "Unknown")
-            f.write(f"State {state_id} - {state_name}:\n")
+            owner = buildings.get('owner', 'NON')
+            f.write(f"State {state_id} - {state_name} ({owner}):\n")
             for building, amount in buildings.items():
-                if amount > 0:  # Only show buildings that exist
+                if amount > 0 and building != 'owner':  # Skip owner from building list
                     f.write(f"  {building}: {amount}\n")
             f.write("\n")
 
