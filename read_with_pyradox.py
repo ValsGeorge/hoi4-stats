@@ -162,18 +162,20 @@ def load_json_file(file_path):
         with open(file_path, 'r', encoding='utf-8') as f:
             data = json.load(f)
             
-        # Convert date strings back to Time objects
+        # Convert date strings back to standard format
         def convert_dates(obj):
             if isinstance(obj, dict):
                 for key, value in obj.items():
                     if isinstance(value, str) and re.match(r'^-?\d+\.\d+\.\d+(\.\d+)?$', value):
-                        obj[key] = pyradox.datatype.time.Time.from_string(value)
+                        # Store as string instead of Time object
+                        obj[key] = value
                     elif isinstance(value, dict):
                         convert_dates(value)
                     elif isinstance(value, list):
                         for i, item in enumerate(value):
                             if isinstance(item, str) and re.match(r'^-?\d+\.\d+\.\d+(\.\d+)?$', item):
-                                value[i] = pyradox.datatype.time.Time.from_string(item)
+                                # Store as string instead of Time object
+                                value[i] = item
                             elif isinstance(item, dict):
                                 convert_dates(item)
             return obj

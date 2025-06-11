@@ -2,6 +2,8 @@ import json
 from read_with_pyradox import load_json_file
 import os
 from collections import defaultdict
+import openpyxl
+from openpyxl.styles import PatternFill, Font
 
 def get_equipment_details(data, equipment_id, equipment_type):
     """Find equipment details from the equipments section."""
@@ -31,6 +33,17 @@ def get_equipment_name_from_registry(equipment_registry, eq_id, eq_type):
             
     return f"Unknown Equipment (ID: {eq_id}, Type: {eq_type})"
 
+def convert_time_to_string(time_obj):
+    """Convert a pyradox Time object to string."""
+    if hasattr(time_obj, 'to_python'):
+        # Convert Time object to string representation
+        date_parts = time_obj.to_python()
+        if isinstance(date_parts, tuple):
+            return f"{date_parts[0]}.{date_parts[1]}.{date_parts[2]}"
+    elif hasattr(time_obj, '__str__'):
+        return str(time_obj)
+    return str(time_obj)
+
 def analyze_save_file(json_path):
     """Analyze the entire save file for relevant data."""
     try:
@@ -39,12 +52,17 @@ def analyze_save_file(json_path):
             print("Failed to load JSON data")
             return
 
+        # Extract and explicitly convert save date to string
+        raw_date = data.get('date', 'Unknown Date')
+        save_date = convert_time_to_string(raw_date)
+        print(f"Debug: Converted date {raw_date} to {save_date}")
+        
         # First analyze equipment to build the registry
         equipment_registry = analyze_equipment(data)
         # Then analyze organizations with the equipment registry
         analyze_organizations(data, equipment_registry)
-        # Finally analyze production queue
-        analyze_production_queue(data, equipment_registry)
+        # Finally analyze production queue with date
+        analyze_production_queue(data, equipment_registry, save_date)
 
     except Exception as e:
         print(f"Error analyzing save file: {str(e)}")
@@ -159,7 +177,8 @@ def analyze_organizations(data, equipment_registry):
                                                 'equipment_name': eq_name,
                                                 'equipment_id': eq_id,
                                                 'equipment_type': eq_type,
-                                                'units': prod_data.get('units', 0)
+                                                'units': prod_data.get('units', 0),
+                                                'date': entry.get('date', 'Unknown')
                                             })
                                 
                                 org_registry[org_name] = org_details
@@ -189,8 +208,9 @@ def analyze_organizations(data, equipment_registry):
                     if details['history']:
                         f.write("\nProduction History:\n")
                         for entry in details['history']:
-                            f.write(f"  Equipment: {entry['equipment_name']}\n")
+                            f.write(f"  Equipment: {entry['equipment_name']} - [{entry['equipment_id']}/{entry['equipment_type']}]\n")
                             f.write(f"  Units: {entry['units']}\n")
+                            f.write(f"  Date: {entry['date']}\n")
                             f.write("\n")
                     f.write("-" * 40 + "\n")
 
@@ -206,11 +226,16 @@ def analyze_organizations(data, equipment_registry):
         raise
 
 
-def analyze_production_queue(data, equipment_registry):
+def analyze_production_queue(data, equipment_registry, save_date):
     """Analyze the military production lines from the parsed save file."""
     try:
         print("\nAnalyzing production queue...")
         production_lines = []
+        by_country = defaultdict(list)
+        
+        # Ensure save_date is a string
+        save_date = convert_time_to_string(save_date)
+        print(f"Debug: Using date string: {save_date}")
         
         if 'countries' in data:
             for country_tag, country_data in data['countries'].items():
@@ -236,36 +261,70 @@ def analyze_production_queue(data, equipment_registry):
                                     'manufacturer_id': line.get('industrial_manufacturer', {}).get('id')
                                 }
                                 production_lines.append(line_details)
+                                by_country[country_tag].append(line_details)  # Add to by_country here
 
-        # Write results to a text file
-        output_path = os.path.join('output', 'production_analysis.txt')
-        os.makedirs('output', exist_ok=True)
-        with open(output_path, 'w', encoding='utf-8') as f:
-            f.write("Production Queue Analysis\n")
-            f.write("=======================\n\n")
+        # Create Excel only if not being combined
+        if not hasattr(analyze_production_queue, 'combining'):
+            wb = openpyxl.Workbook()
+        
+            # Remove default sheet
+            wb.remove(wb.active)
             
-            # Group by country
-            by_country = defaultdict(list)
-            for line in production_lines:
-                by_country[line['country']].append(line)
+            # List of major countries to track
+            major_countries = ['USA', 'ENG', 'GER', 'ITA', 'SOV', 'JAP']
             
-            # Write organized by country
-            for country, lines in sorted(by_country.items()):
-                f.write(f"\nCountry: {country}\n")
-                f.write("=" * 40 + "\n")
-                
-                for line in sorted(lines, key=lambda x: x['priority']):
-                    f.write(f"\nPriority: {line['priority']}\n")
-                    f.write(f"Active Factories: {line['active_factories']}\n")
-                    f.write(f"Equipment: {line['equipment_name']}\n")
-                    f.write(f"Equipment ID: {line['equipment_id']}\n") 
-                    f.write(f"Equipment Type: {line['equipment_type']}\n")
-                    f.write(f"Production Speed: {line['speed']:.2f}\n")
-                    f.write(f"Production Cost: {line['cost']:.2f}\n")
-                    f.write("-" * 40 + "\n")
+            # Headers for each sheet
+            headers = ['Date', 'Priority', 'Active Factories', 'Equipment', 'Equipment ID', 
+                      'Equipment Type', 'Production Speed', 'Production Cost']
+            
+            # Create sheets for each major country
+            for country in major_countries:
+                if country in by_country:
+                    ws = wb.create_sheet(country)
+                    
+                    # Add headers with formatting
+                    for col, header in enumerate(headers, 1):
+                        cell = ws.cell(row=1, column=col, value=header)
+                        cell.fill = PatternFill(start_color='366092', end_color='366092', fill_type='solid')
+                        cell.font = Font(color='FFFFFF', bold=True)
+                    
+                    # Add data rows - save_date is now a string
+                    row = 2
+                    for line in sorted(by_country[country], key=lambda x: x['priority']):
+                        ws.cell(row=row, column=1, value=save_date)  # Will work now as save_date is a string
+                        ws.cell(row=row, column=2, value=line['priority'])
+                        ws.cell(row=row, column=3, value=line['active_factories'])
+                        ws.cell(row=row, column=4, value=line['equipment_name'])
+                        ws.cell(row=row, column=5, value=line['equipment_id'])
+                        ws.cell(row=row, column=6, value=line['equipment_type'])
+                        ws.cell(row=row, column=7, value=round(line['speed'], 2))
+                        ws.cell(row=row, column=8, value=round(line['cost'], 2))
+                        row += 1
+                    
+                    # Auto-adjust column widths
+                    for col in ws.columns:
+                        max_length = 0
+                        column = col[0].column_letter
+                        for cell in col:
+                            try:
+                                if len(str(cell.value)) > max_length:
+                                    max_length = len(str(cell.value))
+                            except:
+                                pass
+                        adjusted_width = (max_length + 2)
+                        ws.column_dimensions[column].width = adjusted_width
 
-        print(f"Production queue analysis has been written to: {output_path}")
-        return production_lines
+            # Save Excel file
+            excel_path = os.path.join('output', 'production_analysis.xlsx')
+            wb.save(excel_path)
+            print(f"Production analysis has been written to: {excel_path}")
+
+        # Return the data for potential combining
+        return {
+            'date': save_date,
+            'by_country': by_country,
+            'production_lines': production_lines
+        }
 
     except Exception as e:
         print(f"Error analyzing production queue: {str(e)}")

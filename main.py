@@ -1,6 +1,8 @@
 import os
 import read_with_pyradox as parser
 import equipment
+import tkinter as tk
+from gui import AnalyzerGUI
 
 def process_save_file(save_path):
     # Generate output JSON path in project directory
@@ -17,7 +19,6 @@ def process_save_file(save_path):
     equipment.analyze_save_file(json_path)
 
 if __name__ == "__main__":
-    # save_path = "C:\\Users\\Lockout\\Documents\\Paradox Interactive\\Hearts of Iron IV\\save games\\USA_1940_01_04_10.hoi4"
-
-    save_path = "C:\\Users\\Lockout\\Documents\\Paradox Interactive\\Hearts of Iron IV\\save games\\ENG_1941_04_04_01.hoi4"
-    process_save_file(save_path)
+    root = tk.Tk()
+    app = AnalyzerGUI(root)
+    root.mainloop()
