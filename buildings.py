@@ -6,17 +6,12 @@ from datetime import datetime
 from state_defines import STATES
 
 def format_game_date(date_str):
-    """Convert game date to either MMM-YY or DD/MM/YYYY format based on day."""
+    """Convert game date to DD/MM/YYYY format."""
     try:
         # Parse the game date string (e.g., "1936.1.1")
         year, month, day = map(int, date_str.split('.')[:3])
         date_obj = datetime(year, month, day)
-        
-        # If day is 1, use MMM-YY format, otherwise use DD/MM/YYYY
-        if day == 1:
-            return date_obj.strftime("%b-%y").upper()  # Returns format like "JAN-36"
-        else:
-            return date_obj.strftime("%d/%m/%Y")  # Returns format like "15/01/1936"
+        return date_obj.strftime("%d/%m/%Y")  # Always use DD/MM/YYYY
     except:
         return date_str
 
@@ -61,33 +56,47 @@ def analyze_construction_queue(data):
         for country_tag, country_data in data['countries'].items():
             if 'production' not in country_data:
                 continue
-            print(f"Analyzing construction queue for country: {country_tag}")
                 
             prod_data = country_data['production']
-            if 'general_lines' not in prod_data:
+            if 'general_lines' not in prod_data or 'building' not in prod_data['general_lines']:
                 continue
-            print(f"Found {len(prod_data.get('general_lines', []))} construction lines for {country_tag}.")
                 
             country_queue = []
-            for line in prod_data.get('general_lines', []):
-                if not isinstance(line, dict) or 'building' not in line:
+            building_lines = prod_data['general_lines']['building']
+            if not isinstance(building_lines, list):
+                continue
+            
+            for line in building_lines:
+                if not isinstance(line, dict):
                     continue
-                print(f"Processing construction line for {country_tag}: {line.get('building', 'Unknown')}")
                     
+                building_info = line.get('building', {})
+                state_id = str(building_info.get('location', 'Unknown'))
+                state_name = STATES.get(state_id, "Unknown Location")
+                
+                # Convert building type to shorter name
+                building_type = building_info.get('template', 'Unknown')
+                if building_type == 'arms_factory':
+                    building_type = 'mil'
+                elif building_type == 'industrial_complex':
+                    building_type = 'civ'
+                
                 line_data = {
-                    'building': line['building'],
+                    'building': building_type,
                     'active_factories': line.get('active_factories', 0),
                     'produced': line.get('produced', 0),
                     'amount': line.get('amount', 0),
                     'speed': line.get('speed', 0),
                     'cost': line.get('cost', 0),
-                    'created': format_game_date(str(line.get('created', 'Unknown'))),
-                    'state': line.get('state', 'Unknown'),
+                    'created': format_game_date(line.get('created_date', 'Unknown')),
+                    'state': state_id,
+                    'state_name': state_name
                 }
                 
-                country_queue.append(line_data)
-            print(f"Country {country_tag} has {len(country_queue)} items in construction queue.")
-            if country_queue:  # Only include countries with active construction
+                if line_data['active_factories'] > 0:
+                    country_queue.append(line_data)
+            
+            if country_queue:
                 construction_data[country_tag] = country_queue
     
     return construction_data
@@ -142,9 +151,10 @@ def analyze_save_file(json_path):
                 f.write("-" * 40 + "\n")
                 for item in queue:
                     f.write(f"Building: {item['building']}\n")
-                    f.write(f"State: {item['state']}\n")
+                    f.write(f"State: {item['state']} - {item['state_name']}\n")
                     f.write(f"Active Factories: {item['active_factories']}\n")
-                    f.write(f"Progress: {item['produced']}/{item['amount']}\n")
+                    f.write(f"Produced: {item['produced']}\n")
+                    f.write(f"Amount: {item['amount']}\n")
                     f.write(f"Speed: {item['speed']}\n")
                     f.write(f"Cost: {item['cost']}\n")
                     f.write(f"Started: {item['created']}\n")
