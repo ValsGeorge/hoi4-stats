@@ -13,7 +13,7 @@ IGNORED_PATHS = [
     ['fired_event_names'],
     ['pending_events'],
     ['fleet'],
-    ['%light_cruiser%'],
+    # ['%light_cruiser%'], #! partial match is not working correctly
     # ['%heavy_cruiser%'],
     # ['%battleship%'],
     # ['%destroyer%'],
@@ -21,8 +21,52 @@ IGNORED_PATHS = [
     # ['%carrier%'],
     ['corps_commander'],
     ['variables'],
-    ['delivery_routes']
-
+    ['delivery_routes'],
+    ['all_playthrough_data'],
+    ['sunk_convoys_history'],
+    # ['threat', 'threat'], #! Apparently this is also not working correctly now
+    ['supply_system_2'],
+    ['regions'],
+    ['weather'],
+    # ['sunk_ship'], #? ?
+    ['theatres'],
+    ['division'],
+    ['characters'],
+    ['recruitable_operatives'],
+    ['policies'],
+    ['intel'],
+    ['decision_status'],
+    ['history_queue'],
+    ['log'],
+    ['player_settings'],
+    ['naval_strike_remaining'],
+    ['air_wing_pool'],
+    ['combat_history'],
+    ['allowed_strategy_plans'],
+    ['ai'],
+    ['convoys_subscriber'],
+    ['delivery_routes'],
+    ['diplomacy'],
+    ['politics'],
+    ['unlocked_subunits'],
+    ['initial_carrier_air_wing_deployment'],
+    ['military_deployment_line'],
+    ['strategic_navy'],
+    ['delivery_route'],
+    ['extra_resource_origin'],
+    ['factory_efficiencies'], # idk how to even read this data so i can make it useful
+    ['state_garrison_data'],
+    ['equipment_market'],
+    ['naval_lines'],
+    ['fuel_status'],
+    ['military_access'],
+    ['character_manager'],
+    ['rail_way'],
+    ['power_balance'],
+    ['raids'],
+    ['convoy_1'],
+    ['combat'],
+    # ['air_base'],
 ]
 
 game_encodings = {
@@ -158,10 +202,22 @@ class TreeParseState():
         self.operator = None                # The operator currently being processed. Usually '='.
         self.group_depth = 0                # The depth of nested groups (0 means not in a group)
         self.next = self.process_key         # The next case to execute.
-        self.ignoring_section = False  # Add this new field
-        self.ignore_depth = 0  # Track nested depth when ignoring
-        self.current_path = []  # Add this to track current path
-        
+
+        self.current_depth = 0  # Track overall nesting depth
+        self.ignoring_section = False
+        self.ignore_start_depth = None  # Track depth where ignoring started
+        self.current_path = []
+
+    def track_depth(self, token_type):
+        """Track nesting depth"""
+        if token_type == 'begin':
+            self.current_depth += 1
+            return True
+        elif token_type == 'end':
+            self.current_depth -= 1
+            return True
+        return False
+
     def get_previous_line_number(self):
         """ Line number of the token just before the one consumed. Returns -1 if the token just consumed was the first one."""
         if len(self.token_data) > 0 and self.pos > 1:
@@ -231,7 +287,7 @@ class TreeParseState():
                     # print('########### SEARCHING FOR TERM ##############')
                     # Check if the search term is in the last part of the path
 
-                    #! IT DOES NOT WORK CORRECTLY (FOR NESTED PATHS?)
+                    #! IT DOES NOT WORK CORRECTLY (FOR NESTED PATHS OR FOR KEYWORDS WITH SINGLE VALUE?)
                     if any(search_term in part for part in test_path[-len(ignore_pattern):]):
                         # print('########### SEARCHING FOR TERM MATCHED ##############')
                         # print('Found "%s" in %s' % (search_term, test_path[-len(ignore_pattern):]))
@@ -241,21 +297,19 @@ class TreeParseState():
     def process_key(self):
         token_type, token_string, token_line_number = self.consume()
         
-        if token_type == 'end':
-            if self.ignoring_section:
-                self.ignore_depth -= 1
-                if self.ignore_depth == 0:
-                    self.ignoring_section = False
-                    # Pop the last path element when exiting an ignored section
-                    if self.current_path:
-                        self.current_path.pop()
-                self.next = self.process_key
-                return
-            # If not ignoring and we see an end token, pop the path
-            elif self.current_path:
-                self.current_path.pop()
+        # Update depth tracking
+        self.track_depth(token_type)
 
+        # Handle ignored section
         if self.ignoring_section:
+            if token_type == 'end' and self.current_depth <= self.ignore_start_depth:
+                self.ignoring_section = False
+                self.ignore_start_depth = None
+                if self.current_path:
+                    self.current_path.pop()
+                # Add an empty tree for the ignored section
+                if self.key:
+                    self.append_to_result(pyradox.Tree())
             self.next = self.process_key
             return
 
@@ -263,11 +317,18 @@ class TreeParseState():
             self.key_string = token_string
             self.key = pyradox.token.make_primitive(token_string, token_type)
             
-            # Check if this key should be ignored based on the current path
+            # If token is a quoted string and followed by an operator, handle it specially
+            if token_type == 'quoted' and self.pos < len(self.token_data):
+                next_token = self.token_data[self.pos]
+                if next_token[0] == 'operator':
+                    self.next = self.process_operator
+                    return
+
             if self.should_ignore_key(self.key):
                 self.ignoring_section = True
-                self.ignore_depth = 1
+                self.ignore_start_depth = self.current_depth
                 self.current_path.append(str(self.key).lower())
+                # print(f'Current path is now {self.current_path}')
                 self.next = self.process_key
                 return
                 
@@ -309,23 +370,54 @@ class TreeParseState():
             self.next = self.process_value
         
     def process_value(self):
-        if self.ignoring_section:
-            token_type, token_string, token_line_number = self.consume()
-            if token_type == 'begin':
-                self.ignore_depth += 1
-            elif token_type == 'end':
-                self.ignore_depth -= 1
-                if self.ignore_depth == 0:
-                    self.ignoring_section = False
-                    # Pop the path when exiting ignored section
-                    if self.current_path:
-                        self.current_path.pop()
-            self.next = self.process_key if self.ignore_depth == 0 else self.process_value
-            return
-            
-        # expecting a value
         token_type, token_string, token_line_number = self.consume()
         
+        # Update depth tracking
+        self.track_depth(token_type)
+        
+        # Handle ignored section
+        if self.ignoring_section:
+            # For simple key-value pairs (no nested structure), exit ignore mode immediately
+            if not token_type == 'begin':
+                self.ignoring_section = False
+                self.ignore_start_depth = None
+                if self.current_path:
+                    self.current_path.pop()
+                # Add an empty value for the ignored key
+                if self.key:
+                    self.append_to_result(pyradox.Tree())
+            elif token_type == 'end' and self.current_depth <= self.ignore_start_depth:
+                self.ignoring_section = False
+                self.ignore_start_depth = None
+                if self.current_path:
+                    self.current_path.pop()
+                # Add an empty tree for the ignored section
+                if self.key:
+                    self.append_to_result(pyradox.Tree())
+            self.next = self.process_key
+            return
+            
+        # Handle key-like values specially
+        if token_type in ['quoted', 'unquoted', 'symbol']:
+            value = pyradox.token.make_primitive(token_string, token_type)
+            self.append_to_result(value)
+            
+            # Look ahead to see if this is followed by an operator
+            if self.pos < len(self.token_data):
+                next_token = self.token_data[self.pos]
+                if next_token[0] == 'operator':
+                    # This value is actually a key for the next key-value pair
+                    self.key = value
+                    self.key_string = token_string
+                    self.next = self.process_operator
+                    return
+            
+            if self.group_depth > 0:
+                self.next = self.process_value
+            else:
+                self.next = self.process_key
+            return
+            
         if pyradox.token.is_primitive_value_token_type(token_type):
             maybe_color = self.maybe_subprocess_color(token_string, token_line_number)
             if maybe_color is not None:

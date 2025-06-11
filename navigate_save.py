@@ -109,7 +109,7 @@ def get_value_at_path(data, path):
     return current
 
 def main():
-    file_path = r"C:\Users\Lockout\Desktop\Projects\hoi4-stats\melted_saves\autosave_1.hoi4.txt"
+    file_path = r"C:\Users\Lockout\Desktop\Projects\hoi4-stats\autosave_2.hoi4.json"
     print(f"Loading file: {file_path}")
     
     try:

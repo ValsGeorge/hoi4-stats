@@ -1,109 +1,108 @@
-{
-  player="SOV"
-  country= "sov"
-    name="Soviet Union"
-    provinces={
-      	tiles={
-			id= 1
-			unit=3197
-			resources={
-				delivery_routes={
-					GER={
-						type=1
-						from_state=855
-						to_state=810
-						sender="FRA"
-						receiver="GER"
-						convoys_owner="GER"
-						land_path={
-							855 785 34 985 790 51 799 55 60 65 64 810
-						}
-						dirty=no
+
+player="SOV"
+country= "sov"
+name="Soviet Union"
+provinces={
+	tiles={
+		id= 1
+		unit=3197
+		resources={
+			delivery_routes={
+				GER={
+					type=1
+					from_state=855
+					to_state=810
+					sender="FRA"
+					receiver="GER"
+					convoys_owner="GER"
+					land_path={
+						855 785 34 985 790 51 799 55 60 65 64 810
 					}
-					ENG={
-						type=2
-						from_state=855
-						to_state=126
-						from_port=3552
-						to_port=6384
-						sender="FRA"
-						receiver="ENG"
-						convoys_owner="ENG"
-						naval_path={
-							42 369 241
-						}
-						dirty=no
+					dirty=no
+				}
+				ENG={
+					type=2
+					from_state=855
+					to_state=126
+					from_port=3552
+					to_port=6384
+					sender="FRA"
+					receiver="ENG"
+					convoys_owner="ENG"
+					naval_path={
+						42 369 241
 					}
-					SOV={
-						type=1
-						from_state=855
-						to_state=219
-						sender="FRA"
-						receiver="SOV"
-						convoys_owner="SOV"
-						land_path={
-							855 785 34 985 28 801 54 69 70 71 73 89 91 199 201 194 241 242 219
-						}
-						dirty=no
+					dirty=no
+				}
+				SOV={
+					type=1
+					from_state=855
+					to_state=219
+					sender="FRA"
+					receiver="SOV"
+					convoys_owner="SOV"
+					land_path={
+						855 785 34 985 28 801 54 69 70 71 73 89 91 199 201 194 241 242 219
 					}
-					SWE={
-						type=1
-						from_state=855
-						to_state=141
-						sender="FRA"
-						receiver="SWE"
-						convoys_owner="SWE"
-						land_path={
-							855 785 34 35 36 56 59 58 871 1051 37 138 139 1038 141
-						}
-						dirty=no
+					dirty=no
+				}
+				SWE={
+					type=1
+					from_state=855
+					to_state=141
+					sender="FRA"
+					receiver="SWE"
+					convoys_owner="SWE"
+					land_path={
+						855 785 34 35 36 56 59 58 871 1051 37 138 139 1038 141
 					}
-					FRA={
-						sender="FRA"
-						receiver="FRA"
-						convoys_owner="FRA"
-						dirty=yes
+					dirty=no
+				}
+				FRA={
+					sender="FRA"
+					receiver="FRA"
+					convoys_owner="FRA"
+					dirty=yes
+				}
+				LUX={
+					type=1
+					from_state=855
+					to_state=8
+					sender="FRA"
+					receiver="LUX"
+					convoys_owner="LUX"
+					land_path={
+						855 785 34 985 8
 					}
-					LUX={
-						type=1
-						from_state=855
-						to_state=8
-						sender="FRA"
-						receiver="LUX"
-						convoys_owner="LUX"
-						land_path={
-							855 785 34 985 8
-						}
-						dirty=no
+					dirty=no
+				}
+				BEL={
+					type=1
+					from_state=855
+					to_state=6
+					sender="FRA"
+					receiver="BEL"
+					convoys_owner="BEL"
+					land_path={
+						855 785 29 6
 					}
-					BEL={
-						type=1
-						from_state=855
-						to_state=6
-						sender="FRA"
-						receiver="BEL"
-						convoys_owner="BEL"
-						land_path={
-							855 785 29 6
-						}
-						dirty=no
+					dirty=no
+				}
+				HOL={
+					type=1
+					from_state=855
+					to_state=7
+					sender="FRA"
+					receiver="HOL"
+					convoys_owner="HOL"
+					land_path={
+						855 785 34 35 7
 					}
-					HOL={
-						type=1
-						from_state=855
-						to_state=7
-						sender="FRA"
-						receiver="HOL"
-						convoys_owner="HOL"
-						land_path={
-							855 785 34 35 7
-						}
-						dirty=no
-					}
+					dirty=no
 				}
 			}
-		name= "Moscow"
-		capital= "Moscow"
 		}
+	name= "Moscow"
+	capital= "Moscow"
 	}
 }
