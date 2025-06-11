@@ -243,6 +243,10 @@ class AnalyzerGUI:
                 
                 # Setup headers using equipment types
                 ws.cell(row=1, column=1, value='Date')
+                cell = ws.cell(row=1, column=1)
+                cell.fill = PatternFill(start_color='366092', end_color='366092', fill_type='solid')
+                cell.font = Font(color='FFFFFF', bold=True)
+                
                 for col, eq_type in enumerate(equipment_list, 2):
                     cell = ws.cell(row=1, column=col, value=eq_type)
                     cell.fill = PatternFill(start_color='366092', end_color='366092', fill_type='solid')
