@@ -4,6 +4,22 @@ import os
 from collections import defaultdict
 import openpyxl
 from openpyxl.styles import PatternFill, Font
+from datetime import datetime
+
+def format_game_date(date_str):
+    """Convert game date to either MMM-YY or DD/MM/YYYY format based on day."""
+    try:
+        # Parse the game date string (e.g., "1936.1.1")
+        year, month, day = map(int, date_str.split('.')[:3])
+        date_obj = datetime(year, month, day)
+        
+        # If day is 1, use MMM-YY format, otherwise use DD/MM/YYYY
+        if day == 1:
+            return date_obj.strftime("%b-%y").upper()  # Returns format like "JAN-36"
+        else:
+            return date_obj.strftime("%d/%m/%Y")  # Returns format like "15/01/1936"
+    except:
+        return date_str
 
 def get_equipment_details(data, equipment_id, equipment_type):
     """Find equipment details from the equipments section."""
@@ -39,10 +55,10 @@ def convert_time_to_string(time_obj):
         # Convert Time object to string representation
         date_parts = time_obj.to_python()
         if isinstance(date_parts, tuple):
-            return f"{date_parts[0]}.{date_parts[1]}.{date_parts[2]}"
+            return format_game_date(f"{date_parts[0]}.{date_parts[1]}.{date_parts[2]}")
     elif hasattr(time_obj, '__str__'):
-        return str(time_obj)
-    return str(time_obj)
+        return format_game_date(str(time_obj))
+    return format_game_date(str(time_obj))
 
 def analyze_save_file(json_path):
     """Analyze the entire save file for relevant data."""
@@ -50,19 +66,18 @@ def analyze_save_file(json_path):
         data = load_json_file(json_path)
         if not data:
             print("Failed to load JSON data")
-            return
+            return None
 
         # Extract and explicitly convert save date to string
         raw_date = data.get('date', 'Unknown Date')
         save_date = convert_time_to_string(raw_date)
         print(f"Debug: Converted date {raw_date} to {save_date}")
         
-        # First analyze equipment to build the registry
+        # Build the registry
         equipment_registry = analyze_equipment(data)
-        # Then analyze organizations with the equipment registry
-        analyze_organizations(data, equipment_registry)
-        # Finally analyze production queue with date
-        analyze_production_queue(data, equipment_registry, save_date)
+        
+        # Return the production queue analysis
+        return analyze_production_queue(data, equipment_registry, save_date)
 
     except Exception as e:
         print(f"Error analyzing save file: {str(e)}")
@@ -237,13 +252,14 @@ def analyze_production_queue(data, equipment_registry, save_date):
         save_date = convert_time_to_string(save_date)
         print(f"Debug: Using date string: {save_date}")
         
+        # Process only active production lines by country
         if 'countries' in data:
             for country_tag, country_data in data['countries'].items():
                 if 'production' in country_data:
                     prod_data = country_data['production']
                     if 'military_lines' in prod_data:
                         for line in prod_data['military_lines']:
-                            if isinstance(line, dict):
+                            if isinstance(line, dict) and line.get('active_factories', 0) > 0:
                                 eq_id = line.get('equipment_variant_index', {}).get('id')
                                 eq_type = line.get('equipment_variant_index', {}).get('type')
                                 eq_name = get_equipment_name_from_registry(equipment_registry, eq_id, eq_type)
@@ -252,78 +268,24 @@ def analyze_production_queue(data, equipment_registry, save_date):
                                     'country': country_tag,
                                     'active_factories': line.get('active_factories', 0),
                                     'equipment_name': eq_name,
-                                    'equipment_id': eq_id,
-                                    'equipment_type': eq_type,
-                                    'priority': line.get('priority', 0),
-                                    'produced': line.get('produced', 0),
-                                    'speed': line.get('speed', 0),
-                                    'cost': line.get('cost', 0),
-                                    'manufacturer_id': line.get('industrial_manufacturer', {}).get('id')
                                 }
-                                production_lines.append(line_details)
-                                by_country[country_tag].append(line_details)  # Add to by_country here
+                                by_country[country_tag].append(line_details)
 
-        # Create Excel only if not being combined
-        if not hasattr(analyze_production_queue, 'combining'):
-            wb = openpyxl.Workbook()
-        
-            # Remove default sheet
-            wb.remove(wb.active)
-            
-            # List of major countries to track
-            major_countries = ['USA', 'ENG', 'GER', 'ITA', 'SOV', 'JAP']
-            
-            # Headers for each sheet
-            headers = ['Date', 'Priority', 'Active Factories', 'Equipment', 'Equipment ID', 
-                      'Equipment Type', 'Production Speed', 'Production Cost']
-            
-            # Create sheets for each major country
-            for country in major_countries:
-                if country in by_country:
-                    ws = wb.create_sheet(country)
-                    
-                    # Add headers with formatting
-                    for col, header in enumerate(headers, 1):
-                        cell = ws.cell(row=1, column=col, value=header)
-                        cell.fill = PatternFill(start_color='366092', end_color='366092', fill_type='solid')
-                        cell.font = Font(color='FFFFFF', bold=True)
-                    
-                    # Add data rows - save_date is now a string
-                    row = 2
-                    for line in sorted(by_country[country], key=lambda x: x['priority']):
-                        ws.cell(row=row, column=1, value=save_date)  # Will work now as save_date is a string
-                        ws.cell(row=row, column=2, value=line['priority'])
-                        ws.cell(row=row, column=3, value=line['active_factories'])
-                        ws.cell(row=row, column=4, value=line['equipment_name'])
-                        ws.cell(row=row, column=5, value=line['equipment_id'])
-                        ws.cell(row=row, column=6, value=line['equipment_type'])
-                        ws.cell(row=row, column=7, value=round(line['speed'], 2))
-                        ws.cell(row=row, column=8, value=round(line['cost'], 2))
-                        row += 1
-                    
-                    # Auto-adjust column widths
-                    for col in ws.columns:
-                        max_length = 0
-                        column = col[0].column_letter
-                        for cell in col:
-                            try:
-                                if len(str(cell.value)) > max_length:
-                                    max_length = len(str(cell.value))
-                            except:
-                                pass
-                        adjusted_width = (max_length + 2)
-                        ws.column_dimensions[column].width = adjusted_width
-
-            # Save Excel file
-            excel_path = os.path.join('output', 'production_analysis.xlsx')
-            wb.save(excel_path)
-            print(f"Production analysis has been written to: {excel_path}")
-
-        # Return the data for potential combining
+        # Return only active production data
         return {
             'date': save_date,
-            'by_country': by_country,
-            'production_lines': production_lines
+            'country_data': {
+                country: {
+                    'date': save_date,
+                    'equipment_factories': {
+                        line['equipment_name']: line['active_factories'] 
+                        for line in lines 
+                        if line['active_factories'] > 0
+                    }
+                }
+                for country, lines in by_country.items()
+                if lines  # Only include countries with active production
+            }
         }
 
     except Exception as e:
