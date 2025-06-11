@@ -64,7 +64,7 @@ IGNORED_PATHS = [
     ['rail_way'],
     ['power_balance'],
     ['raids'],
-    ['convoy_1'],
+    # ['convoy_1'],
     ['combat'],
     # ['air_base'],
 ]

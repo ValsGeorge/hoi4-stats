@@ -15,10 +15,20 @@ def get_equipment_details(data, equipment_id, equipment_type):
 
 def get_equipment_name_from_registry(equipment_registry, eq_id, eq_type):
     """Find equipment name based on ID and type from the equipment registry."""
-    for eq_name, variants in equipment_registry.items():
-        for variant in variants:
-            if variant['id'] == eq_id and variant['type'] == eq_type:
-                return eq_name
+    # First try direct lookup from the equipment registry
+    for eq_name, eq_data in equipment_registry.items():
+        if isinstance(eq_data, list):  # Handle list of variants
+            for variant in eq_data:
+                if (variant.get('id') == eq_id and 
+                    variant.get('type') == eq_type):
+                    return eq_name
+        elif isinstance(eq_data, dict):  # Handle single equipment entry
+            if 'id' in eq_data:
+                eq_info = eq_data['id']
+                if (eq_info.get('id') == eq_id and 
+                    eq_info.get('type') == eq_type):
+                    return eq_name
+            
     return f"Unknown Equipment (ID: {eq_id}, Type: {eq_type})"
 
 def analyze_save_file(json_path):
@@ -33,6 +43,8 @@ def analyze_save_file(json_path):
         equipment_registry = analyze_equipment(data)
         # Then analyze organizations with the equipment registry
         analyze_organizations(data, equipment_registry)
+        # Finally analyze production queue
+        analyze_production_queue(data, equipment_registry)
 
     except Exception as e:
         print(f"Error analyzing save file: {str(e)}")
@@ -42,28 +54,38 @@ def analyze_equipment(data):
     """Analyze equipment data from the parsed save file."""
     try:
         print("\nAnalyzing equipment data...")
-        equipment_registry = {}
         
         # First, collect all equipment names and their details
         equipment = dict()
         if 'equipments' in data:
-            for eq_name, eq_variants in data['equipments'].items():
-                if isinstance(eq_variants, list):
-                    equipment[eq_name] = []
-                    for variant in eq_variants:
+            for eq_name, eq_data in data['equipments'].items():
+                equipment[eq_name] = []
+                if isinstance(eq_data, list):
+                    # Handle list of variants
+                    for variant in eq_data:
                         if isinstance(variant, dict) and 'id' in variant:
-                            variant_info = {
+                            equipment[eq_name].append({
                                 'name': eq_name,
                                 'id': variant['id'].get('id'),
                                 'type': variant['id'].get('type'),
-                                'creator': variant.get('creator'),
-                            }
-                            equipment[eq_name].append(variant_info)
+                                'creator': variant.get('creator', 'Unknown'),
+                                'origin': variant.get('origin', '---'),
+                                'ideas': variant.get('ideas', [])
+                            })
+                elif isinstance(eq_data, dict) and 'id' in eq_data:
+                    # Handle single equipment entry
+                    equipment[eq_name].append({
+                        'name': eq_name,
+                        'id': eq_data['id'].get('id'),
+                        'type': eq_data['id'].get('type'),
+                        'creator': eq_data.get('creator', 'Unknown'),
+                        'origin': eq_data.get('origin', '---'),
+                        'ideas': eq_data.get('ideas', [])
+                    })
                             
             print(f"Found {len(equipment)} unique equipment types")
-            # print(f"Equipment: ", equipment)
 
-        # Write results to a text file in project directory
+        # Write results to a text file
         output_path = os.path.join('output', 'equipment_analysis.txt')
         os.makedirs('output', exist_ok=True)
         with open(output_path, 'w', encoding='utf-8') as f:
@@ -74,12 +96,17 @@ def analyze_equipment(data):
             f.write("==========================\n\n")
             
             for eq_name, variants in sorted(equipment.items()):
-                f.write(f"{eq_name}\n")                
-                for variant in variants:
-                    f.write(f"ID: {variant['id']}\n")
-                    f.write(f"Type: {variant['type']}\n")
-                    f.write(f"Creator: {variant['creator']}\n")
-                    f.write("\n")
+                if variants:  # Only write if there are variants
+                    f.write(f"{eq_name}\n")                
+                    for variant in variants:
+                        f.write(f"ID: {variant['id']}\n")
+                        f.write(f"Type: {variant['type']}\n")
+                        f.write(f"Creator: {variant['creator']}\n")
+                        if variant['origin'] != '---':
+                            f.write(f"Origin: {variant['origin']}\n")
+                        if variant['ideas']:
+                            f.write(f"Ideas: {variant['ideas']}\n")
+                        f.write("\n")
         
         print(f"Equipment analysis has been written to: {output_path}")
         return equipment
@@ -87,8 +114,7 @@ def analyze_equipment(data):
     except Exception as e:
         print(f"Error analyzing equipment: {str(e)}")
         print("Data structure where error occurred:")
-        import json
-        print(json.dumps(data.get('equipments', {}), indent=2)[:500])  # Print first 500 chars
+        print(json.dumps(data.get('equipments', {}), indent=2)[:500])
         raise
 
 def analyze_organizations(data, equipment_registry):
@@ -177,4 +203,70 @@ def analyze_organizations(data, equipment_registry):
         if 'countries' in data and 'SOV' in data['countries']:
             print("\nExample SOV data structure:")
             print(json.dumps(data['countries']['SOV'].get('production', {}), indent=2)[:500])
+        raise
+
+
+def analyze_production_queue(data, equipment_registry):
+    """Analyze the military production lines from the parsed save file."""
+    try:
+        print("\nAnalyzing production queue...")
+        production_lines = []
+        
+        if 'countries' in data:
+            for country_tag, country_data in data['countries'].items():
+                if 'production' in country_data:
+                    prod_data = country_data['production']
+                    if 'military_lines' in prod_data:
+                        for line in prod_data['military_lines']:
+                            if isinstance(line, dict):
+                                eq_id = line.get('equipment_variant_index', {}).get('id')
+                                eq_type = line.get('equipment_variant_index', {}).get('type')
+                                eq_name = get_equipment_name_from_registry(equipment_registry, eq_id, eq_type)
+                                
+                                line_details = {
+                                    'country': country_tag,
+                                    'active_factories': line.get('active_factories', 0),
+                                    'equipment_name': eq_name,
+                                    'equipment_id': eq_id,
+                                    'equipment_type': eq_type,
+                                    'priority': line.get('priority', 0),
+                                    'produced': line.get('produced', 0),
+                                    'speed': line.get('speed', 0),
+                                    'cost': line.get('cost', 0),
+                                    'manufacturer_id': line.get('industrial_manufacturer', {}).get('id')
+                                }
+                                production_lines.append(line_details)
+
+        # Write results to a text file
+        output_path = os.path.join('output', 'production_analysis.txt')
+        os.makedirs('output', exist_ok=True)
+        with open(output_path, 'w', encoding='utf-8') as f:
+            f.write("Production Queue Analysis\n")
+            f.write("=======================\n\n")
+            
+            # Group by country
+            by_country = defaultdict(list)
+            for line in production_lines:
+                by_country[line['country']].append(line)
+            
+            # Write organized by country
+            for country, lines in sorted(by_country.items()):
+                f.write(f"\nCountry: {country}\n")
+                f.write("=" * 40 + "\n")
+                
+                for line in sorted(lines, key=lambda x: x['priority']):
+                    f.write(f"\nPriority: {line['priority']}\n")
+                    f.write(f"Active Factories: {line['active_factories']}\n")
+                    f.write(f"Equipment: {line['equipment_name']}\n")
+                    f.write(f"Equipment ID: {line['equipment_id']}\n") 
+                    f.write(f"Equipment Type: {line['equipment_type']}\n")
+                    f.write(f"Production Speed: {line['speed']:.2f}\n")
+                    f.write(f"Production Cost: {line['cost']:.2f}\n")
+                    f.write("-" * 40 + "\n")
+
+        print(f"Production queue analysis has been written to: {output_path}")
+        return production_lines
+
+    except Exception as e:
+        print(f"Error analyzing production queue: {str(e)}")
         raise
