@@ -6,6 +6,8 @@ import threading
 import openpyxl
 from openpyxl.styles import PatternFill, Font
 from equipment import format_game_date
+from collections import defaultdict
+from eq_definitions import EQ_TYPE
 
 class AnalyzerGUI:
     def __init__(self, root):
@@ -155,8 +157,8 @@ class AnalyzerGUI:
         # Generate JSON path
         base_name = os.path.splitext(os.path.basename(file))[0]
         json_path = os.path.join("melted_saves", f"{base_name}.json")
-        # Process save and analyze
-        if process_save_file(file, json_path):
+        # Process save
+        if process_save_file(file):  # Remove json_path argument
             import equipment
             return equipment.analyze_save_file(json_path)
         return None
@@ -166,7 +168,7 @@ class AnalyzerGUI:
         from main import process_save_file
         base_name = os.path.splitext(os.path.basename(file))[0]
         json_path = os.path.join("melted_saves", f"{base_name}.json")
-        if process_save_file(file, json_path):
+        if process_save_file(file):  # Remove json_path argument
             import equipment
             return equipment.analyze_save_file(json_path)
         return None
@@ -183,35 +185,44 @@ class AnalyzerGUI:
             for country in major_countries:
                 ws = wb.create_sheet(country)
                 
-                # Get equipment names specific to this country
+                # Get equipment names specific to this country and map to types
                 country_equipment = set()
                 for data in all_data:
                     if country in data['country_data']:
-                        country_equipment.update(data['country_data'][country]['equipment_factories'].keys())
+                        # Map equipment names to their types
+                        eq_factories = data['country_data'][country]['equipment_factories']
+                        for eq_name in eq_factories.keys():
+                            eq_type = EQ_TYPE.get(eq_name, eq_name)
+                            country_equipment.add(eq_type)
                 
                 equipment_list = sorted(list(country_equipment))
                 if not equipment_list:
                     continue  # Skip if country has no equipment
                 
-                # Setup headers
+                # Setup headers using equipment types
                 ws.cell(row=1, column=1, value='Date')
-                for col, eq_name in enumerate(equipment_list, 2):
-                    cell = ws.cell(row=1, column=col, value=eq_name)
+                for col, eq_type in enumerate(equipment_list, 2):
+                    cell = ws.cell(row=1, column=col, value=eq_type)
                     cell.fill = PatternFill(start_color='366092', end_color='366092', fill_type='solid')
                     cell.font = Font(color='FFFFFF', bold=True)
                 
-                # Add data rows
+                # Add data rows mapping equipment names to types
                 row = 2
                 for data in sorted(all_data, key=lambda x: x['date']):
                     if country in data['country_data']:
                         country_data = data['country_data'][country]
-                        # Format date as MMM-YY
-                        ws.cell(row=row, column=1, value=format_game_date(country_data['date']))
+                        ws.cell(row=row, column=1, value=country_data['date'])
                         
-                        # Fill in factory counts
-                        for col, eq_name in enumerate(equipment_list, 2):
-                            factory_count = country_data['equipment_factories'].get(eq_name, 0)
-                            if factory_count > 0:  # Only write non-zero values
+                        # Create type-based factory counts
+                        type_factories = defaultdict(int)
+                        for eq_name, count in country_data['equipment_factories'].items():
+                            eq_type = EQ_TYPE.get(eq_name, eq_name)
+                            type_factories[eq_type] += count
+                        
+                        # Fill in factory counts by type
+                        for col, eq_type in enumerate(equipment_list, 2):
+                            factory_count = type_factories.get(eq_type, 0)
+                            if factory_count > 0:
                                 ws.cell(row=row, column=col, value=factory_count)
                         row += 1
                 

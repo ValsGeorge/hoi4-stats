@@ -67,6 +67,8 @@ IGNORED_PATHS = [
     # ['convoy_1'],
     ['combat'],
     # ['air_base'],
+    ['provinces'],
+    ['deployment'],
 ]
 
 game_encodings = {

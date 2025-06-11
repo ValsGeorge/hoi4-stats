@@ -15,8 +15,7 @@ def process_save_file(save_path):
     # Parse the save file to JSON
     parser.process_save_file(save_path, json_path)
     
-    # Process the equipment data
-    equipment.analyze_save_file(json_path)
+    return True
 
 if __name__ == "__main__":
     root = tk.Tk()

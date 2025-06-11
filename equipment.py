@@ -5,6 +5,7 @@ from collections import defaultdict
 import openpyxl
 from openpyxl.styles import PatternFill, Font
 from datetime import datetime
+from eq_definitions import EQ_NAME, EQ_TYPE
 
 def format_game_date(date_str):
     """Convert game date to either MMM-YY or DD/MM/YYYY format based on day."""
@@ -33,7 +34,12 @@ def get_equipment_details(data, equipment_id, equipment_type):
 
 def get_equipment_name_from_registry(equipment_registry, eq_id, eq_type):
     """Find equipment name based on ID and type from the equipment registry."""
-    # First try direct lookup from the equipment registry
+    # First look in the equipment definitions
+    eq_key = f"{eq_type}_{eq_id}" if eq_type and eq_id else None
+    if eq_key and eq_key in EQ_TYPE:
+        return EQ_TYPE[eq_key]
+        
+    # Fallback to registry lookup
     for eq_name, eq_data in equipment_registry.items():
         if isinstance(eq_data, list):  # Handle list of variants
             for variant in eq_data:
@@ -47,7 +53,8 @@ def get_equipment_name_from_registry(equipment_registry, eq_id, eq_type):
                     eq_info.get('type') == eq_type):
                     return eq_name
             
-    return f"Unknown Equipment (ID: {eq_id}, Type: {eq_type})"
+    # If not found, return unknown with type if available
+    return f"Unknown {EQ_TYPE.get(eq_type, 'Equipment')}"
 
 def convert_time_to_string(time_obj):
     """Convert a pyradox Time object to string."""
