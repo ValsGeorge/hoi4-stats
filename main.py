@@ -1,6 +1,7 @@
 import os
 import read_with_pyradox as parser
 import equipment
+import buildings
 import tkinter as tk
 from gui import AnalyzerGUI
 
@@ -14,6 +15,10 @@ def process_save_file(save_path):
 
     # Parse the save file to JSON
     parser.process_save_file(save_path, json_path)
+    
+    # Analyze both equipment and buildings
+    equipment_data = equipment.analyze_save_file(json_path)
+    buildings_data = buildings.analyze_save_file(json_path)
     
     return True
 

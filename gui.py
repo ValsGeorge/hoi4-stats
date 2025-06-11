@@ -149,8 +149,15 @@ class AnalyzerGUI:
     def process_json(self, file):
         """Process JSON file and return analysis data."""
         import equipment
-        return equipment.analyze_save_file(file)
-    
+        import buildings
+        
+        # Run both analyses
+        equipment_data = equipment.analyze_save_file(file)
+        buildings_data = buildings.analyze_save_file(file)
+        
+        # Return equipment data for Excel generation
+        return equipment_data
+
     def process_hoi4_save(self, file):
         """Process HOI4 save file and return analysis data."""
         from main import process_save_file
