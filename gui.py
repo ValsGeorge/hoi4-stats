@@ -203,9 +203,10 @@ class AnalyzerGUI:
                 country_equipment = set()
                 for data in all_data:
                     if country in data['country_data']:
-                        # Map equipment names to their types
-                        eq_factories = data['country_data'][country]['equipment_factories']
-                        for eq_name in eq_factories.keys():
+                        # Map equipment names to their types using equipment_lines
+                        country_data = data['country_data'][country]
+                        for line in country_data.get('equipment_lines', []):
+                            eq_name = line['equipment_name']
                             eq_type = EQ_TYPE.get(eq_name, eq_name)
                             country_equipment.add(eq_type)
                 
@@ -227,11 +228,12 @@ class AnalyzerGUI:
                         country_data = data['country_data'][country]
                         ws.cell(row=row, column=1, value=country_data['date'])
                         
-                        # Create type-based factory counts
+                        # Create type-based factory counts from equipment lines
                         type_factories = defaultdict(int)
-                        for eq_name, count in country_data['equipment_factories'].items():
+                        for line in country_data.get('equipment_lines', []):
+                            eq_name = line['equipment_name']
                             eq_type = EQ_TYPE.get(eq_name, eq_name)
-                            type_factories[eq_type] += count
+                            type_factories[eq_type] += line['active_factories']
                         
                         # Fill in factory counts by type
                         for col, eq_type in enumerate(equipment_list, 2):

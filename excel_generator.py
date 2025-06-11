@@ -34,32 +34,23 @@ def create_excel_report(equipment_data, buildings_data, base_name):
         ws[f'A{current_row}'].font = header_font
         
         # Get equipment list for this country
-        equipment_list = []
-        equipment_by_type = defaultdict(int)  # Add this
+        equipment_lines = []
         if country in equipment_data.get('country_data', {}):
             country_eq = equipment_data['country_data'][country]
-            # Group equipment by type and sum factories
-            for eq_name, factories in country_eq['equipment_factories'].items():
-                if factories > 0:
-                    eq_type = EQ_TYPE.get(eq_name, eq_name)  # Use type if available, otherwise use name
-                    equipment_by_type[eq_type] += factories
+            # Use equipment_lines instead of equipment_factories
+            for line in country_eq.get('equipment_lines', []):
+                if line['active_factories'] > 0:
+                    equipment_lines.append({
+                        'name': line['equipment_name'],
+                        'factories': line['active_factories']
+                    })
             
-            # Convert to sorted list
-            equipment_list = sorted(equipment_by_type.keys())
-            
-            # Add equipment headers
-            for col, eq_type in enumerate(equipment_list, 1):
-                col_letter = openpyxl.utils.get_column_letter(col + 1)
-                ws[f'{col_letter}{current_row}'] = eq_type
-                ws[f'{col_letter}{current_row}'].fill = header_fill
-                ws[f'{col_letter}{current_row}'].font = header_font
-            
-            # Add factory counts
-            current_row += 1
-            ws[f'A{current_row}'] = country_eq['date']
-            for col, eq_type in enumerate(equipment_list, 1):
-                col_letter = openpyxl.utils.get_column_letter(col + 1)
-                ws[f'{col_letter}{current_row}'] = equipment_by_type[eq_type]
+            # Add each production line as a separate row
+            for line in equipment_lines:
+                current_row += 1
+                ws[f'A{current_row}'] = country_eq['date']
+                ws[f'B{current_row}'] = line['name']
+                ws[f'C{current_row}'] = line['factories']
         
         current_row += 3
         

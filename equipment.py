@@ -252,14 +252,12 @@ def analyze_production_queue(data, equipment_registry, save_date):
     """Analyze the military production lines from the parsed save file."""
     try:
         print("\nAnalyzing production queue...")
-        production_lines = []
         by_country = defaultdict(list)
         
         # Ensure save_date is a string
         save_date = convert_time_to_string(save_date)
-        print(f"Debug: Using date string: {save_date}")
         
-        # Process only active production lines by country
+        # Process all production lines by country
         if 'countries' in data:
             for country_tag, country_data in data['countries'].items():
                 if 'production' in country_data:
@@ -271,24 +269,19 @@ def analyze_production_queue(data, equipment_registry, save_date):
                                 eq_type = line.get('equipment_variant_index', {}).get('type')
                                 eq_name = get_equipment_name_from_registry(equipment_registry, eq_id, eq_type)
                                 
-                                line_details = {
-                                    'country': country_tag,
-                                    'active_factories': line.get('active_factories', 0),
+                                # Keep each production line separate
+                                by_country[country_tag].append({
                                     'equipment_name': eq_name,
-                                }
-                                by_country[country_tag].append(line_details)
+                                    'active_factories': line.get('active_factories', 0)
+                                })
 
-        # Return only active production data
+        # Return production data preserving duplicate lines
         return {
             'date': save_date,
             'country_data': {
                 country: {
                     'date': save_date,
-                    'equipment_factories': {
-                        line['equipment_name']: line['active_factories'] 
-                        for line in lines 
-                        if line['active_factories'] > 0
-                    }
+                    'equipment_lines': lines  # Return list of lines instead of aggregating
                 }
                 for country, lines in by_country.items()
                 if lines  # Only include countries with active production
