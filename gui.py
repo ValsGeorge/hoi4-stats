@@ -194,6 +194,33 @@ class AnalyzerGUI:
             wb.remove(wb.active)
             
             major_countries = ['USA', 'ENG', 'GER', 'ITA', 'SOV', 'JAP']
+
+            # Custom function to convert any date format to sortable format
+            def format_date_for_sort(date_str):
+                if not date_str:
+                    return ""
+                    
+                date_str = str(date_str).strip("' ")
+                
+                # Already in YYYY-MM-DD format
+                if '-' in date_str and len(date_str) == 10:
+                    return date_str
+                    
+                try:
+                    # Try to parse various formats
+                    if '/' in date_str:  # DD/MM/YYYY
+                        day, month, year = map(int, date_str.split('/'))
+                        return f"{year:04d}-{month:02d}-{day:02d}"
+                    elif '-' in date_str:  # MMM-YY
+                        month_str, year_str = date_str.split('-')
+                        months = {'JAN':1, 'FEB':2, 'MAR':3, 'APR':4, 'MAY':5, 'JUN':6,
+                                'JUL':7, 'AUG':8, 'SEP':9, 'OCT':10, 'NOV':11, 'DEC':12}
+                        month = months[month_str.upper()]
+                        year = 1900 + int(year_str) if int(year_str) > 50 else 2000 + int(year_str)
+                        return f"{year:04d}-{month:02d}-01"
+                except:
+                    return date_str
+                return date_str
             
             # Create sheets for each major country
             for country in major_countries:
@@ -223,11 +250,15 @@ class AnalyzerGUI:
                 
                 # Add data rows mapping equipment names to types
                 row = 2
-                for data in sorted(all_data, key=lambda x: x['date']):
+                # Sort data by cleaned date string
+                sorted_data = sorted(all_data, key=lambda x: format_date_for_sort(x.get('date', '')))
+                for data in sorted_data:
                     if country in data['country_data']:
                         country_data = data['country_data'][country]
-                        ws.cell(row=row, column=1, value=country_data['date'])
-                        
+                        # Clean the date string before writing to cell
+                        clean_date = data['date'].strip("' ") if data.get('date') else ''
+                        ws.cell(row=row, column=1, value=clean_date)
+
                         # Create type-based factory counts from equipment lines
                         type_factories = defaultdict(int)
                         for line in country_data.get('equipment_lines', []):

@@ -8,17 +8,13 @@ from datetime import datetime
 from eq_definitions import EQ_NAME, EQ_TYPE
 
 def format_game_date(date_str):
-    """Convert game date to either MMM-YY or DD/MM/YYYY format based on day."""
+    """Convert game date to DD/MM/YYYY format."""
     try:
         # Parse the game date string (e.g., "1936.1.1")
         year, month, day = map(int, date_str.split('.')[:3])
         date_obj = datetime(year, month, day)
-        
-        # If day is 1, use MMM-YY format, otherwise use DD/MM/YYYY
-        if day == 1:
-            return date_obj.strftime("%b-%y").upper()  # Returns format like "JAN-36"
-        else:
-            return date_obj.strftime("%d/%m/%Y")  # Returns format like "15/01/1936"
+        # Always use DD/MM/YYYY format
+        return date_obj.strftime("%d/%m/%Y")
     except:
         return date_str
 
@@ -57,7 +53,7 @@ def get_equipment_name_from_registry(equipment_registry, eq_id, eq_type):
     return f"Unknown {EQ_TYPE.get(eq_type, 'Equipment')}"
 
 def convert_time_to_string(time_obj):
-    """Convert a pyradox Time object to string."""
+    """Convert a pyradox Time object to DD/MM/YYYY string."""
     if hasattr(time_obj, 'to_python'):
         # Convert Time object to string representation
         date_parts = time_obj.to_python()
