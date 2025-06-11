@@ -7,6 +7,24 @@ import re
 import os
 import warnings
 
+
+IGNORED_PATHS = [
+    # Add patterns for paths to ignore
+    ['fired_event_names'],
+    ['pending_events'],
+    ['fleet'],
+    ['%light_cruiser%'],
+    # ['%heavy_cruiser%'],
+    # ['%battleship%'],
+    # ['%destroyer%'],
+    # ['%submarine%'],
+    # ['%carrier%'],
+    ['corps_commander'],
+    ['variables'],
+    ['delivery_routes']
+
+]
+
 game_encodings = {
     'EU4' : ['cp1252', 'utf_8_sig'],
     'HoI3' : ['cp1252', 'utf_8_sig'],
@@ -140,7 +158,10 @@ class TreeParseState():
         self.operator = None                # The operator currently being processed. Usually '='.
         self.group_depth = 0                # The depth of nested groups (0 means not in a group)
         self.next = self.process_key         # The next case to execute.
-    
+        self.ignoring_section = False  # Add this new field
+        self.ignore_depth = 0  # Track nested depth when ignoring
+        self.current_path = []  # Add this to track current path
+        
     def get_previous_line_number(self):
         """ Line number of the token just before the one consumed. Returns -1 if the token just consumed was the first one."""
         if len(self.token_data) > 0 and self.pos > 1:
@@ -193,12 +214,63 @@ class TreeParseState():
         else:
             self.result.get_post_comments_at(-1).append(comment)
         
+    def should_ignore_key(self, key):
+        """Check if the current path + key matches any ignore pattern"""
+        test_path = self.current_path + [str(key).lower()]
+        
+        # Check if this path ends with any ignore pattern
+        for ignore_pattern in IGNORED_PATHS:
+            if len(test_path) >= len(ignore_pattern):
+
+                # Check if the end of the path matches the pattern
+                if test_path[-len(ignore_pattern):] == ignore_pattern:
+                    return True
+
+                if ignore_pattern[0].startswith('%') and ignore_pattern[0].endswith('%'):
+                    search_term = ignore_pattern[0][1:-1]
+                    # print('########### SEARCHING FOR TERM ##############')
+                    # Check if the search term is in the last part of the path
+
+                    #! IT DOES NOT WORK CORRECTLY (FOR NESTED PATHS?)
+                    if any(search_term in part for part in test_path[-len(ignore_pattern):]):
+                        # print('########### SEARCHING FOR TERM MATCHED ##############')
+                        # print('Found "%s" in %s' % (search_term, test_path[-len(ignore_pattern):]))
+                        return True
+        return False
+
     def process_key(self):
         token_type, token_string, token_line_number = self.consume()
         
+        if token_type == 'end':
+            if self.ignoring_section:
+                self.ignore_depth -= 1
+                if self.ignore_depth == 0:
+                    self.ignoring_section = False
+                    # Pop the last path element when exiting an ignored section
+                    if self.current_path:
+                        self.current_path.pop()
+                self.next = self.process_key
+                return
+            # If not ignoring and we see an end token, pop the path
+            elif self.current_path:
+                self.current_path.pop()
+
+        if self.ignoring_section:
+            self.next = self.process_key
+            return
+
         if pyradox.token.is_primitive_key_token_type(token_type):
             self.key_string = token_string
             self.key = pyradox.token.make_primitive(token_string, token_type)
+            
+            # Check if this key should be ignored based on the current path
+            if self.should_ignore_key(self.key):
+                self.ignoring_section = True
+                self.ignore_depth = 1
+                self.current_path.append(str(self.key).lower())
+                self.next = self.process_key
+                return
+                
             self.next = self.process_operator
         elif token_type == 'comment':
             if token_line_number == self.get_previous_line_number():
@@ -237,6 +309,20 @@ class TreeParseState():
             self.next = self.process_value
         
     def process_value(self):
+        if self.ignoring_section:
+            token_type, token_string, token_line_number = self.consume()
+            if token_type == 'begin':
+                self.ignore_depth += 1
+            elif token_type == 'end':
+                self.ignore_depth -= 1
+                if self.ignore_depth == 0:
+                    self.ignoring_section = False
+                    # Pop the path when exiting ignored section
+                    if self.current_path:
+                        self.current_path.pop()
+            self.next = self.process_key if self.ignore_depth == 0 else self.process_value
+            return
+            
         # expecting a value
         token_type, token_string, token_line_number = self.consume()
         

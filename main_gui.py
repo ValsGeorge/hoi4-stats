@@ -145,7 +145,7 @@ class HOI4StatsGUI:
             # Convert pyradox Tree to dictionary
             self.update_progress(80, "Converting data...")
             data = {}
-            for key, value in save_data.items():
+            for key, value in save_data.items(): # type: ignore
                 if hasattr(value, 'to_python'):
                     data[key] = value.to_python()
                 else:
@@ -245,7 +245,7 @@ class HOI4StatsGUI:
             return name
         else:
             # Try to find the equipment directly in the equipment_data
-            for key, value in self.equipment_data.items():
+            for key, value in self.equipment_data.items(): # type: ignore
                 if isinstance(value, dict) and "id" in value:
                     if value["id"].get("id") == equipment_id and value["id"].get("type") == equipment_type:
                         name = key
@@ -338,7 +338,7 @@ class HOI4StatsGUI:
             self.tree.delete(item)
             
         # Get countries data
-        countries = self.save_data.get("countries", {})
+        countries = self.save_data.get("countries", {}) # type: ignore
         if not countries:
             return
             
