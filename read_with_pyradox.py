@@ -30,66 +30,89 @@ def load_save_file(save_path, callback=None):
     Returns:
         Parsed save file data
     """
-    # Check if the file exists
-    if not os.path.exists(save_path):
-        raise FileNotFoundError(f"Save file not found: {save_path}")
-    
-    # Get file modification time to use as cache key
-    file_stat = os.stat(save_path)
-    cache_key = f"{save_path}:{file_stat.st_mtime}"
-    
-    # Check if we've already parsed this file
-    if cache_key in _file_cache:
-        if callback:
-            callback(100, "Loaded from memory cache")
-        return _file_cache[cache_key]
-    
-    # Get the HOI4 game directory
-    game_dir = pyradox.get_game_directory('HoI4')
-    if game_dir is None:
-        print("Warning: Could not find HOI4 game directory. Some references may not resolve correctly.")
-    
-    # Parse the file
     try:
-        if callback:
-            callback(10, "Preparing to parse file")
+        # Check if file needs melting
+        if is_binary_file(save_path):
+            print(f"Melting binary save file: {save_path}")
+            if callback:
+                callback(5, "Melting save file")
+                
+            # Create melted saves directory and get output path
+            melted_saves_dir = ensure_melted_saves_dir()
+            melted_path = os.path.join(melted_saves_dir, os.path.basename(save_path) + ".txt")
             
-        print(f"Parsing file: {save_path}")
-        start_time = time.time()
-        
-        # Manual progress updates for better UI feedback
-        if callback:
-            callback(20, "Starting parse operation")
-        
-        # Parse the file (without token_callback which isn't supported)
-        result = pyradox.parse_file(
-            save_path, 
-            game='HoI4', 
-            path_relative_to_game=False, 
-            verbose=True
-        )
-        
-        # Simulate progress updates since we can't get real-time feedback
-        if callback:
-            callback(80, "Parse completed, finalizing")
-        
-        parse_time = time.time() - start_time
-        print(f"\nSuccessfully parsed {save_path} in {parse_time:.2f} seconds")
-        
-        if callback:
-            callback(95, "Finalizing")
+            # Melt the file
+            success, melted_path = melt_save_file(save_path, melted_path)
+            if not success:
+                raise Exception(f"Failed to melt save file: {save_path}")
+                
+            # Use the melted path for further processing
+            save_path = melted_path
             
-        # Cache the result
-        _file_cache[cache_key] = result
+        # Check if the file exists
+        if not os.path.exists(save_path):
+            raise FileNotFoundError(f"Save file not found: {save_path}")
         
-        if callback:
-            callback(100, "Complete")
+        # Get file modification time to use as cache key
+        file_stat = os.stat(save_path)
+        cache_key = f"{save_path}:{file_stat.st_mtime}"
+        
+        # Check if we've already parsed this file
+        if cache_key in _file_cache:
+            if callback:
+                callback(100, "Loaded from memory cache")
+            return _file_cache[cache_key]
+        
+        # Get the HOI4 game directory
+        game_dir = pyradox.get_game_directory('HoI4')
+        if game_dir is None:
+            print("Warning: Could not find HOI4 game directory. Some references may not resolve correctly.")
+        
+        # Parse the file
+        try:
+            if callback:
+                callback(10, "Preparing to parse file")
+                
+            print(f"Parsing file: {save_path}")
+            start_time = time.time()
             
-        return result
+            # Manual progress updates for better UI feedback
+            if callback:
+                callback(20, "Starting parse operation")
+            
+            # Parse the file (without token_callback which isn't supported)
+            result = pyradox.parse_file(
+                save_path, 
+                game='HoI4', 
+                path_relative_to_game=False, 
+                verbose=True
+            )
+            
+            # Simulate progress updates since we can't get real-time feedback
+            if callback:
+                callback(80, "Parse completed, finalizing")
+            
+            parse_time = time.time() - start_time
+            print(f"\nSuccessfully parsed {save_path} in {parse_time:.2f} seconds")
+            
+            if callback:
+                callback(95, "Finalizing")
+                
+            # Cache the result
+            _file_cache[cache_key] = result
+            
+            if callback:
+                callback(100, "Complete")
+                
+            return result
+        except Exception as e:
+            print(f"\nError parsing {save_path}: {str(e)}")
+            traceback.print_exc()
+            raise
     except Exception as e:
-        print(f"\nError parsing {save_path}: {str(e)}")
+        print(f"Error processing save file: {str(e)}")
         traceback.print_exc()
-        raise
+        return None
 
 def save_to_json(data, output_path):
     """Save the parsed data to a JSON file."""
@@ -166,81 +189,21 @@ def clear_cache():
     global _file_cache
     _file_cache.clear()
 
-def main():
-    # Parse command line arguments
-    parser = argparse.ArgumentParser(description='Parse HOI4 save files using pyradox')
-    # parser.add_argument('save_path', nargs='?', 
-    #                     default="C:\\Users\\Lockout\\Desktop\\Projects\\hoi4-stats\\autosave_1.hoi4.txt",
-    #                     help='Path to the HOI4 save file to parse')
-    parser.add_argument('save_path', nargs='?', 
-                        default="C:\\Users\\Lockout\\Desktop\\Projects\\hoi4-stats\\melted_saves\\autosave_2.hoi4.txt",
-                        help='Path to the HOI4 save file to parse')
-    parser.add_argument('--output', '-o', 
-                        help='Path to save the output JSON file (default: input_filename.json)')
-    parser.add_argument('--melt-only', action='store_true', help='Only melt the file, do not parse it')
-    parser.add_argument('--no-json', action='store_true', help='Do not save JSON output')
-    args = parser.parse_args()
-    
-    save_path = args.save_path
-    print(f"Attempting to process save file: {save_path}")
-    
-    # If melt-only mode is enabled
-    if args.melt_only:
-        if is_binary_file(save_path):
-            print(f"Melting binary file: {save_path}")
-            melted_saves_dir = ensure_melted_saves_dir()
-            output_path = os.path.join(melted_saves_dir, os.path.basename(save_path) + ".txt")
-            success, melted_path = melt_save_file(save_path, output_path)
-            if success:
-                print(f"Successfully melted file to: {melted_path}")
-                return None
-            else:
-                print(f"Failed to melt file: {save_path}")
-                return None
-        else:
-            print(f"File is already in text format: {save_path}")
-            return None
-    
-    # Parse the save file
+def process_save_file(save_path, output_json_path):
+    """Process a save file and convert it to JSON."""
     try:
         # Define a progress reporting function
         def report_progress(percent, message):
             print(f"\rProgress: [{percent:3d}%] {message}", end="")
         
-        start_time = time.time()
+        # Parse the save file
         savegame = load_save_file(save_path, callback=report_progress)
-        total_time = time.time() - start_time
         
-        # If we get here, parsing is successful
-        print(f"\nSuccessfully processed the save file in {total_time:.2f} seconds!")
-        
-        # Now try to extract some top-level keys to show the structure
-        print("\nTop level keys in savegame:")
-        top_keys = list(savegame.keys())
-        for key in top_keys[:20]:  # Show only first 20 keys
-            print(f"- {key}")
-        
-        if len(top_keys) > 20:
-            print(f"... and {len(top_keys) - 20} more keys")
-        
-        # Save to JSON unless explicitly disabled
-        if not args.no_json:
-            # Create default output path if not specified
-            output_path = args.output
-            if not output_path:
-                base_name = os.path.splitext(os.path.basename(save_path))[0]
-                output_path = f"{base_name}.json"
-                
-            # Save the data
-            if save_to_json(savegame, output_path):
-                print(f"JSON data saved to: {output_path}")
-            else:
-                print("Failed to save JSON data")
-        
-        return savegame
+        # Save to JSON
+        if save_to_json(savegame, output_json_path):
+            print(f"JSON data saved to: {output_json_path}")
+            return True
+        return False
     except Exception as e:
         print(f"Error processing save file: {str(e)}")
-        return None
-
-if __name__ == "__main__":
-    main()
+        return False

@@ -33,4 +33,5 @@ htmlcov/
 /logs
 /cache
 /melted_saves
+/output
 autosave_4.json
