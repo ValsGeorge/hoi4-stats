@@ -567,6 +567,9 @@ class AnalyzerGUI:
         ws['A1'].font = Font(bold=True)
         current_row += 2
         
+        # Sort data by date first
+        sorted_data = sorted(all_data, key=lambda x: self.format_date_for_sort(x.get('date', '')))
+        
         # Get equipment names for this country
         country_equipment = set()
         for data in all_data:
@@ -592,8 +595,8 @@ class AnalyzerGUI:
         
         current_row += 1
         
-        # Add production data
-        for data in sorted(all_data, key=lambda x: x.get('date', '')):
+        # Add production data - use sorted_data here instead of direct sorting
+        for data in sorted_data:
             if country_tag in data['country_data']:
                 country_data = data['country_data'][country_tag]
                 ws.cell(row=current_row, column=1, value=data['date'])
