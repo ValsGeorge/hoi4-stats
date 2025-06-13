@@ -70,6 +70,9 @@ IGNORED_PATHS = [
     ['provinces'],
     ['deployment'],
     ['strategic_operatives'],
+    # Add these to unignore focus and intelligence data
+    # ['focus'],  # Remove or comment out if in ignored paths
+    # ['intelligence_agency'],  # Remove or comment out if in ignored paths
 ]
 
 game_encodings = {

@@ -5,6 +5,8 @@ import buildings
 import tkinter as tk
 from gui import AnalyzerGUI
 from excel_generator import create_excel_report  # Fix the import name
+import focus  # Import the focus analyzer
+import intelligence
 
 def process_save_file(save_path):
     # Generate output JSON path in project directory
@@ -20,10 +22,8 @@ def process_save_file(save_path):
     # Analyze both equipment and buildings
     equipment_data = equipment.analyze_save_file(json_path)
     buildings_data = buildings.analyze_save_file(json_path)
-    
-    # Generate Excel report with correct function name
-    # if equipment_data and buildings_data:
-    #     create_excel_report(equipment_data, buildings_data, base_name)
+    focus_data = focus.analyze_save_file(json_path)  # Add focus analyzer
+    intel_data = intelligence.analyze_save_file(json_path)  # Add intelligence analyzer
     
     return True
 

@@ -11,6 +11,7 @@ def create_excel_report(equipment_data, buildings_data, base_name):
     wb.remove(wb.active)  # Remove default sheet
     
     major_countries = ['ENG', 'FRA', 'GER', 'USA', 'SOV', 'JAP', 'ITA']
+    sheets_created = 0  # Track number of sheets created
     
     header_fill = PatternFill(start_color='366092', end_color='366092', fill_type='solid')
     header_font = Font(color='FFFFFF', bold=True)
@@ -21,6 +22,7 @@ def create_excel_report(equipment_data, buildings_data, base_name):
             continue
             
         ws = wb.create_sheet(country)
+        sheets_created += 1  # Increment counter when sheet is created
         current_row = 1
         
         # Production Lines Section
@@ -127,6 +129,13 @@ def create_excel_report(equipment_data, buildings_data, base_name):
             adjusted_width = (max_length + 2)
             ws.column_dimensions[column_letter].width = adjusted_width
     
+    # If no sheets were created, add a default sheet
+    if sheets_created == 0:
+        ws = wb.create_sheet("Info")
+        ws['A1'] = "No data found for major countries"
+        ws['A1'].font = Font(bold=True)
+        ws.column_dimensions['A'].width = 30
+
     # Save workbook
     os.makedirs('output', exist_ok=True)
     output_path = os.path.join('output', f'{base_name}_analysis.xlsx')

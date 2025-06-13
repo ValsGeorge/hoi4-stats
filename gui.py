@@ -48,7 +48,7 @@ class AnalyzerGUI:
         tag_frame.pack(side=tk.RIGHT, padx=5)
         
         ttk.Label(tag_frame, text="Country TAG:").pack(side=tk.LEFT)
-        self.country_tag = ttk.Entry(tag_frame, width=5)
+        self.country_tag = ttk.Entry(tag_frame, width=10)
         self.country_tag.pack(side=tk.LEFT, padx=2)
         ttk.Button(tag_frame, text="Generate Report", 
                   command=self.generate_country_report).pack(side=tk.LEFT, padx=2)
@@ -73,7 +73,7 @@ class AnalyzerGUI:
         ttk.Button(frame, text="Add Files", command=self.add_files).pack(side=tk.LEFT, padx=5)
         ttk.Button(frame, text="Remove Selected", command=self.remove_selected).pack(side=tk.LEFT, padx=5)
         ttk.Button(frame, text="Clear All", command=self.clear_files).pack(side=tk.LEFT, padx=5)
-        ttk.Button(frame, text="Process Files", command=self.process_files).pack(side=tk.RIGHT, padx=5)
+        ttk.Button(frame, text="Generate General Report", command=self.process_files).pack(side=tk.RIGHT, padx=5)
         
     def setup_progress_area(self):
         frame = ttk.LabelFrame(self.root, text="Progress", padding="5")
@@ -161,23 +161,34 @@ class AnalyzerGUI:
         """Process JSON file and return analysis data."""
         import equipment
         import buildings
+        import focus
+        import intelligence
         from excel_generator import create_excel_report
         
         base_name = os.path.splitext(os.path.basename(file))[0]
         
-        # Run both analyses
+        # Run all analyses
         equipment_data = equipment.analyze_save_file(file)
         buildings_data = buildings.analyze_save_file(file)
+        focus_data = focus.analyze_save_file(file)
+        intel_data = intelligence.analyze_save_file(file)
         
         # Generate Excel report if we have data
         if equipment_data and buildings_data:
             create_excel_report(equipment_data, buildings_data, base_name)
-            # Combine both datasets into one
+            # Combine all datasets into one
             return {
                 'date': equipment_data['date'],
                 'country_data': equipment_data['country_data'],
                 'state_buildings': buildings_data['state_buildings'],
-                'construction_queue': buildings_data['construction_queue']
+                'construction_queue': buildings_data['construction_queue'],
+                'countries': {  # Add focus and intel data in correct structure
+                    country_tag: {
+                        'focus': focus_data.get('focus_data', {}).get(country_tag, {}),
+                        'intelligence_agency': intel_data.get('agency_data', {}).get(country_tag, {})
+                    }
+                    for country_tag in equipment_data['country_data'].keys()
+                }
             }
         return None
 
@@ -189,33 +200,56 @@ class AnalyzerGUI:
         if process_save_file(file):
             import equipment
             import buildings
+            import focus
+            import intelligence
             equipment_data = equipment.analyze_save_file(json_path)
             buildings_data = buildings.analyze_save_file(json_path)
+            focus_data = focus.analyze_save_file(json_path)
+            intel_data = intelligence.analyze_save_file(json_path)
             if equipment_data and buildings_data:
                 return {
                     'date': equipment_data['date'],
                     'country_data': equipment_data['country_data'],
                     'state_buildings': buildings_data['state_buildings'],
-                    'construction_queue': buildings_data['construction_queue']
+                    'construction_queue': buildings_data['construction_queue'],
+                    'countries': {  # Add focus and intel data in correct structure
+                        country_tag: {
+                            'focus': focus_data.get('focus_data', {}).get(country_tag, {}),
+                            'intelligence_agency': intel_data.get('agency_data', {}).get(country_tag, {})
+                        }
+                        for country_tag in equipment_data['country_data'].keys()
+                    }
                 }
         return None
 
     def process_melted_save(self, file):
         """Process melted save file and return analysis data."""
+        # Same update as process_hoi4_save
         from main import process_save_file
         base_name = os.path.splitext(os.path.basename(file))[0]
         json_path = os.path.join("melted_saves", f"{base_name}.json")
         if process_save_file(file):
             import equipment
             import buildings
+            import focus
+            import intelligence
             equipment_data = equipment.analyze_save_file(json_path)
             buildings_data = buildings.analyze_save_file(json_path)
+            focus_data = focus.analyze_save_file(json_path)
+            intel_data = intelligence.analyze_save_file(json_path)
             if equipment_data and buildings_data:
                 return {
                     'date': equipment_data['date'],
                     'country_data': equipment_data['country_data'],
                     'state_buildings': buildings_data['state_buildings'],
-                    'construction_queue': buildings_data['construction_queue']
+                    'construction_queue': buildings_data['construction_queue'],
+                    'countries': {  # Add focus and intel data in correct structure
+                        country_tag: {
+                            'focus': focus_data.get('focus_data', {}).get(country_tag, {}),
+                            'intelligence_agency': intel_data.get('agency_data', {}).get(country_tag, {})
+                        }
+                        for country_tag in equipment_data['country_data'].keys()
+                    }
                 }
         return None
 
@@ -226,6 +260,7 @@ class AnalyzerGUI:
             wb.remove(wb.active)
             
             major_countries = ['USA', 'ENG', 'GER', 'ITA', 'SOV', 'JAP']
+            sheets_created = 0
             header_fill = PatternFill(start_color='366092', end_color='366092', fill_type='solid')
             header_font = Font(color='FFFFFF', bold=True)
             section_font = Font(bold=True)
@@ -406,6 +441,14 @@ class AnalyzerGUI:
                             pass
                     adjusted_width = (max_length + 2)
                     ws.column_dimensions[column_letter].width = adjusted_width
+                sheets_created += 1
+
+            # If no sheets were created, add a default sheet
+            if sheets_created == 0:
+                ws = wb.create_sheet("Info")
+                ws['A1'] = "No data found for major countries"
+                ws['A1'].font = Font(bold=True)
+                ws.column_dimensions['A'].width = 30
 
             # Save workbook
             excel_path = os.path.join('output', 'combined_analysis.xlsx')
@@ -485,21 +528,21 @@ class AnalyzerGUI:
                 production_ws = wb.create_sheet("Production")
                 buildings_ws = wb.create_sheet("Buildings")
                 construction_ws = wb.create_sheet("Construction")
+                focus_ws = wb.create_sheet("Focus Completion")  # New sheet
+                intel_ws = wb.create_sheet("Intelligence")  # New sheet
                 
                 # Use the same formatting
                 header_fill = PatternFill(start_color='366092', end_color='366092', fill_type='solid')
                 header_font = Font(color='FFFFFF', bold=True)
                 section_font = Font(bold=True)
 
-                # --- First Sheet: Production (keep existing code) ---
+                # Create all sheets
                 self.create_production_sheet(production_ws, all_data, country_tag, header_fill, header_font)
-
-                # --- Second Sheet: Buildings ---
                 self.create_buildings_sheet(buildings_ws, all_data, country_tag, header_fill, header_font)
-
-                # --- Third Sheet: Construction Queue ---
                 self.create_construction_sheet(construction_ws, all_data, country_tag, header_fill, header_font)
-                
+                self.create_focus_sheet(focus_ws, all_data, country_tag, header_fill, header_font)
+                self.create_intelligence_sheet(intel_ws, all_data, country_tag, header_fill, header_font)
+
                 # Save workbook
                 output_path = os.path.join('output', f'{country_tag}_analysis.xlsx')
                 os.makedirs('output', exist_ok=True)
@@ -799,3 +842,107 @@ class AnalyzerGUI:
             
             adjusted_width = max_length + 2
             column.width = adjusted_width
+
+    def create_focus_sheet(self, ws, all_data, country_tag, header_fill, header_font):
+        """Create sheet showing completed focuses from latest save"""
+        # Get data from most recent save
+        latest_data = max(all_data, key=lambda x: x.get('date', ''))
+        
+        # Setup headers
+        ws.cell(row=1, column=1, value="Date")
+        ws.cell(row=1, column=2, value="Completed Focus")
+        
+        # Apply header styling
+        for col in range(1, 3):
+            cell = ws.cell(row=1, column=col)
+            cell.fill = header_fill
+            cell.font = header_font
+        
+        current_row = 2
+        
+        # Get country data from latest save
+        if 'countries' in latest_data and country_tag in latest_data['countries']:
+            country_data = latest_data['countries'][country_tag]
+            focus_data = country_data.get('focus', {})
+            
+            if isinstance(focus_data, dict):
+                completed_focuses = focus_data.get('completed', [])
+                # Add one row for each completed focus
+                for focus_name in completed_focuses:
+                    # Clean up focus name
+                    clean_name = focus_name
+                    if focus_name.startswith(country_tag + '_'):
+                        clean_name = focus_name[len(country_tag)+1:]  # Remove TAG_
+                    clean_name = clean_name.replace('_', ' ')  # Replace underscores with spaces
+                    
+                    ws.cell(row=current_row, column=1, value=latest_data.get('date', ''))
+                    ws.cell(row=current_row, column=2, value=clean_name)
+                    current_row += 1
+    
+        # Auto-adjust column widths
+        for column in ws.columns:
+            max_length = 0
+            column_letter = column[0].column_letter
+            for cell in column:
+                try:
+                    if len(str(cell.value)) > max_length:
+                        max_length = len(str(cell.value))
+                except:
+                    pass
+            adjusted_width = (max_length + 2)
+            ws.column_dimensions[column_letter].width = adjusted_width
+
+    def create_intelligence_sheet(self, ws, all_data, country_tag, header_fill, header_font):
+        """Create sheet showing intelligence agency data"""
+        # Setup headers
+        ws.cell(row=1, column=1, value="Country")
+        ws.cell(row=1, column=2, value="Number of Operatives")
+        ws.cell(row=1, column=3, value="Agency Level")
+        ws.cell(row=1, column=4, value="Upgrade Name")
+        ws.cell(row=1, column=5, value="Upgrade Level")
+        
+        # Apply header styling
+        for col in range(1, 6):
+            cell = ws.cell(row=1, column=col)
+            cell.fill = header_fill
+            cell.font = header_font
+        
+        # Get latest data
+        latest_data = max(all_data, key=lambda x: x.get('date', ''))
+        current_row = 2
+        
+        if 'countries' in latest_data:
+            if country_tag in latest_data['countries']:
+                country_data = latest_data['countries'][country_tag]
+                agency_data = country_data.get('intelligence_agency', {})
+                
+                # Add basic info
+                ws.cell(row=current_row, column=1, value=country_tag)
+                
+                # Count operatives
+                operatives = len(agency_data.get('operative', []))
+                ws.cell(row=current_row, column=2, value=operatives)
+                
+                # Get agency level
+                agency_level = agency_data.get('building', 0)
+                ws.cell(row=current_row, column=3, value=agency_level)
+                
+                # Add upgrades
+                upgrades = agency_data.get('upgrades', {})
+                for upgrade_name, upgrade_level in upgrades.items():
+                    ws.cell(row=current_row, column=4, value=upgrade_name)
+                    ws.cell(row=current_row, column=5, value=upgrade_level)
+                    current_row += 1
+        
+        # Auto-adjust column widths
+        for column in ws.columns:
+            max_length = 0
+            column_letter = column[0].column_letter
+            for cell in column:
+                try:
+                    if len(str(cell.value)) > max_length:
+                        max_length = len(str(cell.value))
+                except:
+                    pass
+            adjusted_width = (max_length + 2)
+            ws.column_dimensions[column_letter].width = adjusted_width
