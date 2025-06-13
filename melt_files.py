@@ -25,7 +25,6 @@ def main():
     
     # Prepare output directory
     output_dir = args.output_dir or ensure_melted_saves_dir()
-    print(f"Using output directory: {output_dir}")
     
     # Process each file
     for file_path in args.files:

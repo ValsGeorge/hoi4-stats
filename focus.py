@@ -9,7 +9,6 @@ def analyze_focus_data(data):
         print("Input data is not a dictionary")
         return {}
 
-    print("\nAnalyzing country focuses:")
     if 'countries' in data:
         for country_tag, country_data in data['countries'].items():
             if not isinstance(country_data, dict):
@@ -30,10 +29,6 @@ def analyze_focus_data(data):
                         'current': focus.get('current', ''),
                         'paused': focus.get('paused', False)
                     })
-                    if focus_info['completed']:
-                        print("Sample completed focuses:")
-                        for f in focus_info['completed'][:5]:
-                            print(f"- {f}")
             
             focus_data[country_tag] = focus_info
 
@@ -47,7 +42,6 @@ def analyze_save_file(json_path):
             print("Failed to load JSON data")
             return None
 
-        print("\nAnalyzing focus trees...")
         focus_data = analyze_focus_data(data)
         
         # Get save date

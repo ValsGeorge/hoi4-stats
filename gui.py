@@ -175,7 +175,7 @@ class AnalyzerGUI:
         
         # Generate Excel report if we have data
         if equipment_data and buildings_data:
-            create_excel_report(equipment_data, buildings_data, base_name)
+            # create_excel_report(equipment_data, buildings_data, base_name)
             # Combine all datasets into one
             return {
                 'date': equipment_data['date'],
@@ -454,7 +454,6 @@ class AnalyzerGUI:
             excel_path = os.path.join('output', 'combined_analysis.xlsx')
             os.makedirs('output', exist_ok=True)
             wb.save(excel_path)
-            print(f"Combined analysis saved to: {excel_path}")
             
         except Exception as e:
             print(f"Error creating combined Excel: {str(e)}")
@@ -648,7 +647,8 @@ class AnalyzerGUI:
         # Sort states by manpower (descending) and then by ID
         sorted_states = sorted(owned_states.keys(), 
                              key=lambda x: (-owned_states[x], int(x) if x.isdigit() else float('inf')))
-        dates = sorted(dates)
+        # Sort dates using the format_date_for_sort method
+        dates = sorted(set(dates), key=self.format_date_for_sort)  # Changed here
 
         # Create headers
         current_col = 2  # Start from column B (A is for dates)

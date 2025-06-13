@@ -20,7 +20,7 @@ def analyze_agency_data(data):
             agency = country_data['intelligence_agency']
             if not isinstance(agency, dict):
                 continue
-            
+
             agency_info = {
                 'name': agency.get('name', ''),
                 'level': agency.get('building', 0),
@@ -52,7 +52,6 @@ def analyze_save_file(json_path):
             print("Failed to load JSON data")
             return None
 
-        print("\nAnalyzing intelligence agencies...")
         agency_data = analyze_agency_data(data)
         
         return {

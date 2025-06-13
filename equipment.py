@@ -74,7 +74,6 @@ def analyze_save_file(json_path):
         # Extract and explicitly convert save date to string
         raw_date = data.get('date', 'Unknown Date')
         save_date = convert_time_to_string(raw_date)
-        print(f"Debug: Converted date {raw_date} to {save_date}")
         
         # Build the registry
         equipment_registry = analyze_equipment(data)
@@ -88,9 +87,7 @@ def analyze_save_file(json_path):
 
 def analyze_equipment(data):
     """Analyze equipment data from the parsed save file."""
-    try:
-        print("\nAnalyzing equipment data...")
-        
+    try:        
         # First, collect all equipment names and their details
         equipment = dict()
         if 'equipments' in data:
@@ -119,8 +116,6 @@ def analyze_equipment(data):
                         'ideas': eq_data.get('ideas', [])
                     })
                             
-            print(f"Found {len(equipment)} unique equipment types")
-
         # Write results to a text file
         output_path = os.path.join('output', 'equipment_analysis.txt')
         os.makedirs('output', exist_ok=True)
@@ -144,7 +139,6 @@ def analyze_equipment(data):
                             f.write(f"Ideas: {variant['ideas']}\n")
                         f.write("\n")
         
-        print(f"Equipment analysis has been written to: {output_path}")
         return equipment
             
     except Exception as e:
@@ -156,7 +150,6 @@ def analyze_equipment(data):
 def analyze_organizations(data, equipment_registry):
     """Analyze organizations from the parsed save file."""
     try:
-        print("\nAnalyzing production organizations...")
         org_registry = {}
         
         # Process country data
@@ -169,7 +162,6 @@ def analyze_organizations(data, equipment_registry):
                     # Look for industrial organizations
                     if 'industrial_organisations' in prod_data:
                         orgs_data = prod_data['industrial_organisations']
-                        # print(f"\nFound {len(orgs_data)} organizations in {country_tag}")
                         
                         # Process each organization
                         for org_name, org_data in orgs_data.items():
@@ -200,7 +192,6 @@ def analyze_organizations(data, equipment_registry):
                                             })
                                 
                                 org_registry[org_name] = org_details
-                                # print(f"Added organization: {org_name}")
 
         # Write results to a text file in project directory
         output_path = os.path.join('output', 'organizations_analysis.txt')
@@ -237,10 +228,6 @@ def analyze_organizations(data, equipment_registry):
             
     except Exception as e:
         print(f"Error analyzing organizations: {str(e)}")
-        # Print the structure of a sample country for debugging
-        if 'countries' in data and 'SOV' in data['countries']:
-            print("\nExample SOV data structure:")
-            print(json.dumps(data['countries']['SOV'].get('production', {}), indent=2)[:500])
         raise
 
 

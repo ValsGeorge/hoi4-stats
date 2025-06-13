@@ -140,4 +140,3 @@ def create_excel_report(equipment_data, buildings_data, base_name):
     os.makedirs('output', exist_ok=True)
     output_path = os.path.join('output', f'{base_name}_analysis.xlsx')
     wb.save(output_path)
-    print(f"Excel report generated: {output_path}")

@@ -136,10 +136,8 @@ def analyze_save_file(json_path):
             print("Failed to load JSON data")
             return None
 
-        print("\nAnalyzing buildings...")
         state_buildings = analyze_state_buildings(data)
         
-        print("Analyzing construction queues...")
         construction_queue = analyze_construction_queue(data)
         
         # Save analysis to files
@@ -174,7 +172,6 @@ def analyze_save_file(json_path):
                     f.write(f"Started: {item['created']}\n")
                     f.write("\n")
         
-        print("Building analysis complete!")
         return {
             'state_buildings': state_buildings,
             'construction_queue': construction_queue
