@@ -893,46 +893,85 @@ class AnalyzerGUI:
             ws.column_dimensions[column_letter].width = adjusted_width
 
     def create_intelligence_sheet(self, ws, all_data, country_tag, header_fill, header_font):
-        """Create sheet showing intelligence agency data"""
-        # Setup headers
-        ws.cell(row=1, column=1, value="Country")
-        ws.cell(row=1, column=2, value="Number of Operatives")
-        ws.cell(row=1, column=3, value="Agency Level")
-        ws.cell(row=1, column=4, value="Upgrade Name")
-        ws.cell(row=1, column=5, value="Upgrade Level")
+        """Create sheet showing intelligence agency data by date"""
+        
+        # First section: Operatives count
+        ws.cell(row=1, column=1, value="Date")
+        ws.cell(row=1, column=2, value="Total Slots")
+        ws.cell(row=1, column=3, value="Free Slots")
         
         # Apply header styling
-        for col in range(1, 6):
+        for col in range(1, 4):
             cell = ws.cell(row=1, column=col)
             cell.fill = header_fill
             cell.font = header_font
         
-        # Get latest data
-        latest_data = max(all_data, key=lambda x: x.get('date', ''))
-        current_row = 2
+        # Second section: Upgrades over time
+        ws.cell(row=5, column=1, value="Agency Upgrades Over Time")
+        ws.cell(row=5, column=1).font = Font(bold=True)
         
-        if 'countries' in latest_data:
-            if country_tag in latest_data['countries']:
-                country_data = latest_data['countries'][country_tag]
-                agency_data = country_data.get('intelligence_agency', {})
-                
-                # Add basic info
-                ws.cell(row=current_row, column=1, value=country_tag)
-                
-                # Count operatives
-                operatives = len(agency_data.get('operative', []))
-                ws.cell(row=current_row, column=2, value=operatives)
-                
-                # Get agency level
-                agency_level = agency_data.get('building', 0)
-                ws.cell(row=current_row, column=3, value=agency_level)
-                
-                # Add upgrades
-                upgrades = agency_data.get('upgrades', {})
-                for upgrade_name, upgrade_level in upgrades.items():
-                    ws.cell(row=current_row, column=4, value=upgrade_name)
-                    ws.cell(row=current_row, column=5, value=upgrade_level)
+        # Define upgrade names and their corresponding keys
+        upgrade_mapping = {
+            "Economy/Civilian": "upgrade_economy_civilian",
+            'Army Department': 'upgrade_army_department',
+            'Naval Department': 'upgrade_naval_department',
+            'Airforce Department': 'upgrade_airforce_department',
+            'Passive Defense': 'upgrade_passive_defense',
+            'Anti-Partisan': 'upgrade_anti_partisan',
+            'Portable Radios': 'upgrade_portable_radios',
+            'Invisible ink': 'upgrade_invisible_ink',
+            'Plastic Explosives': 'upgrade_plastic_explosives',
+            'Suicide Pills': 'upgrade_suicide_pills',
+            'Training Centers': 'upgrade_training_centers',
+            'Commando training': 'upgrade_commando_training',
+            'Interrogation Techniques': 'upgrade_interrogation_techniques',
+            'Diplomatic Training': 'upgrade_diplo_training',
+            'Psycho Warfare': 'upgrade_psycho_warfare',
+            'Form Department': 'upgrade_form_department',
+            'Decryption Boost': 'upgrade_decryption_boost',
+            'Decryption Boost 2': 'upgrade_decryption_boost_2',
+            'Crypto Strength': 'upgrade_crypto_strength',
+            'Crypto Strength 2': 'upgrade_crypto_strength_2',
+        }
+        
+        # Add upgrade headers - using display names
+        for col, header in enumerate(upgrade_mapping.keys(), 2):
+            cell = ws.cell(row=6, column=col, value=header)
+            cell.fill = header_fill
+            cell.font = header_font
+        ws.cell(row=6, column=1, value="Date").fill = header_fill
+        ws.cell(row=6, column=1).font = header_font
+        
+        # Sort data by date
+        sorted_data = sorted(all_data, key=lambda x: x.get('date', ''))
+        
+        # Process each save file
+        current_row = 2
+        upgrade_row = 7
+        
+        for data in sorted_data:
+            if 'countries' in data and country_tag in data['countries']:
+                country_data = data['countries'][country_tag]
+                if 'intelligence_agency' in country_data:
+                    agency_data = country_data['intelligence_agency']
+                    date = data.get('date', '')
+                    
+                    # Add operative slots data
+                    ws.cell(row=current_row, column=1, value=date)
+                    ws.cell(row=current_row, column=2, value=agency_data.get('max_operative_count', 0))
+                    ws.cell(row=current_row, column=3, value=agency_data.get('usable_operative_slots', 0))
                     current_row += 1
+                    
+                    # Add upgrade data for this date
+                    ws.cell(row=upgrade_row, column=1, value=date)
+                    current_upgrades = agency_data.get('upgrades', {})
+                    
+                    # Fill in upgrade values or 0 if not present
+                    for col, key in enumerate(upgrade_mapping.values(), 2):
+                        value = current_upgrades.get(key, 0)
+                        ws.cell(row=upgrade_row, column=col, value=value)
+                    
+                    upgrade_row += 1
         
         # Auto-adjust column widths
         for column in ws.columns:

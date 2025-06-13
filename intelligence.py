@@ -20,34 +20,26 @@ def analyze_agency_data(data):
             agency = country_data['intelligence_agency']
             if not isinstance(agency, dict):
                 continue
-
+            
             agency_info = {
                 'name': agency.get('name', ''),
                 'level': agency.get('building', 0),
+                'max_operative_count': agency.get('max_operative_count', 0),
+                'usable_operative_slots': agency.get('usable_operative_slots', 0),
                 'operatives': [],
-                'upgrades': {},
-                'defense': agency.get('defense', 0),
-                'operative_slots': agency.get('max_operative_count', 0)
+                'upgrades': agency.get('upgrades', {}),
+                'defense': agency.get('defense', 0)
             }
-            
-            # Process operatives
-            if 'operative' in agency and isinstance(agency['operative'], list):
-                for operative in agency['operative']:
-                    if isinstance(operative, dict):
-                        op_info = {
-                            'name': operative.get('name', 'Unknown'),
-                            'nationality': operative.get('nationalities', ''),
-                            'skill': operative.get('skill', 0),
-                            'traits': operative.get('traits', []),
-                            'mission': operative.get('mission', {}),
-                            'state': operative.get('state', '')
-                        }
-                        agency_info['operatives'].append(op_info)
-            
-            # Process upgrades
-            if 'upgrades' in agency and isinstance(agency['upgrades'], dict):
-                agency_info['upgrades'] = agency['upgrades']
-            
+
+            # Process operatives (support both array and dict formats)
+            operatives = agency.get('operative', [])
+            if isinstance(operatives, dict):
+                # Count dict entries as operatives
+                agency_info['operatives'] = [1 for _ in operatives.values() if isinstance(_, dict)]
+            elif isinstance(operatives, list):
+                # Count list entries
+                agency_info['operatives'] = [1 for _ in operatives if isinstance(_, dict)]
+
             agency_data[country_tag] = agency_info
 
     return agency_data
