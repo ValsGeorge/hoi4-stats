@@ -36,6 +36,10 @@ def analyze_state_buildings(data):
                 owner = state_data.get('owner', 'NON')
                 state_buildings[state_id]['owner'] = owner
                 
+                # Get manpower from state
+                manpower_pool = state_data.get('manpower_pool', {}).get('total', 0)
+                state_buildings[state_id]['manpower'] = manpower_pool
+                
                 # Get infrastructure level
                 infra = state_data.get('building_levels', {}).get('infrastructure', 0)
                 state_buildings[state_id]['infrastructure'] = calculate_building_count(infra)

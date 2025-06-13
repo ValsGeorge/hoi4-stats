@@ -587,7 +587,7 @@ class AnalyzerGUI:
     def create_buildings_sheet(self, ws, all_data, country_tag, header_fill, header_font):
         """Create the buildings sheet with state columns and building data"""
         # Get all states owned by the country and all dates
-        owned_states = set()
+        owned_states = {}  # Changed to dict to store state info
         dates = []
         
         for data in all_data:
@@ -596,10 +596,12 @@ class AnalyzerGUI:
             if 'state_buildings' in data:
                 for state_id, buildings in data['state_buildings'].items():
                     if buildings.get('owner', '') == country_tag:
-                        owned_states.add(state_id)
+                        if state_id not in owned_states or owned_states[state_id] < buildings.get('manpower', 0):
+                            owned_states[state_id] = buildings.get('manpower', 0)
 
-        # Sort states and dates
-        sorted_states = sorted(list(owned_states), key=lambda x: int(x) if x.isdigit() else float('inf'))
+        # Sort states by manpower (descending) and then by ID
+        sorted_states = sorted(owned_states.keys(), 
+                             key=lambda x: (-owned_states[x], int(x) if x.isdigit() else float('inf')))
         dates = sorted(dates)
 
         # Create headers
@@ -608,7 +610,11 @@ class AnalyzerGUI:
         ws.cell(row=1, column=1).fill = header_fill
         ws.cell(row=1, column=1).font = header_font
 
-        # Create merged state headers and sub-headers
+        # Create merged state headers and sub-headers with alternating colors
+        state_fill_1 = PatternFill(start_color='BDD7EE', end_color='BDD7EE', fill_type='solid')
+        state_fill_2 = PatternFill(start_color='DEEAF6', end_color='DEEAF6', fill_type='solid')
+        current_fill = state_fill_1
+
         for state_id in sorted_states:
             state_name = f"{state_id} - {STATES.get(state_id, 'Unknown')}"
             
@@ -619,68 +625,177 @@ class AnalyzerGUI:
             cell.fill = header_fill
             cell.font = header_font
 
-            # Add sub-headers
-            ws.cell(row=2, column=current_col, value="Infra").fill = header_fill
-            ws.cell(row=2, column=current_col + 1, value="Civs").fill = header_fill
-            ws.cell(row=2, column=current_col + 2, value="Mils").fill = header_fill
+            # Add sub-headers with state background color
+            ws.cell(row=2, column=current_col, value="Infra").fill = current_fill
+            ws.cell(row=2, column=current_col + 1, value="Civs").fill = current_fill
+            ws.cell(row=2, column=current_col + 2, value="Mils").fill = current_fill
+            
+            # Add thin borders between states
+            if current_col > 2:  # Not the first state
+                for row in range(1, len(dates) + 3):  # +3 for headers
+                    cell = ws.cell(row=row, column=current_col)
+                    cell.border = openpyxl.styles.Border(left=openpyxl.styles.Side(style='thin'))
             
             current_col += 3
+            # Alternate background color for next state
+            current_fill = state_fill_2 if current_fill == state_fill_1 else state_fill_1
 
         # Add data rows
         current_row = 3
-        for date in dates:
-            ws.cell(row=current_row, column=1, value=date)
+        row_fill_1 = PatternFill(start_color='F2F2F2', end_color='F2F2F2', fill_type='solid')
+        row_fill_2 = PatternFill(start_color='FFFFFF', end_color='FFFFFF', fill_type='solid')
+        left_alignment = openpyxl.styles.Alignment(horizontal='left')
+
+        for date_idx, date in enumerate(dates):
+            # Set date cell alignment to left
+            date_cell = ws.cell(row=current_row, column=1, value=date)
+            date_cell.alignment = left_alignment
             
             current_col = 2
             data = next((d for d in all_data if d['date'].strip("' ") == date), None)
+            row_fill = row_fill_1 if date_idx % 2 == 0 else row_fill_2
             
             if data and 'state_buildings' in data:
-                for state_id in sorted_states:
+                for state_idx, state_id in enumerate(sorted_states):
+                    state_fill = state_fill_1 if state_idx % 2 == 0 else state_fill_2
+                    
                     if state_id in data['state_buildings']:
                         buildings = data['state_buildings'][state_id]
                         if buildings.get('owner', '') == country_tag:
-                            ws.cell(row=current_row, column=current_col, 
+                            for i in range(3):  # Three cells per state
+                                cell = ws.cell(row=current_row, column=current_col + i)
+                                cell.fill = state_fill
+                                cell.alignment = left_alignment  # Set left alignment for each cell
+                            
+                            # Set values with left alignment
+                            infra_cell = ws.cell(row=current_row, column=current_col, 
                                   value=buildings.get('infrastructure', 0))
-                            ws.cell(row=current_row, column=current_col + 1, 
+                            civs_cell = ws.cell(row=current_row, column=current_col + 1, 
                                   value=buildings.get('civs', 0))
-                            ws.cell(row=current_row, column=current_col + 2, 
+                            mils_cell = ws.cell(row=current_row, column=current_col + 2, 
                                   value=buildings.get('mils', 0))
+                            
+                            # Apply left alignment to all value cells
+                            infra_cell.alignment = left_alignment
+                            civs_cell.alignment = left_alignment
+                            mils_cell.alignment = left_alignment
+                            
                     current_col += 3
             
             current_row += 1
 
     def create_construction_sheet(self, ws, all_data, country_tag, header_fill, header_font):
-        """Create the construction queue sheet"""
-        # Set up headers
-        headers = ['Date', 'State', 'Building', 'Active Factories', 'Progress', 'Target', 'Started']
-        for col, header in enumerate(headers, 1):
-            cell = ws.cell(row=1, column=col, value=header)
-            cell.fill = header_fill
-            cell.font = header_font
-
-        # Add data rows
-        current_row = 2
-        for data in sorted(all_data, key=lambda x: x.get('date', '')):
+        """Create the construction queue sheet organized by date"""
+        # First collect all construction data by date
+        construction_by_date = defaultdict(list)
+        
+        # Custom function to convert any date format to sortable format
+        def format_date_for_sort(date_str):
+            if not date_str:
+                return ""
+                
+            date_str = str(date_str).strip("' ")
+            
+            # Already in YYYY-MM-DD format
+            if '-' in date_str and len(date_str) == 10:
+                return date_str
+                
+            try:
+                # Try to parse various formats
+                if '/' in date_str:  # DD/MM/YYYY
+                    day, month, year = map(int, date_str.split('/'))
+                    return f"{year:04d}-{month:02d}-{day:02d}"
+                elif '.' in date_str:  # YYYY.MM.DD
+                    year, month, day = map(int, date_str.split('.'))
+                    return f"{year:04d}-{month:02d}-{day:02d}"
+            except:
+                return date_str
+            return date_str
+        
+        # Get and sort all dates
+        all_dates = set()
+        for data in all_data:
+            if 'construction_queue' in data and country_tag in data['construction_queue']:
+                all_dates.add(data['date'].strip("' "))
+        
+        # Sort dates chronologically
+        all_dates = sorted(all_dates, key=format_date_for_sort)
+        
+        # Process construction data
+        for data in all_data:
+            date = data['date'].strip("' ")
             if 'construction_queue' in data and country_tag in data['construction_queue']:
                 for item in data['construction_queue'][country_tag]:
-                    ws.cell(row=current_row, column=1, value=data['date'].strip("' "))
-                    ws.cell(row=current_row, column=2, value=f"{item['state']} - {item['state_name']}")
-                    ws.cell(row=current_row, column=3, value=item['building'])
-                    ws.cell(row=current_row, column=4, value=item['active_factories'])
-                    ws.cell(row=current_row, column=5, value=item['produced'])
-                    ws.cell(row=current_row, column=6, value=item['amount'])
-                    ws.cell(row=current_row, column=7, value=item['created'])
-                    current_row += 1
+                    construction_by_date[date].append(item)
+
+        # Set up the headers - each date gets 4 columns
+        current_col = 1
+        header_row = 1
+        subheader_row = 2
+        data_start_row = 3
+
+        # Setup header structure
+        headers = ['State', 'Building', 'Factories', 'Progress']
+        cols_per_date = len(headers)  # Number of columns per date
+
+        # Add date headers and subheaders
+        for date in all_dates:
+            if construction_by_date[date]:  # Only add date columns if there's data
+                # Add vertical border between dates
+                if current_col > 1:
+                    for row in range(1, ws.max_row + 1):
+                        cell = ws.cell(row=row, column=current_col)
+                        cell.border = openpyxl.styles.Border(
+                            left=openpyxl.styles.Side(style='thin'))
+
+                # Add merged date header
+                ws.merge_cells(
+                    start_row=header_row,
+                    start_column=current_col,
+                    end_row=header_row,
+                    end_column=current_col + cols_per_date - 1
+                )
+                date_cell = ws.cell(row=header_row, column=current_col, value=date)
+                date_cell.fill = header_fill
+                date_cell.font = header_font
+                date_cell.alignment = openpyxl.styles.Alignment(horizontal='center')
+
+                # Add subheaders
+                for i, header in enumerate(headers):
+                    cell = ws.cell(row=subheader_row, column=current_col + i, value=header)
+                    cell.fill = header_fill
+                    cell.font = header_font
+
+                # Add construction data
+                data_row = data_start_row
+                for item in construction_by_date[date]:
+                    # State column
+                    ws.cell(row=data_row, column=current_col,
+                           value=f"{item['state']} - {item['state_name']}")
+                    # Building column
+                    ws.cell(row=data_row, column=current_col + 1,
+                           value=item['building'])
+                    # Factories column
+                    ws.cell(row=data_row, column=current_col + 2,
+                           value=item['active_factories'])
+                    # Progress column
+                    ws.cell(row=data_row, column=current_col + 3,
+                           value=f"{item['produced']}/{item['amount']}")
+                    data_row += 1
+
+                current_col += cols_per_date
 
         # Auto-adjust column widths
-        for column in ws.columns:
+        for col in range(1, ws.max_column + 1):
             max_length = 0
-            column_letter = column[0].column_letter
-            for cell in column:
+            column = ws.column_dimensions[openpyxl.utils.get_column_letter(col)]
+            
+            for cell in ws[openpyxl.utils.get_column_letter(col)]:
                 try:
-                    if len(str(cell.value)) > max_length:
-                        max_length = len(str(cell.value))
+                    if cell.value:
+                        max_length = max(max_length, len(str(cell.value)))
                 except:
                     pass
-            adjusted_width = (max_length + 2)
-            ws.column_dimensions[column_letter].width = adjusted_width
+            
+            adjusted_width = max_length + 2
+            column.width = adjusted_width
