@@ -883,8 +883,8 @@ class AnalyzerGUI:
     def create_intelligence_sheet(self, ws, all_data, country_tag, header_fill, header_font):
         """Create sheet showing intelligence agency data by date"""
         
-        # Define headers for the combined table
-        headers = ["Date", "Total Slots", "Free Slots"] + [
+        # Define headers for the combined table - removed Free Slots
+        headers = ["Date", "Spies"] + [
             "Economy Civilian", "Army Department", "Naval Department", "Airforce Department",
             "Passive Defense", "Anti Partisan", "Portable Radios", "Invisible Ink",
             "Plastic Explosives", "Suicide Pills", "Training Centers",
@@ -901,26 +901,26 @@ class AnalyzerGUI:
         
         # Define upgrade mapping
         upgrade_mapping = {
-            "upgrade_economy_civilian": 4,
-            'upgrade_army_department': 5,
-            'upgrade_naval_department': 6,
-            'upgrade_airforce_department': 7,
-            'upgrade_passive_defense': 8,
-            'upgrade_anti_partisan': 9,
-            'upgrade_portable_radios': 10,
-            'upgrade_invisible_ink': 11,
-            'upgrade_plastic_explosives': 12,
-            'upgrade_suicide_pills': 13,
-            'upgrade_training_centers': 14,
-            'upgrade_commando_training': 15,
-            'upgrade_interrogation_techniques': 16,
-            'upgrade_diplo_training': 17,
-            'upgrade_psycho_warfare': 18,
-            'upgrade_form_department': 19,
-            'upgrade_decryption_boost': 20,
-            'upgrade_decryption_boost_2': 21,
-            'upgrade_crypto_strength': 22,
-            'upgrade_crypto_strength_2': 23,
+            "upgrade_economy_civilian": 3,  # Adjusted column numbers after removing Free Slots
+            'upgrade_army_department': 4,
+            'upgrade_naval_department': 5,
+            'upgrade_airforce_department': 6,
+            'upgrade_passive_defense': 7,
+            'upgrade_anti_partisan': 8,
+            'upgrade_portable_radios': 9,
+            'upgrade_invisible_ink': 10,
+            'upgrade_plastic_explosives': 11,
+            'upgrade_suicide_pills': 12,
+            'upgrade_training_centers': 13,
+            'upgrade_commando_training': 14,
+            'upgrade_interrogation_techniques': 15,
+            'upgrade_diplo_training': 16,
+            'upgrade_psycho_warfare': 17,
+            'upgrade_form_department': 18,
+            'upgrade_decryption_boost': 19,
+            'upgrade_decryption_boost_2': 20,
+            'upgrade_crypto_strength': 21,
+            'upgrade_crypto_strength_2': 22,
         }
         
         # Sort data by date
@@ -935,12 +935,11 @@ class AnalyzerGUI:
                     agency_data = country_data['intelligence_agency']
                     date = data.get('date', '')
                     
-                    # Add all data in one row
+                    # Add all data in one row - removed Free Slots
                     ws.cell(row=current_row, column=1, value=date)
                     ws.cell(row=current_row, column=2, value=agency_data.get('max_operative_count', 0))
-                    ws.cell(row=current_row, column=3, value=agency_data.get('usable_operative_slots', 0))
                     
-                    # Add upgrade values
+                    # Add upgrade values with adjusted column numbers
                     current_upgrades = agency_data.get('upgrades', {})
                     for upgrade_key, col in upgrade_mapping.items():
                         value = current_upgrades.get(upgrade_key, 0)
