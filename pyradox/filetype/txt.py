@@ -54,7 +54,7 @@ IGNORED_PATHS = [
     ['strategic_navy'],
     ['delivery_route'],
     ['extra_resource_origin'],
-    ['factory_efficiencies'], # idk how to even read this data so i can make it useful
+    # ['factory_efficiencies'], # idk how to even read this data so i can make it useful
     ['state_garrison_data'],
     ['equipment_market'],
     ['naval_lines'],
@@ -69,6 +69,7 @@ IGNORED_PATHS = [
     # ['air_base'],
     ['provinces'],
     ['deployment'],
+    ['strategic_operatives'],
 ]
 
 game_encodings = {

@@ -22,8 +22,8 @@ def process_save_file(save_path):
     buildings_data = buildings.analyze_save_file(json_path)
     
     # Generate Excel report with correct function name
-    if equipment_data and buildings_data:
-        create_excel_report(equipment_data, buildings_data, base_name)
+    # if equipment_data and buildings_data:
+    #     create_excel_report(equipment_data, buildings_data, base_name)
     
     return True
 

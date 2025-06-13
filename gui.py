@@ -8,6 +8,7 @@ from openpyxl.styles import PatternFill, Font
 from equipment import format_game_date
 from collections import defaultdict
 from eq_definitions import EQ_TYPE
+from state_defines import STATES
 
 class AnalyzerGUI:
     def __init__(self, root):
@@ -161,30 +162,51 @@ class AnalyzerGUI:
         # Generate Excel report if we have data
         if equipment_data and buildings_data:
             create_excel_report(equipment_data, buildings_data, base_name)
-        
-        # Return equipment data for Excel generation
-        return equipment_data
+            # Combine both datasets into one
+            return {
+                'date': equipment_data['date'],
+                'country_data': equipment_data['country_data'],
+                'state_buildings': buildings_data['state_buildings'],
+                'construction_queue': buildings_data['construction_queue']
+            }
+        return None
 
     def process_hoi4_save(self, file):
         """Process HOI4 save file and return analysis data."""
         from main import process_save_file
-        # Generate JSON path
         base_name = os.path.splitext(os.path.basename(file))[0]
         json_path = os.path.join("melted_saves", f"{base_name}.json")
-        # Process save
-        if process_save_file(file):  # Remove json_path argument
+        if process_save_file(file):
             import equipment
-            return equipment.analyze_save_file(json_path)
+            import buildings
+            equipment_data = equipment.analyze_save_file(json_path)
+            buildings_data = buildings.analyze_save_file(json_path)
+            if equipment_data and buildings_data:
+                return {
+                    'date': equipment_data['date'],
+                    'country_data': equipment_data['country_data'],
+                    'state_buildings': buildings_data['state_buildings'],
+                    'construction_queue': buildings_data['construction_queue']
+                }
         return None
-    
+
     def process_melted_save(self, file):
         """Process melted save file and return analysis data."""
         from main import process_save_file
         base_name = os.path.splitext(os.path.basename(file))[0]
         json_path = os.path.join("melted_saves", f"{base_name}.json")
-        if process_save_file(file):  # Remove json_path argument
+        if process_save_file(file):
             import equipment
-            return equipment.analyze_save_file(json_path)
+            import buildings
+            equipment_data = equipment.analyze_save_file(json_path)
+            buildings_data = buildings.analyze_save_file(json_path)
+            if equipment_data and buildings_data:
+                return {
+                    'date': equipment_data['date'],
+                    'country_data': equipment_data['country_data'],
+                    'state_buildings': buildings_data['state_buildings'],
+                    'construction_queue': buildings_data['construction_queue']
+                }
         return None
 
     def create_combined_excel(self, all_data):
@@ -194,6 +216,9 @@ class AnalyzerGUI:
             wb.remove(wb.active)
             
             major_countries = ['USA', 'ENG', 'GER', 'ITA', 'SOV', 'JAP']
+            header_fill = PatternFill(start_color='366092', end_color='366092', fill_type='solid')
+            header_font = Font(color='FFFFFF', bold=True)
+            section_font = Font(bold=True)
 
             # Custom function to convert any date format to sortable format
             def format_date_for_sort(date_str):
@@ -225,7 +250,13 @@ class AnalyzerGUI:
             # Create sheets for each major country
             for country in major_countries:
                 ws = wb.create_sheet(country)
-                
+                current_row = 1
+
+                # 1. Production Section Header
+                ws['A1'] = "Military Production"
+                ws['A1'].font = section_font
+                current_row += 2
+
                 # Get equipment names specific to this country and map to types
                 country_equipment = set()
                 for data in all_data:
@@ -277,21 +308,97 @@ class AnalyzerGUI:
                                 ws.cell(row=row, column=col, value=factory_count)
                         row += 1
                 
+                # After production section, add spacing
+                row += 2
+
+                # 2. Building Status Section
+                ws.cell(row=row, column=1, value="Building Status")
+                ws.cell(row=row, column=1).font = section_font
+                row += 2
+
+                # Get all dates and states for this country
+                all_states = set()
+                all_dates = []
+                for data in all_data:
+                    if 'state_buildings' in data:
+                        all_dates.append(data['date'].strip("' "))
+                        for state_id, buildings in data['state_buildings'].items():
+                            if buildings.get('owner', '') == country:
+                                all_states.add(state_id)
+
+                # Sort states and dates
+                sorted_states = sorted(all_states, key=lambda x: int(x) if x.isdigit() else float('inf'))
+                all_dates = sorted(all_dates, key=lambda x: format_date_for_sort(x))
+
+                # Add state headers
+                for col, state_id in enumerate(sorted_states, 2):
+                    cell = ws.cell(row=row, column=col, value=f"{state_id} - {STATES.get(state_id, 'Unknown')}")
+                    cell.fill = header_fill
+                    cell.font = header_font
+
+                # Add date column header
+                cell = ws.cell(row=row, column=1, value="Date")
+                cell.fill = header_fill
+                cell.font = header_font
+
+                # Add building data rows
+                row += 1
+                for date in all_dates:
+                    ws.cell(row=row, column=1, value=date)
+                    data = next((d for d in all_data if d['date'].strip("' ") == date), None)
+                    if data and 'state_buildings' in data:
+                        for col, state_id in enumerate(sorted_states, 2):
+                            if state_id in data['state_buildings']:
+                                buildings = data['state_buildings'][state_id]
+                                if buildings.get('owner', '') == country:
+                                    # Format: infrastructure civs mils
+                                    value = f"{buildings.get('infrastructure', 0)} {buildings.get('civs', 0)} {buildings.get('mils', 0)}"
+                                    ws.cell(row=row, column=col, value=value)
+                    row += 1
+
+                row += 3
+
+                # 3. Construction Queue Section
+                ws.cell(row=row, column=1, value="Construction Queue")
+                ws.cell(row=row, column=1).font = section_font
+                row += 2
+
+                # Add construction headers
+                headers = ['Date', 'State', 'Building', 'Active Factories', 'Progress', 'Target', 'Started']
+                for col, header in enumerate(headers, 1):
+                    cell = ws.cell(row=row, column=col, value=header)
+                    cell.fill = header_fill
+                    cell.font = header_font
+
+                # Add construction data
+                row += 1
+                for data in sorted_data:
+                    if 'construction_queue' in data and country in data['construction_queue']:
+                        for item in data['construction_queue'][country]:
+                            ws.cell(row=row, column=1, value=data['date'].strip("' "))
+                            ws.cell(row=row, column=2, value=f"{item['state']} - {item['state_name']}")
+                            ws.cell(row=row, column=3, value=item['building'])
+                            ws.cell(row=row, column=4, value=item['active_factories'])
+                            ws.cell(row=row, column=5, value=item['produced'])
+                            ws.cell(row=row, column=6, value=item['amount'])
+                            ws.cell(row=row, column=7, value=item['created'])
+                            row += 1
+
                 # Auto-adjust column widths
-                for col in ws.columns:
+                for column in ws.columns:
                     max_length = 0
-                    column = col[0].column_letter
-                    for cell in col:
+                    column_letter = column[0].column_letter
+                    for cell in column:
                         try:
                             if len(str(cell.value)) > max_length:
                                 max_length = len(str(cell.value))
                         except:
                             pass
                     adjusted_width = (max_length + 2)
-                    ws.column_dimensions[column].width = adjusted_width
-            
-            # Save combined Excel file
-            excel_path = os.path.join('output', 'combined_production_analysis.xlsx')
+                    ws.column_dimensions[column_letter].width = adjusted_width
+
+            # Save workbook
+            excel_path = os.path.join('output', 'combined_analysis.xlsx')
             os.makedirs('output', exist_ok=True)
             wb.save(excel_path)
             print(f"Combined analysis saved to: {excel_path}")
