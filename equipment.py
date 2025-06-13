@@ -234,7 +234,6 @@ def analyze_organizations(data, equipment_registry):
 def analyze_production_queue(data, equipment_registry, save_date):
     """Analyze the military production lines from the parsed save file."""
     try:
-        print("\nAnalyzing production queue...")
         by_country = defaultdict(list)
         
         # Ensure save_date is a string
