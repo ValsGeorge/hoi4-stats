@@ -42,6 +42,16 @@ class AnalyzerGUI:
                        variable=self.file_type, value="txt").pack(side=tk.LEFT)
         ttk.Radiobutton(frame, text="JSON Files (.json)", 
                        variable=self.file_type, value="json").pack(side=tk.LEFT)
+        
+        # Add country tag input and button
+        tag_frame = ttk.Frame(frame)
+        tag_frame.pack(side=tk.RIGHT, padx=5)
+        
+        ttk.Label(tag_frame, text="Country TAG:").pack(side=tk.LEFT)
+        self.country_tag = ttk.Entry(tag_frame, width=5)
+        self.country_tag.pack(side=tk.LEFT, padx=2)
+        ttk.Button(tag_frame, text="Generate Report", 
+                  command=self.generate_country_report).pack(side=tk.LEFT, padx=2)
                        
     def setup_file_list(self):
         frame = ttk.LabelFrame(self.root, text="Selected Files", padding="5")
@@ -424,3 +434,253 @@ class AnalyzerGUI:
                 for child in widget.winfo_children():
                     if isinstance(child, ttk.Button):
                         child['state'] = 'normal'
+    
+    def generate_country_report(self):
+        """Generate Excel report for a specific country."""
+        tag = self.country_tag.get().strip().upper()
+        if not tag:
+            messagebox.showwarning("Invalid TAG", "Please enter a country TAG.")
+            return
+            
+        if not self.selected_files:
+            messagebox.showwarning("No Files", "Please select files to process first.")
+            return
+            
+        # Disable buttons during processing
+        self.disable_buttons()
+        
+        # Start processing in a separate thread
+        thread = threading.Thread(target=lambda: self.process_country_report_thread(tag))
+        thread.start()
+        
+    def process_country_report_thread(self, country_tag):
+        """Process files and generate report for specific country in a separate thread."""
+        try:
+            total = len(self.selected_files)
+            all_data = []
+            
+            for i, file in enumerate(self.selected_files, 1):
+                # Update progress
+                progress = (i / total) * 100
+                self.root.after(0, self.update_progress, f"Processing {os.path.basename(file)}", progress)
+                
+                # Process file based on type
+                data = None
+                if self.file_type.get() == "hoi4":
+                    data = self.process_hoi4_save(file)
+                elif self.file_type.get() == "txt":
+                    data = self.process_melted_save(file)
+                elif self.file_type.get() == "json":
+                    data = self.process_json(file)
+                
+                if data:
+                    all_data.append(data)
+            
+            if all_data:
+                # Create workbook
+                wb = openpyxl.Workbook()
+                wb.remove(wb.active)  # Remove default sheet
+                
+                # Create sheets
+                production_ws = wb.create_sheet("Production")
+                buildings_ws = wb.create_sheet("Buildings")
+                construction_ws = wb.create_sheet("Construction")
+                
+                # Use the same formatting
+                header_fill = PatternFill(start_color='366092', end_color='366092', fill_type='solid')
+                header_font = Font(color='FFFFFF', bold=True)
+                section_font = Font(bold=True)
+
+                # --- First Sheet: Production (keep existing code) ---
+                self.create_production_sheet(production_ws, all_data, country_tag, header_fill, header_font)
+
+                # --- Second Sheet: Buildings ---
+                self.create_buildings_sheet(buildings_ws, all_data, country_tag, header_fill, header_font)
+
+                # --- Third Sheet: Construction Queue ---
+                self.create_construction_sheet(construction_ws, all_data, country_tag, header_fill, header_font)
+                
+                # Save workbook
+                output_path = os.path.join('output', f'{country_tag}_analysis.xlsx')
+                os.makedirs('output', exist_ok=True)
+                wb.save(output_path)
+                
+                self.root.after(0, self.update_progress, 
+                              f"Report generated for {country_tag}: {output_path}", 100)
+                self.root.after(0, messagebox.showinfo, "Success", 
+                              f"Report generated: {output_path}")
+            else:
+                self.root.after(0, self.update_progress, "No data was processed!", 100)
+                
+        except Exception as e:
+            self.root.after(0, messagebox.showerror, "Error", 
+                          f"Error generating report: {str(e)}")
+        finally:
+            self.root.after(0, self.enable_buttons)
+
+    def create_production_sheet(self, ws, all_data, country_tag, header_fill, header_font):
+        """Create the production sheet (existing functionality)"""
+        current_row = 1
+        ws['A1'] = "Military Production"
+        ws['A1'].font = Font(bold=True)
+        current_row += 2
+        
+        # Get equipment names for this country
+        country_equipment = set()
+        for data in all_data:
+            if country_tag in data['country_data']:
+                country_data = data['country_data'][country_tag]
+                for line in country_data.get('equipment_lines', []):
+                    eq_name = line['equipment_name']
+                    eq_type = EQ_TYPE.get(eq_name, eq_name)
+                    country_equipment.add(eq_type)
+        
+        if not country_equipment:
+            self.root.after(0, messagebox.showinfo, "No Data", 
+                          f"No production data found for country {country_tag}")
+            return
+        
+        # Setup headers using equipment types
+        equipment_list = sorted(list(country_equipment))
+        headers = ['Date'] + equipment_list
+        for col, header in enumerate(headers, 1):
+            cell = ws.cell(row=current_row, column=col, value=header)
+            cell.fill = header_fill
+            cell.font = header_font
+        
+        current_row += 1
+        
+        # Add production data
+        for data in sorted(all_data, key=lambda x: x.get('date', '')):
+            if country_tag in data['country_data']:
+                country_data = data['country_data'][country_tag]
+                ws.cell(row=current_row, column=1, value=data['date'])
+                
+                # Create type-based factory counts
+                type_factories = defaultdict(int)
+                for line in country_data.get('equipment_lines', []):
+                    eq_name = line['equipment_name']
+                    eq_type = EQ_TYPE.get(eq_name, eq_name)
+                    type_factories[eq_type] += line['active_factories']
+                
+                # Fill in factory counts by type
+                for col, eq_type in enumerate(equipment_list, 2):
+                    factory_count = type_factories.get(eq_type, 0)
+                    if factory_count > 0:
+                        ws.cell(row=current_row, column=col, value=factory_count)
+                
+                current_row += 1
+        
+        # Auto-adjust column widths
+        for column in ws.columns:
+            max_length = 0
+            column_letter = column[0].column_letter
+            for cell in column:
+                try:
+                    if len(str(cell.value)) > max_length:
+                        max_length = len(str(cell.value))
+                except:
+                    pass
+            adjusted_width = (max_length + 2)
+            ws.column_dimensions[column_letter].width = adjusted_width
+
+    def create_buildings_sheet(self, ws, all_data, country_tag, header_fill, header_font):
+        """Create the buildings sheet with state columns and building data"""
+        # Get all states owned by the country and all dates
+        owned_states = set()
+        dates = []
+        
+        for data in all_data:
+            if 'date' in data:
+                dates.append(data['date'].strip("' "))
+            if 'state_buildings' in data:
+                for state_id, buildings in data['state_buildings'].items():
+                    if buildings.get('owner', '') == country_tag:
+                        owned_states.add(state_id)
+
+        # Sort states and dates
+        sorted_states = sorted(list(owned_states), key=lambda x: int(x) if x.isdigit() else float('inf'))
+        dates = sorted(dates)
+
+        # Create headers
+        current_col = 2  # Start from column B (A is for dates)
+        ws.cell(row=1, column=1, value="Date")
+        ws.cell(row=1, column=1).fill = header_fill
+        ws.cell(row=1, column=1).font = header_font
+
+        # Create merged state headers and sub-headers
+        for state_id in sorted_states:
+            state_name = f"{state_id} - {STATES.get(state_id, 'Unknown')}"
+            
+            # Merge cells for state name
+            ws.merge_cells(start_row=1, start_column=current_col, 
+                          end_row=1, end_column=current_col + 2)
+            cell = ws.cell(row=1, column=current_col, value=state_name)
+            cell.fill = header_fill
+            cell.font = header_font
+
+            # Add sub-headers
+            ws.cell(row=2, column=current_col, value="Infra").fill = header_fill
+            ws.cell(row=2, column=current_col + 1, value="Civs").fill = header_fill
+            ws.cell(row=2, column=current_col + 2, value="Mils").fill = header_fill
+            
+            current_col += 3
+
+        # Add data rows
+        current_row = 3
+        for date in dates:
+            ws.cell(row=current_row, column=1, value=date)
+            
+            current_col = 2
+            data = next((d for d in all_data if d['date'].strip("' ") == date), None)
+            
+            if data and 'state_buildings' in data:
+                for state_id in sorted_states:
+                    if state_id in data['state_buildings']:
+                        buildings = data['state_buildings'][state_id]
+                        if buildings.get('owner', '') == country_tag:
+                            ws.cell(row=current_row, column=current_col, 
+                                  value=buildings.get('infrastructure', 0))
+                            ws.cell(row=current_row, column=current_col + 1, 
+                                  value=buildings.get('civs', 0))
+                            ws.cell(row=current_row, column=current_col + 2, 
+                                  value=buildings.get('mils', 0))
+                    current_col += 3
+            
+            current_row += 1
+
+    def create_construction_sheet(self, ws, all_data, country_tag, header_fill, header_font):
+        """Create the construction queue sheet"""
+        # Set up headers
+        headers = ['Date', 'State', 'Building', 'Active Factories', 'Progress', 'Target', 'Started']
+        for col, header in enumerate(headers, 1):
+            cell = ws.cell(row=1, column=col, value=header)
+            cell.fill = header_fill
+            cell.font = header_font
+
+        # Add data rows
+        current_row = 2
+        for data in sorted(all_data, key=lambda x: x.get('date', '')):
+            if 'construction_queue' in data and country_tag in data['construction_queue']:
+                for item in data['construction_queue'][country_tag]:
+                    ws.cell(row=current_row, column=1, value=data['date'].strip("' "))
+                    ws.cell(row=current_row, column=2, value=f"{item['state']} - {item['state_name']}")
+                    ws.cell(row=current_row, column=3, value=item['building'])
+                    ws.cell(row=current_row, column=4, value=item['active_factories'])
+                    ws.cell(row=current_row, column=5, value=item['produced'])
+                    ws.cell(row=current_row, column=6, value=item['amount'])
+                    ws.cell(row=current_row, column=7, value=item['created'])
+                    current_row += 1
+
+        # Auto-adjust column widths
+        for column in ws.columns:
+            max_length = 0
+            column_letter = column[0].column_letter
+            for cell in column:
+                try:
+                    if len(str(cell.value)) > max_length:
+                        max_length = len(str(cell.value))
+                except:
+                    pass
+            adjusted_width = (max_length + 2)
+            ws.column_dimensions[column_letter].width = adjusted_width
