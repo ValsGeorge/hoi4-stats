@@ -629,11 +629,14 @@ class AnalyzerGUI:
 
     def create_buildings_sheet(self, ws, all_data, country_tag, header_fill, header_font):
         """Create the buildings sheet with state columns and building data"""
+        # Sort all_data by date first
+        sorted_data = sorted(all_data, key=lambda x: self.format_date_for_sort(x.get('date', '')))
+        
         # Get all states owned by the country and all dates
         owned_states = {}  # Changed to dict to store state info
         dates = []
         
-        for data in all_data:
+        for data in sorted_data:
             if 'date' in data:
                 dates.append(data['date'].strip("' "))
             if 'state_buildings' in data:
@@ -695,7 +698,7 @@ class AnalyzerGUI:
             date_cell.alignment = left_alignment
             
             current_col = 2
-            data = next((d for d in all_data if d['date'].strip("' ") == date), None)
+            data = next((d for d in sorted_data if d['date'].strip("' ") == date), None)
             row_fill = row_fill_1 if date_idx % 2 == 0 else row_fill_2
             
             if data and 'state_buildings' in data:
@@ -762,7 +765,7 @@ class AnalyzerGUI:
                 all_dates.add(data['date'].strip("' "))
         
         # Sort dates chronologically
-        all_dates = sorted(all_dates, key=format_date_for_sort)
+        all_dates = sorted(all_dates, key=self.format_date_for_sort)
         
         # Process construction data
         for data in all_data:
@@ -879,11 +882,14 @@ class AnalyzerGUI:
         
         # Define headers for the combined table
         headers = ["Date", "Total Slots", "Free Slots"] + [
-            "Form Dept", "Crypto 1", "Crypto 2", "Suicide Pills", "Army Dept", 
-            "Interrogation", "Defense", "Psycho War", "Air Dept", "Navy Dept",
-            "Decrypt 1", "Training", "Decrypt 2", "Radios", "Explosives", "Diplo"
+            "Economy Civilian", "Army Department", "Naval Department", "Airforce Department",
+            "Passive Defense", "Anti Partisan", "Portable Radios", "Invisible Ink",
+            "Plastic Explosives", "Suicide Pills", "Training Centers",
+            "Commando Training", "Interrogation Techniques", "Diplomatic Training",
+            "Psychological Warfare", "Form Department", "Radio Interception Group", "Machine-Assisted Decryption",
+            "Government Cypher School", "Machine-Assisted Encryption"
         ]
-        
+
         # Add headers
         for col, header in enumerate(headers, 1):
             cell = ws.cell(row=1, column=col, value=header)
@@ -892,26 +898,30 @@ class AnalyzerGUI:
         
         # Define upgrade mapping
         upgrade_mapping = {
-            'upgrade_form_department': 4,
-            'upgrade_crypto_strength': 5,
-            'upgrade_crypto_strength_2': 6,
-            'upgrade_suicide_pills': 7,
-            'upgrade_army_department': 8,
-            'upgrade_interrogation_techniques': 9,
-            'upgrade_passive_defense': 10,
-            'upgrade_psycho_warfare': 11,
-            'upgrade_airforce_department': 12,
-            'upgrade_naval_department': 13,
-            'upgrade_decryption_boost': 14,
-            'upgrade_training_centers': 15,
-            'upgrade_decryption_boost_2': 16,
-            'upgrade_portable_radios': 17,
-            'upgrade_plastic_explosives': 18,
-            'upgrade_diplo_training': 19
+            "upgrade_economy_civilian": 4,
+            'upgrade_army_department': 5,
+            'upgrade_naval_department': 6,
+            'upgrade_airforce_department': 7,
+            'upgrade_passive_defense': 8,
+            'upgrade_anti_partisan': 9,
+            'upgrade_portable_radios': 10,
+            'upgrade_invisible_ink': 11,
+            'upgrade_plastic_explosives': 12,
+            'upgrade_suicide_pills': 13,
+            'upgrade_training_centers': 14,
+            'upgrade_commando_training': 15,
+            'upgrade_interrogation_techniques': 16,
+            'upgrade_diplo_training': 17,
+            'upgrade_psycho_warfare': 18,
+            'upgrade_form_department': 19,
+            'upgrade_decryption_boost': 20,
+            'upgrade_decryption_boost_2': 21,
+            'upgrade_crypto_strength': 22,
+            'upgrade_crypto_strength_2': 23,
         }
         
         # Sort data by date
-        sorted_data = sorted(all_data, key=lambda x: x.get('date', ''))
+        sorted_data = sorted(all_data, key=lambda x: self.format_date_for_sort(x.get('date', '')))
         current_row = 2
         
         # Process each save file
@@ -947,3 +957,33 @@ class AnalyzerGUI:
                     pass
             adjusted_width = (max_length + 2)
             ws.column_dimensions[column_letter].width = adjusted_width
+
+    def format_date_for_sort(self, date_str):
+        """Convert any date format to sortable YYYY-MM-DD format"""
+        if not date_str:
+            return ""
+            
+        date_str = str(date_str).strip("' ")
+        
+        # Already in YYYY-MM-DD format
+        if '-' in date_str and len(date_str) == 10:
+            return date_str
+            
+        try:
+            # Try to parse various formats
+            if '/' in date_str:  # DD/MM/YYYY
+                day, month, year = map(int, date_str.split('/'))
+                return f"{year:04d}-{month:02d}-{day:02d}"
+            elif '.' in date_str:  # YYYY.MM.DD
+                year, month, day = map(int, date_str.split('.'))
+                return f"{year:04d}-{month:02d}-{day:02d}"
+            elif '-' in date_str:  # MMM-YY
+                month_str, year_str = date_str.split('-')
+                months = {'JAN':1, 'FEB':2, 'MAR':3, 'APR':4, 'MAY':5, 'JUN':6,
+                         'JUL':7, 'AUG':8, 'SEP':9, 'OCT':10, 'NOV':11, 'DEC':12}
+                month = months[month_str.upper()]
+                year = 1900 + int(year_str) if int(year_str) > 50 else 2000 + int(year_str)
+                return f"{year:04d}-{month:02d}-01"
+        except:
+            return date_str
+        return date_str
