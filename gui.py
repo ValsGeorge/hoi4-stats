@@ -123,8 +123,8 @@ class AnalyzerGUI:
         self.disable_buttons()
         
         # Start processing in a separate thread
-        thread = threading.Thread(target=self.process_files_thread)
-        thread.start()
+        # thread = threading.Thread(target=self.process_files_thread)
+        # thread.start()
         
     def process_files_thread(self):
         try:
@@ -844,23 +844,16 @@ class AnalyzerGUI:
             column.width = adjusted_width
 
     def create_focus_sheet(self, ws, all_data, country_tag, header_fill, header_font):
-        """Create sheet showing completed focuses from latest save"""
-        # Get data from most recent save
-        latest_data = max(all_data, key=lambda x: x.get('date', ''))
-        
-        # Setup headers
-        ws.cell(row=1, column=1, value="Date")
-        ws.cell(row=1, column=2, value="Completed Focus")
-        
-        # Apply header styling
-        for col in range(1, 3):
-            cell = ws.cell(row=1, column=col)
-            cell.fill = header_fill
-            cell.font = header_font
+        """Create sheet showing completed focuses"""
+        # Setup header
+        ws.cell(row=1, column=1, value="Completed Focuses")
+        ws.cell(row=1, column=1).fill = header_fill
+        ws.cell(row=1, column=1).font = header_font
         
         current_row = 2
         
         # Get country data from latest save
+        latest_data = max(all_data, key=lambda x: x.get('date', ''))
         if 'countries' in latest_data and country_tag in latest_data['countries']:
             country_data = latest_data['countries'][country_tag]
             focus_data = country_data.get('focus', {})
@@ -875,80 +868,53 @@ class AnalyzerGUI:
                         clean_name = focus_name[len(country_tag)+1:]  # Remove TAG_
                     clean_name = clean_name.replace('_', ' ')  # Replace underscores with spaces
                     
-                    ws.cell(row=current_row, column=1, value=latest_data.get('date', ''))
-                    ws.cell(row=current_row, column=2, value=clean_name)
+                    ws.cell(row=current_row, column=1, value=clean_name)
                     current_row += 1
-    
-        # Auto-adjust column widths
-        for column in ws.columns:
-            max_length = 0
-            column_letter = column[0].column_letter
-            for cell in column:
-                try:
-                    if len(str(cell.value)) > max_length:
-                        max_length = len(str(cell.value))
-                except:
-                    pass
-            adjusted_width = (max_length + 2)
-            ws.column_dimensions[column_letter].width = adjusted_width
+        
+        # Auto-adjust column width
+        ws.column_dimensions['A'].width = max(len(str(cell.value or "")) for cell in ws['A']) + 2
 
     def create_intelligence_sheet(self, ws, all_data, country_tag, header_fill, header_font):
         """Create sheet showing intelligence agency data by date"""
         
-        # First section: Operatives count
-        ws.cell(row=1, column=1, value="Date")
-        ws.cell(row=1, column=2, value="Total Slots")
-        ws.cell(row=1, column=3, value="Free Slots")
+        # Define headers for the combined table
+        headers = ["Date", "Total Slots", "Free Slots"] + [
+            "Form Dept", "Crypto 1", "Crypto 2", "Suicide Pills", "Army Dept", 
+            "Interrogation", "Defense", "Psycho War", "Air Dept", "Navy Dept",
+            "Decrypt 1", "Training", "Decrypt 2", "Radios", "Explosives", "Diplo"
+        ]
         
-        # Apply header styling
-        for col in range(1, 4):
-            cell = ws.cell(row=1, column=col)
+        # Add headers
+        for col, header in enumerate(headers, 1):
+            cell = ws.cell(row=1, column=col, value=header)
             cell.fill = header_fill
             cell.font = header_font
         
-        # Second section: Upgrades over time
-        ws.cell(row=5, column=1, value="Agency Upgrades Over Time")
-        ws.cell(row=5, column=1).font = Font(bold=True)
-        
-        # Define upgrade names and their corresponding keys
+        # Define upgrade mapping
         upgrade_mapping = {
-            "Economy/Civilian": "upgrade_economy_civilian",
-            'Army Department': 'upgrade_army_department',
-            'Naval Department': 'upgrade_naval_department',
-            'Airforce Department': 'upgrade_airforce_department',
-            'Passive Defense': 'upgrade_passive_defense',
-            'Anti-Partisan': 'upgrade_anti_partisan',
-            'Portable Radios': 'upgrade_portable_radios',
-            'Invisible ink': 'upgrade_invisible_ink',
-            'Plastic Explosives': 'upgrade_plastic_explosives',
-            'Suicide Pills': 'upgrade_suicide_pills',
-            'Training Centers': 'upgrade_training_centers',
-            'Commando training': 'upgrade_commando_training',
-            'Interrogation Techniques': 'upgrade_interrogation_techniques',
-            'Diplomatic Training': 'upgrade_diplo_training',
-            'Psycho Warfare': 'upgrade_psycho_warfare',
-            'Form Department': 'upgrade_form_department',
-            'Decryption Boost': 'upgrade_decryption_boost',
-            'Decryption Boost 2': 'upgrade_decryption_boost_2',
-            'Crypto Strength': 'upgrade_crypto_strength',
-            'Crypto Strength 2': 'upgrade_crypto_strength_2',
+            'upgrade_form_department': 4,
+            'upgrade_crypto_strength': 5,
+            'upgrade_crypto_strength_2': 6,
+            'upgrade_suicide_pills': 7,
+            'upgrade_army_department': 8,
+            'upgrade_interrogation_techniques': 9,
+            'upgrade_passive_defense': 10,
+            'upgrade_psycho_warfare': 11,
+            'upgrade_airforce_department': 12,
+            'upgrade_naval_department': 13,
+            'upgrade_decryption_boost': 14,
+            'upgrade_training_centers': 15,
+            'upgrade_decryption_boost_2': 16,
+            'upgrade_portable_radios': 17,
+            'upgrade_plastic_explosives': 18,
+            'upgrade_diplo_training': 19
         }
-        
-        # Add upgrade headers - using display names
-        for col, header in enumerate(upgrade_mapping.keys(), 2):
-            cell = ws.cell(row=6, column=col, value=header)
-            cell.fill = header_fill
-            cell.font = header_font
-        ws.cell(row=6, column=1, value="Date").fill = header_fill
-        ws.cell(row=6, column=1).font = header_font
         
         # Sort data by date
         sorted_data = sorted(all_data, key=lambda x: x.get('date', ''))
+        current_row = 2
         
         # Process each save file
-        current_row = 2
-        upgrade_row = 7
-        
         for data in sorted_data:
             if 'countries' in data and country_tag in data['countries']:
                 country_data = data['countries'][country_tag]
@@ -956,22 +922,18 @@ class AnalyzerGUI:
                     agency_data = country_data['intelligence_agency']
                     date = data.get('date', '')
                     
-                    # Add operative slots data
+                    # Add all data in one row
                     ws.cell(row=current_row, column=1, value=date)
                     ws.cell(row=current_row, column=2, value=agency_data.get('max_operative_count', 0))
                     ws.cell(row=current_row, column=3, value=agency_data.get('usable_operative_slots', 0))
-                    current_row += 1
                     
-                    # Add upgrade data for this date
-                    ws.cell(row=upgrade_row, column=1, value=date)
+                    # Add upgrade values
                     current_upgrades = agency_data.get('upgrades', {})
+                    for upgrade_key, col in upgrade_mapping.items():
+                        value = current_upgrades.get(upgrade_key, 0)
+                        ws.cell(row=current_row, column=col, value=value)
                     
-                    # Fill in upgrade values or 0 if not present
-                    for col, key in enumerate(upgrade_mapping.values(), 2):
-                        value = current_upgrades.get(key, 0)
-                        ws.cell(row=upgrade_row, column=col, value=value)
-                    
-                    upgrade_row += 1
+                    current_row += 1
         
         # Auto-adjust column widths
         for column in ws.columns:

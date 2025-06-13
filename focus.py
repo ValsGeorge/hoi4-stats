@@ -30,11 +30,6 @@ def analyze_focus_data(data):
                         'current': focus.get('current', ''),
                         'paused': focus.get('paused', False)
                     })
-                    
-                    print(f"\nCountry {country_tag}:")
-                    print(f"Focus tree: {focus_info['focus_tree']}")
-                    print(f"Current focus: {focus_info['current']}")
-                    print(f"Completed focuses: {len(focus_info['completed'])}")
                     if focus_info['completed']:
                         print("Sample completed focuses:")
                         for f in focus_info['completed'][:5]:
