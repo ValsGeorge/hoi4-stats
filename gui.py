@@ -478,10 +478,16 @@ class AnalyzerGUI:
                         child['state'] = 'normal'
     
     def generate_country_report(self):
-        """Generate Excel report for a specific country."""
-        tag = self.country_tag.get().strip().upper()
-        if not tag:
-            messagebox.showwarning("Invalid TAG", "Please enter a country TAG.")
+        """Generate Excel report for specific countries."""
+        tags = self.country_tag.get().strip().upper()
+        if not tags:
+            messagebox.showwarning("Invalid TAG", "Please enter at least one country TAG.")
+            return
+            
+        # Split tags by comma and remove any whitespace
+        country_tags = [tag.strip() for tag in tags.split(',')]
+        if not country_tags:
+            messagebox.showwarning("Invalid TAG", "Please enter valid country TAGs.")
             return
             
         if not self.selected_files:
@@ -492,11 +498,11 @@ class AnalyzerGUI:
         self.disable_buttons()
         
         # Start processing in a separate thread
-        thread = threading.Thread(target=lambda: self.process_country_report_thread(tag))
+        thread = threading.Thread(target=lambda: self.process_country_report_thread(country_tags))
         thread.start()
-        
-    def process_country_report_thread(self, country_tag):
-        """Process files and generate report for specific country in a separate thread."""
+
+    def process_country_report_thread(self, country_tags):
+        """Process files and generate report for multiple countries in a separate thread."""
         try:
             total = len(self.selected_files)
             all_data = []
@@ -523,32 +529,34 @@ class AnalyzerGUI:
                 wb = openpyxl.Workbook()
                 wb.remove(wb.active)  # Remove default sheet
                 
-                # Create sheets
-                production_ws = wb.create_sheet("Production")
-                buildings_ws = wb.create_sheet("Buildings")
-                construction_ws = wb.create_sheet("Construction")
-                focus_ws = wb.create_sheet("Focus Completion")  # New sheet
-                intel_ws = wb.create_sheet("Intelligence")  # New sheet
+                # Create sheets for each country
+                for country_tag in country_tags:
+                    # Create sheets for this country
+                    production_ws = wb.create_sheet(f"{country_tag}_Production")
+                    buildings_ws = wb.create_sheet(f"{country_tag}_Buildings")
+                    construction_ws = wb.create_sheet(f"{country_tag}_Construction")
+                    focus_ws = wb.create_sheet(f"{country_tag}_Focus")
+                    intel_ws = wb.create_sheet(f"{country_tag}_Intel")
                 
-                # Use the same formatting
-                header_fill = PatternFill(start_color='366092', end_color='366092', fill_type='solid')
-                header_font = Font(color='FFFFFF', bold=True)
-                section_font = Font(bold=True)
+                    # Use the same formatting
+                    header_fill = PatternFill(start_color='366092', end_color='366092', fill_type='solid')
+                    header_font = Font(color='FFFFFF', bold=True)
+                    section_font = Font(bold=True)
 
-                # Create all sheets
-                self.create_production_sheet(production_ws, all_data, country_tag, header_fill, header_font)
-                self.create_buildings_sheet(buildings_ws, all_data, country_tag, header_fill, header_font)
-                self.create_construction_sheet(construction_ws, all_data, country_tag, header_fill, header_font)
-                self.create_focus_sheet(focus_ws, all_data, country_tag, header_fill, header_font)
-                self.create_intelligence_sheet(intel_ws, all_data, country_tag, header_fill, header_font)
+                    # Create all sheets
+                    self.create_production_sheet(production_ws, all_data, country_tag, header_fill, header_font)
+                    self.create_buildings_sheet(buildings_ws, all_data, country_tag, header_fill, header_font)
+                    self.create_construction_sheet(construction_ws, all_data, country_tag, header_fill, header_font)
+                    self.create_focus_sheet(focus_ws, all_data, country_tag, header_fill, header_font)
+                    self.create_intelligence_sheet(intel_ws, all_data, country_tag, header_fill, header_font)
 
-                # Save workbook
-                output_path = os.path.join('output', f'{country_tag}_analysis.xlsx')
+                # Save workbook with all country data
+                output_path = os.path.join('output', f'{"_".join(country_tags)}_analysis.xlsx')
                 os.makedirs('output', exist_ok=True)
                 wb.save(output_path)
                 
                 self.root.after(0, self.update_progress, 
-                              f"Report generated for {country_tag}: {output_path}", 100)
+                              f"Report generated for countries {', '.join(country_tags)}: {output_path}", 100)
                 self.root.after(0, messagebox.showinfo, "Success", 
                               f"Report generated: {output_path}")
             else:
