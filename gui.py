@@ -569,7 +569,7 @@ class AnalyzerGUI:
             self.root.after(0, self.enable_buttons)
 
     def create_production_sheet(self, ws, all_data, country_tag, header_fill, header_font):
-        """Create the production sheet (existing functionality)"""
+        """Create the production sheet preserving original queue order but combining same types"""
         current_row = 1
         ws['A1'] = "Military Production"
         ws['A1'].font = Font(bold=True)
@@ -578,24 +578,33 @@ class AnalyzerGUI:
         # Sort data by date first
         sorted_data = sorted(all_data, key=lambda x: self.format_date_for_sort(x.get('date', '')))
         
-        # Get equipment names for this country
-        country_equipment = set()
-        for data in all_data:
-            if country_tag in data['country_data']:
-                country_data = data['country_data'][country_tag]
-                for line in country_data.get('equipment_lines', []):
-                    eq_name = line['equipment_name']
-                    eq_type = EQ_TYPE.get(eq_name, eq_name)
-                    country_equipment.add(eq_type)
-        
-        if not country_equipment:
-            self.root.after(0, messagebox.showinfo, "No Data", 
-                          f"No production data found for country {country_tag}")
+        # Get first save's equipment order
+        first_save = sorted_data[0] if sorted_data else None
+        if not first_save or country_tag not in first_save['country_data']:
             return
+            
+        # Get equipment order and types from first save preserving original order
+        first_save_types = []  # Will store (type, priority) tuples
+        seen_types = set()  # Track seen types to avoid duplicates
+        type_to_priority = {}  # Track earliest priority for each type
         
-        # Setup headers using equipment types
-        equipment_list = sorted(list(country_equipment))
-        headers = ['Date'] + equipment_list
+        # First pass - get earliest priority for each type
+        for line in first_save['country_data'][country_tag].get('equipment_lines', []):
+            eq_name = line['equipment_name']
+            eq_type = EQ_TYPE.get(eq_name, eq_name)
+            
+            # Store earliest priority for each type
+            if eq_type not in type_to_priority:
+                type_to_priority[eq_type] = len(type_to_priority)
+        
+        # Get ordered list of types based on earliest appearance
+        first_save_types = sorted(type_to_priority.keys(), key=lambda x: type_to_priority[x])
+        
+        if not first_save_types:
+            return
+
+        # Setup headers using unique types
+        headers = ['Date'] + first_save_types
         for col, header in enumerate(headers, 1):
             cell = ws.cell(row=current_row, column=col, value=header)
             cell.fill = header_fill
@@ -603,21 +612,21 @@ class AnalyzerGUI:
         
         current_row += 1
         
-        # Add production data - use sorted_data here instead of direct sorting
+        # Add data rows combining factories for same type
         for data in sorted_data:
             if country_tag in data['country_data']:
                 country_data = data['country_data'][country_tag]
-                ws.cell(row=current_row, column=1, value=data['date'])
+                ws.cell(row=current_row, column=1, value=data['date'].strip("' "))
                 
-                # Create type-based factory counts
+                # Create type-based factory count mapping
                 type_factories = defaultdict(int)
                 for line in country_data.get('equipment_lines', []):
                     eq_name = line['equipment_name']
                     eq_type = EQ_TYPE.get(eq_name, eq_name)
                     type_factories[eq_type] += line['active_factories']
                 
-                # Fill in factory counts by type
-                for col, eq_type in enumerate(equipment_list, 2):
+                # Fill in combined factory counts using original type order
+                for col, eq_type in enumerate(first_save_types, 2):
                     factory_count = type_factories.get(eq_type, 0)
                     if factory_count > 0:
                         ws.cell(row=current_row, column=col, value=factory_count)
