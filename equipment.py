@@ -235,8 +235,6 @@ def analyze_production_queue(data, equipment_registry, save_date):
     """Analyze the military production lines from the parsed save file."""
     try:
         by_country = defaultdict(list)
-        equipment_priority = defaultdict(dict)  # Track priority order by country
-        first_save = getattr(analyze_production_queue, 'first_save', True)
         
         # Ensure save_date is a string
         save_date = convert_time_to_string(save_date)
@@ -247,53 +245,25 @@ def analyze_production_queue(data, equipment_registry, save_date):
                 if 'production' in country_data:
                     prod_data = country_data['production']
                     if 'military_lines' in prod_data:
-                        military_lines = prod_data['military_lines']
-                        # Store order from first save file
-                        if first_save and isinstance(military_lines, list):
-                            # Track each equipment's index in the production queue
-                            for idx, line in enumerate(military_lines):
-                                if isinstance(line, dict) and line.get('active_factories', 0) > 0:
-                                    eq_id = line.get('equipment_variant_index', {}).get('id')
-                                    eq_type = line.get('equipment_variant_index', {}).get('type')
-                                    eq_name = get_equipment_name_from_registry(equipment_registry, eq_id, eq_type)
-                                    equipment_priority[country_tag][eq_name] = idx
-
-                        # Process current production lines
-                        current_equipment = []
-                        for line in military_lines:
+                        for line in prod_data['military_lines']:
                             if isinstance(line, dict) and line.get('active_factories', 0) > 0:
                                 eq_id = line.get('equipment_variant_index', {}).get('id')
                                 eq_type = line.get('equipment_variant_index', {}).get('type')
                                 eq_name = get_equipment_name_from_registry(equipment_registry, eq_id, eq_type)
                                 
-                                current_equipment.append({
+                                # Keep each production line separate
+                                by_country[country_tag].append({
                                     'equipment_name': eq_name,
                                     'active_factories': line.get('active_factories', 0)
                                 })
 
-                        # Sort based on first save's order, new equipment goes at the end
-                        def get_sort_key(item):
-                            eq_name = item['equipment_name']
-                            return equipment_priority[country_tag].get(eq_name, 999999)
-                            
-                        # Only sort if this isn't the first save
-                        if not first_save:
-                            current_equipment.sort(key=get_sort_key)
-                        
-                        by_country[country_tag].extend(current_equipment)
-
-        # Store state after first save is processed
-        if first_save:
-            setattr(analyze_production_queue, 'first_save', False)
-            setattr(analyze_production_queue, 'equipment_priority', equipment_priority)
-
-        # Return production data preserving order
+        # Return production data preserving duplicate lines
         return {
             'date': save_date,
             'country_data': {
                 country: {
                     'date': save_date,
-                    'equipment_lines': lines
+                    'equipment_lines': lines  # Return list of lines instead of aggregating
                 }
                 for country, lines in by_country.items()
                 if lines  # Only include countries with active production
