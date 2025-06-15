@@ -161,7 +161,7 @@ EQ_TYPE = {
 "train_equipment_2": "Trains",
 "train_equipment_3": "Trains",
 "train_equipment_4": "Trains",
-"tank_sov_combat_car_chassis_1": "Combat Car",
+"tank_sov_combat_car_chassis_1": "Armoured Car",
 "infantry_equipment_1": "Light Guns",
 "infantry_equipment_2": "Light Guns",
 "sov_inf_4": "Light Guns",
@@ -182,4 +182,29 @@ EQ_TYPE = {
 "SOV_la_5fn_airframe": "Fighter",
 "SOV_la_7_airframe": "Fighter",
 "SOV_la_9_airframe": "Fighter",
+"sov_hv_inf_4": "Heavy Guns",
+"sov_hv_inf_5": "Heavy Guns",
+}
+
+TYPE_PRIORITIES = {
+    "Light Guns": 1,
+    "Heavy Guns": 2,
+    "Support Equipment": 3,
+    "Artillery": 4,
+    "Heavy Artillery": 5,
+    "Anti-Tank": 6,
+    "Anti-Air": 7,
+    "Heavy Anti-Air": 8,
+    "Armoured Car": 9,
+    "Trucks": 10,
+    "Light Support Tank": 11,
+    "Light Tank Chassis": 12,
+    "Medium Infantry Support Tank": 13,
+    "Medium Tank": 14,
+    "Trains": 15,
+    "Fighter": 16,
+    "Multirole": 17,
+    "Ground Attack": 18,
+    "Strike Bomber": 19,
+    "Tactical Bomber": 20
 }

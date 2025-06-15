@@ -310,14 +310,17 @@ class AnalyzerGUI:
                         country_data = data['country_data'][country]
                         for line in country_data.get('equipment_lines', []):
                             eq_name = line['equipment_name']
-                            eq_type = EQ_TYPE.get(eq_name, eq_name)
-                            country_equipment.add(eq_type)
-                
-                equipment_list = sorted(list(country_equipment))
+                            country_equipment.add(eq_name)
+
+                # Convert to list and sort by TYPE_PRIORITIES
+                from eq_definitions import TYPE_PRIORITIES
+                equipment_list = sorted(list(country_equipment), 
+                                      key=lambda x: TYPE_PRIORITIES.get(x, 999))  # Default priority 999 for unknown types
+
                 if not equipment_list:
                     continue  # Skip if country has no equipment
                 
-                # Setup headers using equipment types
+                # Setup headers using sorted equipment types
                 ws.cell(row=1, column=1, value='Date')
                 cell = ws.cell(row=1, column=1)
                 cell.fill = PatternFill(start_color='366092', end_color='366092', fill_type='solid')
@@ -328,25 +331,21 @@ class AnalyzerGUI:
                     cell.fill = PatternFill(start_color='366092', end_color='366092', fill_type='solid')
                     cell.font = Font(color='FFFFFF', bold=True)
                 
-                # Add data rows mapping equipment names to types
+                # Add data rows using sorted equipment list
                 row = 2
-                # Sort data by cleaned date string
                 sorted_data = sorted(all_data, key=lambda x: format_date_for_sort(x.get('date', '')))
                 for data in sorted_data:
                     if country in data['country_data']:
                         country_data = data['country_data'][country]
-                        # Clean the date string before writing to cell
-                        clean_date = data['date'].strip("' ") if data.get('date') else ''
-                        ws.cell(row=row, column=1, value=clean_date)
+                        ws.cell(row=row, column=1, value=data['date'].strip("' "))
 
-                        # Create type-based factory counts from equipment lines
+                        # Create type-based factory counts
                         type_factories = defaultdict(int)
                         for line in country_data.get('equipment_lines', []):
                             eq_name = line['equipment_name']
-                            eq_type = EQ_TYPE.get(eq_name, eq_name)
-                            type_factories[eq_type] += line['active_factories']
-                        
-                        # Fill in factory counts by type
+                            type_factories[eq_name] += line['active_factories']
+
+                        # Fill in factory counts using sorted equipment list
                         for col, eq_type in enumerate(equipment_list, 2):
                             factory_count = type_factories.get(eq_type, 0)
                             if factory_count > 0:
@@ -569,61 +568,70 @@ class AnalyzerGUI:
             self.root.after(0, self.enable_buttons)
 
     def create_production_sheet(self, ws, all_data, country_tag, header_fill, header_font):
-        """Create the production sheet (existing functionality)"""
+        """Create the production sheet with equipment grouped by type and sorted by priority"""
         current_row = 1
         ws['A1'] = "Military Production"
         ws['A1'].font = Font(bold=True)
         current_row += 2
+
+        # First collect all equipment and map to types
+        equipment_by_type = defaultdict(int)
+        type_equipment_names = defaultdict(list)  # Keep track of what equipment maps to each type
         
-        # Sort data by date first
-        sorted_data = sorted(all_data, key=lambda x: self.format_date_for_sort(x.get('date', '')))
-        
-        # Get equipment names for this country
-        country_equipment = set()
         for data in all_data:
             if country_tag in data['country_data']:
                 country_data = data['country_data'][country_tag]
                 for line in country_data.get('equipment_lines', []):
                     eq_name = line['equipment_name']
-                    eq_type = EQ_TYPE.get(eq_name, eq_name)
-                    country_equipment.add(eq_type)
-        
-        if not country_equipment:
-            self.root.after(0, messagebox.showinfo, "No Data", 
-                          f"No production data found for country {country_tag}")
-            return
-        
-        # Setup headers using equipment types
-        equipment_list = sorted(list(country_equipment))
-        headers = ['Date'] + equipment_list
-        for col, header in enumerate(headers, 1):
-            cell = ws.cell(row=current_row, column=col, value=header)
+                    eq_type = EQ_TYPE.get(eq_name, "Other")  # Get equipment type from EQ_TYPE
+                    type_equipment_names[eq_type].append(eq_name)
+                    equipment_by_type[eq_type] += line['active_factories']
+
+        # Sort types by TYPE_PRIORITIES
+        from eq_definitions import TYPE_PRIORITIES
+        sorted_types = sorted(equipment_by_type.keys(), 
+                             key=lambda x: TYPE_PRIORITIES.get(x, 999))  # Default priority 999 for unknown types
+
+        if not sorted_types:
+            return  # Skip if country has no equipment
+
+        # Setup headers using sorted equipment types
+        ws.cell(row=current_row, column=1, value='Date')
+        cell = ws.cell(row=current_row, column=1)
+        cell.fill = header_fill
+        cell.font = header_font
+
+        # Add column headers for types
+        for col, eq_type in enumerate(sorted_types, 2):
+            cell = ws.cell(row=current_row, column=col, value=eq_type)
             cell.fill = header_fill
             cell.font = header_font
+
+        # Add data rows using sorted types
+        row = current_row + 1
+        sorted_data = sorted(all_data, key=lambda x: self.format_date_for_sort(x.get('date', '')))
         
-        current_row += 1
-        
-        # Add production data - use sorted_data here instead of direct sorting
         for data in sorted_data:
             if country_tag in data['country_data']:
                 country_data = data['country_data'][country_tag]
-                ws.cell(row=current_row, column=1, value=data['date'])
-                
-                # Create type-based factory counts
+                ws.cell(row=row, column=1, value=data['date'].strip("' "))
+
+                # Clear type counts for this date
                 type_factories = defaultdict(int)
+                
+                # Sum factories by type
                 for line in country_data.get('equipment_lines', []):
                     eq_name = line['equipment_name']
-                    eq_type = EQ_TYPE.get(eq_name, eq_name)
+                    eq_type = EQ_TYPE.get(eq_name, "Other")  # Map to type
                     type_factories[eq_type] += line['active_factories']
-                
-                # Fill in factory counts by type
-                for col, eq_type in enumerate(equipment_list, 2):
+
+                # Fill in factory counts using sorted types
+                for col, eq_type in enumerate(sorted_types, 2):
                     factory_count = type_factories.get(eq_type, 0)
                     if factory_count > 0:
-                        ws.cell(row=current_row, column=col, value=factory_count)
-                
-                current_row += 1
-        
+                        ws.cell(row=row, column=col, value=factory_count)
+                row += 1
+
         # Auto-adjust column widths
         for column in ws.columns:
             max_length = 0
